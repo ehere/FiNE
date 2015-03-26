@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/FiNE"/>
+<Context antiJARLocking="true" path="/fine">
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="dbfine" password="" type="javax.sql.DataSource" url="jdbc:mysql://www.oldwoodhouse.net:3306/fine?zeroDateTimeBehavior=convertToNull" username="fine"/>
+</Context>
