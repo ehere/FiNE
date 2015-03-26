@@ -8,6 +8,12 @@ package controller;
 import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +26,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "Test", urlPatterns = {"/Test"})
 public class Test extends HttpServlet {
+    
+    private Connection conn;
+    
+    public void init(){
+        conn = (Connection) getServletContext().getAttribute("connection");
+        
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,15 +49,15 @@ public class Test extends HttpServlet {
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Test</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println(F.asset("css/bootstrap.min.css"));
-            out.println("</body>");
-            out.println("</html>");
+            Statement stmt = conn.createStatement();
+            String sql = "select * from user;";
+            ResultSet r = stmt.executeQuery(sql);
+            while (r.next()) {
+                out.println(r.getString("email"));
+                out.println("<br>");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
