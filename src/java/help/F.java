@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @author tanasab
  */
 public class F implements Serializable{
+    
     private static String projectPath;
     
     public static String asset(String url){
