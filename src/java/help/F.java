@@ -6,6 +6,7 @@
 package help;
 
 import java.io.Serializable;
+import java.sql.Connection;
 
 /**
  *
@@ -14,6 +15,15 @@ import java.io.Serializable;
 public class F implements Serializable{
     
     private static String projectPath;
+    private static Connection connection;
+
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static void setConnection(Connection connection) {
+        F.connection = connection;
+    }
     
     public static String asset(String url){
 

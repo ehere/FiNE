@@ -5,6 +5,7 @@
  */
 package controller.common;
 
+import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -25,12 +26,15 @@ import model.Project;
  * @author tanasab
  */
 @WebServlet(name = "productDetail", urlPatterns = {"/product/*"})
-public class productDetail extends HttpServlet {
+public class Product extends HttpServlet {
+
     private Connection conn;
-    public void init(){
-        conn = (Connection) getServletContext().getAttribute("connection");
-        
+
+    public void init() {
+        conn = F.getConnection();
+
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -44,24 +48,40 @@ public class productDetail extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        
+
         String pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
-        String id = pathInfo.split("/")[0];
-        
-        try {
-            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
-            psmt.setString(1, id);
-            ResultSet result = psmt.executeQuery();
-            Project product = new Project(result);
-            request.setAttribute("product", product);
-            request.getRequestDispatcher("jsp/common/product-detail.jsp").forward(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(productDetail.class.getName()).log(Level.SEVERE, null, ex);
+
+        if (pathInfo.contains("play")) {
+            try {
+                String id = pathInfo.split("/")[0];
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                psmt.setString(1, id);
+                ResultSet result = psmt.executeQuery();
+                result.next();
+                Project product = new Project(result);
+                request.setAttribute("product", product);
+                request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
+            } catch (SQLException ex) {
+                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (pathInfo.contains("view")) {
+            try {
+                String id = pathInfo.split("/")[0];
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                psmt.setString(1, id);
+                ResultSet result = psmt.executeQuery();
+                result.next();
+                Project product = new Project(result);
+                request.setAttribute("product", product);
+                request.getRequestDispatcher("/jsp/common/product-detail.jsp").forward(request, response);
+            } catch (SQLException ex) {
+                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

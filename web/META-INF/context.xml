@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" path="/fine">
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="dbfine" password="pbofu9hvoiy[" type="javax.sql.DataSource" url="jdbc:mysql://www.oldwoodhouse.net:3306/fine?zeroDateTimeBehavior=convertToNull" username="fine"/>
+    <Resource auth="Container" 
+            driverClassName="com.mysql.jdbc.Driver" 
+            maxActive="20" 
+            maxIdle="10" 
+            maxWait="-1" 
+            name="dbfine" 
+            password="pbofu9hvoiy[" 
+            type="javax.sql.DataSource" 
+            url="jdbc:mysql://www.oldwoodhouse.net:3306/fine?zeroDateTimeBehavior=convertToNull&amp;autoreconnect=true" 
+            username="fine"
+            validationQuery="SELECT 1"
+            testOnBorrow="true"
+            testWhileIdle="true"
+            timeBetweenEvictionRunsMillis="10000"
+            minEvictableIdleTimeMillis="60000"/>
 </Context>

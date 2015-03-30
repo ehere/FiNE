@@ -30,6 +30,7 @@ public class Init implements ServletContextListener {
         try {
             conn = getDbfine().getConnection();
             sce.getServletContext().setAttribute("connection", conn);
+            F.setConnection(conn);
         } catch (NamingException ex) {
             Logger.getLogger(Init.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

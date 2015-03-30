@@ -1,0 +1,48 @@
+.activity_bar {
+    min-height: 10em;
+    max-height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow-y: scroll;
+    padding-bottom: 60px;
+}
+.player_show {
+    width: 80%;
+    height: 65%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+.player_hide {
+    width: 80%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+.player_title {
+    float: left;
+    padding: 1em;
+    padding-top: 0.5em;
+    background: rgba(153, 255, 255, 0.7);
+    border: 0.5em solid;
+    border-color: white;
+    border-radius: 1em;
+    height: 3.5em;
+    min-width: 5em;
+    position: absolute;
+    bottom: 0em;
+}
+.player_dialog_open {
+    background: rgba(153, 255, 255, 0.7);
+    border: 0.5em solid;
+    border-color: white;
+    border-radius: 1em;
+    padding: 1em;
+    padding-top: 0.5em;
+    height: 98%;
+    overflow-y: auto;
+}
+.dialog_textbox {
+    white-space: pre;
+}

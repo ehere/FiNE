@@ -1,3 +1,4 @@
+<%@page import="model.Project"%>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -26,15 +27,15 @@
             <!-- End Product Image & Available Colors -->
             <!-- Product Summary & Options -->
             <div class="col-sm-6 product-details">
-                <h4>LOREM IPSUM DOLOR</h4>
+                <h4>${product.title}</h4>
                 <div class="price">
-                    ${price} ฿
+                    ${product.price} ฿
                 </div>
                 <table class="shop-item-selections">
                     <!-- Color Selector -->
                     <tr>
                         <td><b>Rate:</b></td>
-                        <td>${rate}+</td>
+                        <td>${product.rate}+</td>
                     </tr>
 
                     <tr>
@@ -58,7 +59,7 @@
                     <!-- Tab Content (Full Description) -->
                     <div class="tab-content product-detail-info">
                         <div class="tab-pane active" id="tab1">
-                            ${description}
+                            ${product.description}
                         </div>
                         
                         <%--

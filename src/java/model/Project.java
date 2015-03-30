@@ -5,11 +5,11 @@
  */
 package model;
 
+import help.F;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -27,23 +27,20 @@ public class Project implements Serializable{
     private String created_at;
     private String updated_at;
 
-    public Project(ResultSet result){
-        try {
-            while (result.next()){
-                id = result.getInt("id");
-                title = result.getString("title");
-                description = result.getString("description");
-                price = result.getDouble("price");
-                visible = result.getInt("visible");
-                rate = result.getInt("rate");
-                cover = result.getString("cover");
-                created_at = result.getString("created_at");
-                updated_at = result.getString("updated_at");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Project(ResultSet result) throws SQLException{
+        
+        id = result.getInt("id");
+        title = result.getString("title");
+        description = result.getString("description");
+        price = result.getDouble("price");
+        visible = result.getInt("visible");
+        rate = result.getInt("rate");
+        cover = result.getString("cover");
+        created_at = result.getString("created_at");
+        updated_at = result.getString("updated_at");
+
     }
+    
     public int getId() {
         return id;
     }
@@ -101,7 +98,7 @@ public class Project implements Serializable{
     }
 
     public String getCover() {
-        return cover;
+        return F.asset("img/cover/"+cover);
     }
 
     public void setCover(String cover) {
