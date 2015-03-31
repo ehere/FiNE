@@ -44,6 +44,9 @@ public class User implements Serializable{
 
     }
     
+    public String getFullname(){
+        return firstname + " " + lastname;
+    }
     public int getId() {
         return id;
     }
