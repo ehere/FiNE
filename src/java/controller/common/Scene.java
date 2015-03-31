@@ -8,11 +8,9 @@ package controller.common;
 import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -30,12 +28,6 @@ import org.json.simple.JSONObject;
 @WebServlet(name = "Scene", urlPatterns = {"/scene/*"})
 public class Scene extends HttpServlet {
 
-    private Connection conn;
-
-    public void init() {
-        conn = F.getConnection();
-    }
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -45,7 +37,7 @@ public class Scene extends HttpServlet {
         String id = pathInfo.split("/")[0];
 
         try (PrintWriter out = response.getWriter()) {
-            PreparedStatement activity_query = conn.prepareStatement("SELECT * FROM fine.activity WHERE scenario_id = ? ORDER BY `activity`.`order` ASC;");
+            PreparedStatement activity_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity WHERE scenario_id = ? ORDER BY `activity`.`order` ASC;");
             activity_query.setString(1, id);
             ResultSet activities = activity_query.executeQuery();
             JSONObject activity = new JSONObject();
@@ -56,7 +48,8 @@ public class Scene extends HttpServlet {
                 int activity_id = activities.getInt("id");
                 activity_order.add(activity_id);
                 if (type == 1) {
-                    PreparedStatement dialog_query = conn.prepareStatement("SELECT * FROM fine.activity_dialog WHERE activity_id = ?;");
+                    //dialog
+                    PreparedStatement dialog_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_dialog WHERE activity_id = ?;");
                     dialog_query.setInt(1, activity_id);
                     ResultSet dialog = dialog_query.executeQuery();
                     dialog.next();
@@ -64,28 +57,40 @@ public class Scene extends HttpServlet {
                     act.put("type", type);
                     act.put("title", dialog.getString("title"));
                     act.put("text", dialog.getString("dialog"));
-                    act.put("sound", dialog.getString("music"));
-                    activity_data.put(activity_id+"", act);
-                }
-                else if (type == 4) {
-                    PreparedStatement goto_query = conn.prepareStatement("SELECT * FROM fine.activity_goto WHERE activity_id = ?;");
+                    act.put("sound", F.asset("/sound/voice/" + dialog.getString("music")));
+                    activity_data.put(activity_id + "", act);
+                } else if (type == 2) {
+                    // choice
+                } else if (type == 3 || type == 4) {
+                    //goto activity or scene
+                    PreparedStatement goto_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_goto WHERE activity_id = ?;");
                     goto_query.setInt(1, activity_id);
                     ResultSet goto_act = goto_query.executeQuery();
                     goto_act.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
                     act.put("nextnode", goto_act.getString("target_id"));
-                    activity_data.put(activity_id+"", act);
-                }
-                else if (type == 5) {
-                    PreparedStatement bg_query = conn.prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
+                    activity_data.put(activity_id + "", act);
+                } else if (type == 5) {
+                    //change background
+                    PreparedStatement bg_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
                     bg_query.setInt(1, activity_id);
                     ResultSet bg_act = bg_query.executeQuery();
                     bg_act.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    act.put("url", F.asset("/img/bg/"+bg_act.getString("media")));
-                    activity_data.put(activity_id+"", act);
+                    act.put("url", F.asset("/img/bg/" + bg_act.getString("media")));
+                    activity_data.put(activity_id + "", act);
+                } else if (type == 6) {
+                    // change music
+                    PreparedStatement bg_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
+                    bg_query.setInt(1, activity_id);
+                    ResultSet bg_act = bg_query.executeQuery();
+                    bg_act.next();
+                    JSONObject act = new JSONObject();
+                    act.put("type", type);
+                    act.put("url", F.asset("/sound/bgm/" + bg_act.getString("media")));
+                    activity_data.put(activity_id + "", act);
                 }
             }
             activity.put("data", activity_data.toJSONString());

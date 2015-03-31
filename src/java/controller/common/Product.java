@@ -28,13 +28,6 @@ import model.Project;
 @WebServlet(name = "productDetail", urlPatterns = {"/product/*"})
 public class Product extends HttpServlet {
 
-    private Connection conn;
-
-    public void init() {
-        conn = F.getConnection();
-
-    }
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -54,7 +47,7 @@ public class Product extends HttpServlet {
         if (pathInfo.contains("play")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();
@@ -67,7 +60,7 @@ public class Product extends HttpServlet {
         } else if (pathInfo.contains("view")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();

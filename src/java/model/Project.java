@@ -24,9 +24,10 @@ public class Project implements Serializable{
     private int visible;
     private int rate;
     private String cover;
+    private int first_scene_id;
     private String created_at;
     private String updated_at;
-
+    
     public Project(ResultSet result) throws SQLException{
         
         id = result.getInt("id");
@@ -36,9 +37,18 @@ public class Project implements Serializable{
         visible = result.getInt("visible");
         rate = result.getInt("rate");
         cover = result.getString("cover");
+        first_scene_id = result.getInt("first_scene_id");
         created_at = result.getString("created_at");
         updated_at = result.getString("updated_at");
 
+    }
+
+    public int getFirst_scene_id() {
+        return first_scene_id;
+    }
+
+    public void setFirst_scene_id(int first_scene_id) {
+        this.first_scene_id = first_scene_id;
     }
     
     public int getId() {

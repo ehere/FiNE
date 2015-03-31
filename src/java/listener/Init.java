@@ -6,8 +6,6 @@
 package listener;
 
 import help.F;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -23,28 +21,21 @@ import javax.sql.DataSource;
  * @author tanasab
  */
 public class Init implements ServletContextListener {
-    private Connection conn;
+    //private Connection conn;
+    private DataSource datasource;
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         F.setProjectPath(sce.getServletContext().getContextPath());
         try {
-            conn = getDbfine().getConnection();
-            sce.getServletContext().setAttribute("connection", conn);
-            F.setConnection(conn);
+            F.setDatasource(getDbfine());
         } catch (NamingException ex) {
-            Logger.getLogger(Init.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
             Logger.getLogger(Init.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        try {
-            conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Init.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
 
     private DataSource getDbfine() throws NamingException {
