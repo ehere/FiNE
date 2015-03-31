@@ -1,3 +1,4 @@
+<%@page import="model.User"%>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -48,7 +49,12 @@
                                     </ul>
                                 </div>
                             </li>
-                            <li><a href="page-login.html">Login</a></li>
+                            <% if (session.getAttribute("user") == null) { %>
+                            <li><a href="<%= F.asset("/login") %>">Login</a></li>
+                            <% } else { %>
+                            <li>Hello, <%= ((User) session.getAttribute("user")).getFullname() %>!</li>
+                            <li><a href="<%= F.asset("/login.do?action=logout") %>">Logout</a></li>
+                            <% } %>
                         </ul>
                     </div>
                 </div>
