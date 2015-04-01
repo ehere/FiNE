@@ -47,31 +47,22 @@
                 </div>
                 <div id="menu_load_area" class="hidden" style="height: 100%; width: 100%;background-color: white;">
                     <div id="load_menu" class="row">
-                        <div class="col-md-6" style="padding-left: 0;padding-right: 0;"><button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button></div>
-                        <div class="col-md-6" style="padding-left: 0;padding-right: 0;"><button class="btn btn-green btn-block" type="button" onclick="showMenu();">New save</button></div>
+                        <div class="col-md-6 backtomenu-top" style="padding-left: 0;padding-right: 0;">
+                            <button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button>
+                        </div>
+                        <div class="col-md-6 newsave-top" style="padding-left: 0;padding-right: 0;">
+                            <button class="btn btn-orange btn-block" type="button" onclick="saveMemo('#typed');" data-toggle="modal" data-target="#myModal">New save</button>
+                        </div>
                     </div>
                     <div class="loadgame" style="overflow-y: auto;height: 100%; width: 100%;">
-                        <table class="table">
+                        <table class="table table-save">
                             <tr style="background-color: #DCDCDC;">
                                 <th width="10%"></th>
                                 <th >MC Name</th>
-                                <th >Description</th>
+                                <th >Memo</th>
                                 <th >Save Date</th>
                                 <th width="20%">Action</th>
                             </tr>
-                            <c:forEach var="i" begin="1" end="30">
-                                <tr>
-                                    <td><a href="#" data-geo="" img="https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE">Saved Image</a></td>
-                                    <td>Name</td>
-                                    <td>Description</td>
-                                    <td>Date</td>
-                                    <td>
-                                        <button class="btn btn-orange btn-sm btn-loadsave" type="button" onclick="">Load</button>
-                                        <button class="btn btn-green btn-sm btn-newsave" type="button" onclick="">Save</button>
-                                        <button class="btn btn-grey btn-sm btn-removesave" type="button" onclick="">Remove</button>
-                                    </td>
-                                </tr>
-                            </c:forEach>
                         </table>
                     </div>  
                 </div>                
@@ -107,11 +98,11 @@
                     </div>
                 </div>
             </div>
-            <audio id="dubsound">
+            <audio id="dubsound" src="">
                 <source type="audio/mp4">
                 Your browser does not support the audio element.
             </audio>
-            <audio id="player_music">
+            <audio id="player_music" src="">
                 <source type="audio/mp4">
                 Your browser does not support the audio element.
             </audio>
@@ -119,6 +110,24 @@
     </div>
 </div>
 
+<!-- Modal Save -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Enter Memo of this save.</h4>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" name="memo" id="memo" rows="3" placeholder="Enter memo here."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-confirmsave" onclick="save('newsave');">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- -------------------- data zone --------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------- -->
@@ -127,94 +136,171 @@
 <div class="hidden name"></div>
 
 <div class="hidden play_index"></div>
-<script src="<%= F.asset("/js/typed.js")%>"></script>
-<script src="<%= F.asset("/js/player.js")%>"></script>                
-<script>
-                                $('#player_wrapper').height(($('#player_wrapper').width() * 9 / 16));
-                                function getScene(sceneID) {
-                                    $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID, function (data, status) {
-                                        if ($.trim(data.data) != "{}" && $.trim(data.order) != "{}") {
-                                            $('.activity_data').html(data.data);
-                                            $('.activity_order').html(data.order);
-                                            $('.play_index').html(0);
-                                            play();
-                                        }
-                                    });
 
-                                }
-                                function newGameMenu() {
-                                    $('#input_name_area').removeClass("hidden");
-                                    $('#menu_choice_area').addClass("hidden");
-                                    $('#menu_load_area').addClass("hidden");
-                                }
-                                function newGame(element) {
-                                    var name = $(element).parent().find("input").val();
-                                    if ($.trim(name) != '') {
-                                        $('.name').html(name);
-                                        getScene(${product.first_scene_id});
-                                        $('#menu').addClass("hidden");
-                                        $('.btn-menu').removeClass("hidden");
-                                        showPlayer();
-                                    } else {
-                                        alert("กรุณาตั้งชื่อก่อนเล่น");
+
+<!-- -------------------- script zone --------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------- -->
+<script src="<%= F.asset("/js/typed.js")%>"></script>
+<script src="<%= F.asset("/js/player.js")%>"></script> 
+<script>
+                    $('#player_wrapper').height(($('#player_wrapper').width() * 9 / 16));
+                    function getScene(sceneID) {
+                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID, function (data, status) {
+                            if ($.trim(data.data) != "{}" && $.trim(data.order) != "{}") {
+                                $('.activity_data').html(data.data);
+                                $('.activity_order').html(data.order);
+                                $('.play_index').html(0);
+                                play();
+                            }
+                        });
+
+                    }
+                    function newGameMenu() {
+                        $('#input_name_area').removeClass("hidden");
+                        $('#menu_choice_area').addClass("hidden");
+                        $('#menu_load_area').addClass("hidden");
+                    }
+                    function newGame(element) {
+                        var name = $(element).parent().find("input").val();
+                        if ($.trim(name) != '') {
+                            $('.name').html(name);
+                            getScene(${product.first_scene_id});
+                            $('#menu').addClass("hidden");
+                            $('.btn-menu').removeClass("hidden");
+                            showPlayer();
+                        } else {
+                            alert("กรุณาตั้งชื่อก่อนเล่น");
+                        }
+                    }
+                    function showMenu() {
+                        $('#menu').removeClass("hidden");
+                        $('#menu_choice_area').removeClass("hidden");
+                        $('#player').addClass("hidden");
+                        $('#input_name_area').addClass("hidden");
+                        $('#menu_load_area').addClass("hidden");
+                    }
+                    function showLoad() {
+                        $('#menu').removeClass("hidden");
+
+                        $('.newsave-top').addClass("hidden");
+                        $('.backtomenu-top').removeClass("col-md-6").addClass("col-md-12");
+
+                        $('#menu_load_area').removeClass("hidden");
+                        $('#player').addClass("hidden");
+                        $('#input_name_area').addClass("hidden");
+                        $('#menu_choice_area').addClass("hidden");
+                        $('.loadgame').height($('#menu_load_area').height() - $('#load_menu').height());
+                        drawTableSave('load');
+                    }
+                    function showSave() {
+                        $('#menu').removeClass("hidden");
+
+                        $('.newsave-top').removeClass("hidden");
+                        $('.backtomenu-top').removeClass("col-md-12").addClass("col-md-6");
+                        $('#menu_load_area').removeClass("hidden");
+                        $('#player').addClass("hidden");
+                        $('#input_name_area').addClass("hidden");
+                        $('#menu_choice_area').addClass("hidden");
+                        $('.loadgame').height($('#menu_load_area').height() - $('#load_menu').height());
+                        drawTableSave('save');
+                    }
+                    function showPlayer() {
+                        $('#menu').addClass("hidden");
+                        $('#player').removeClass("hidden");
+                    }
+                    function tooltip(element) {
+                        $(element).tooltip({content: 'asdasd'});
+                    }
+                    function saveMemo(element) {
+                        if (element.indexOf("memo") !== -1) {
+                            $('#memo').val($(element).html());
+                            $('.btn-confirmsave').attr('onclick', "save('replace');");
+                        } else {
+                            $('#memo').val($('#typed').html());
+                            $('.btn-confirmsave').attr('onclick', "save('newsave');");
+                        }
+
+                    }
+                    function save(action) {
+                        var memo = $('#memo').val();
+                        var bg = $('#player').css('background-image');
+                        bg = bg.replace('url(', '').replace(')', '');
+                        var music = ($('#player_music').attr('src'));
+                        var nowindex = $('.play_index').html();
+                        var name = $('.name').html();
+                        if (nowindex > 0) {
+                            nowindex = nowindex - 1;
+                        }
+                        var activity = JSON.parse($('.activity_order').html())[nowindex];
+                        $.getJSON("<%= F.asset("/save")%>", {memo: memo, bg: bg, music: music, activity: activity, name: name, action: action})
+                                .done(function (respond) {
+                                    $('#myModal').modal('hide');
+                                    drawTableSave('save');
+                                })
+                                .fail(function (jqxhr, textStatus, error) {
+                                    alert("Something wrong.Please try again or refresh this page.");
+                                });
+                    }
+                    function drawTableSave(action) {
+                        $('.row-save').remove();
+                        $('.table-save').append('<tr class="loading" style="text-align: center;"><td colspan="5">Loading</td></tr>');
+                        $.getJSON("<%= F.asset("/save")%>", {project: ${product.id}, action: "view"})
+                                .done(function (respond) {
+                                    $('.loading').remove();
+                                    if (respond.status) {
+                                        $.each(respond.data, function (index, obj) {
+                                            $('.table-save').append(
+                                                    '<tr class="row-save">'
+                                                    + '<td><a href="#" data-geo="" img="' + obj.bg + '">Saved Image</a></td>'
+                                                    + '<td>' + obj.name + '</td>'
+                                                    + '<td id="memo' + index + '">' + obj.memo + '</td>'
+                                                    + '<td>' + obj.created_at + '</td>'
+                                                    + '<td>'
+                                                    + '<button class="btn btn-orange btn-sm btn-loadsave" type="button" onclick="">Load</button>'
+                                                    + '<button class="btn btn-green btn-sm btn-newsave" type="button" onclick="saveMemo(\'#memo' + index + '\');" data-toggle="modal" data-target="#myModal">Save</button>'
+                                                    + '<button class="btn btn-grey btn-sm btn-removesave" type="button" onclick="">Remove</button>'
+                                                    + '</td>'
+                                                    + '</tr>');
+                                        });
                                     }
-                                }
-                                function showMenu() {
-                                    $('#menu').removeClass("hidden");
-                                    $('#menu_choice_area').removeClass("hidden");
-                                    $('#player').addClass("hidden");
-                                    $('#input_name_area').addClass("hidden");
-                                    $('#menu_load_area').addClass("hidden");
-                                }
-                                function showLoad() {
-                                    $('#menu').removeClass("hidden");
-                                    $('.btn-newsave').addClass("hidden")
-                                    $('.btn-loadsave').removeClass("hidden")
-                                    $('#menu_load_area').removeClass("hidden");
-                                    $('#player').addClass("hidden");
-                                    $('#input_name_area').addClass("hidden");
-                                    $('#menu_choice_area').addClass("hidden");
-                                    $('.loadgame').height($('#menu_load_area').height() - $('#load_menu').height());
-                                }
-                                function showSave() {
-                                    $('#menu').removeClass("hidden");
-                                    $('.btn-loadsave').addClass("hidden")
-                                    $('.btn-newsave').removeClass("hidden")
-                                    $('#menu_load_area').removeClass("hidden");
-                                    $('#player').addClass("hidden");
-                                    $('#input_name_area').addClass("hidden");
-                                    $('#menu_choice_area').addClass("hidden");
-                                    $('.loadgame').height($('#menu_load_area').height() - $('#load_menu').height());
-                                }
-                                function showPlayer() {
-                                    $('#menu').addClass("hidden");
-                                    $('#player').removeClass("hidden");
-                                }
-                                function tooltip(element) {
-                                    $(element).tooltip({content: 'asdasd'});
-                                }
-                                $(".btn-menu").hover(
-                                        function () {
-                                            $(this).outerWidth('120%');
-                                        }, function () {
-                                    $(this).outerWidth('100%');
-                                }
-                                );
+                                    else{
+                                        $('.table-save').append('<tr class="loading" style="text-align: center;"><td colspan="5">No Saved data</td></tr>');
+                                    }
+                                    if (action === 'load') {
+                                        $('.btn-newsave').addClass("hidden");
+                                        $('.btn-loadsave').removeClass("hidden");
+                                    }
+                                    else {
+                                        $('.btn-loadsave').addClass("hidden");
+                                        $('.btn-newsave').removeClass("hidden");
+                                    }
+                                })
+                                .fail(function (jqxhr, textStatus, error) {
+                                    alert("Something wrong.Please try again or refresh this page.");
+                                });
+                    }
+                    $(".btn-menu").hover(
+                            function () {
+                                $(this).outerWidth('120%');
+                            }, function () {
+                        $(this).outerWidth('100%');
+                    }
+                    );
 </script>
-  <script>
-  $(function() {
-    $( document ).tooltip({
-      items: "[data-geo]",
-      content: function() {
-        var element = $( this );
-        if ( element.is( "[data-geo]" ) ) {
-          var img = element.attr('img');
-          //alert(text);
-          return "<img style='max-width:250px' alt='" + img +
-            "' src='"+img+"' >"
-        }
-      }
+<script>
+    $(function () {
+        $(document).tooltip({
+            items: "[data-geo]",
+            content: function () {
+                var element = $(this);
+                if (element.is("[data-geo]")) {
+                    var img = element.attr('img');
+                    //alert(text);
+                    return "<img style='max-width:250px' alt='" + img +
+                            "' src='" + img + "' >"
+                }
+            }
+        });
     });
-  });
-  </script>
+</script>
 <jsp:include page="footer.jsp" />

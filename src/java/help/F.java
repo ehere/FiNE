@@ -25,9 +25,16 @@ public class F implements Serializable {
     private static String projectPath;
     private static Connection connection;
     private static DataSource datasource;
+    private static long last_connect = 0;
 
     public static Connection getConnection() {
         try {
+            if (last_connect == 0) {
+                last_connect = System.currentTimeMillis();
+            }
+            else if (System.currentTimeMillis() - last_connect > 300000) {
+                connection = datasource.getConnection();
+            }
             if (connection != null && connection.isClosed()) {
                 synchronized (F.class) {
                     connection = datasource.getConnection();
@@ -60,7 +67,7 @@ public class F implements Serializable {
     public static String asset(String url) {
         if (!url.contains("http://") && !url.contains("https://")) {
             return projectPath + "/" + url.replaceAll("^/+", "").replaceAll("/+$", "");
-        }else{
+        } else {
             return url;
         }
     }
@@ -72,7 +79,7 @@ public class F implements Serializable {
     public static void setProjectPath(String projectPath) {
         F.projectPath = projectPath;
     }
-    
+
     public static String encodePwd(String pwd) {
         String sDigest = "";
         try {
@@ -80,7 +87,7 @@ public class F implements Serializable {
             md.update(pwd.getBytes("UTF-8")); // Change this to "UTF-16" if needed
             byte[] digest = md.digest();
             sDigest = byteToBase64(digest);
-            
+
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(F.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
