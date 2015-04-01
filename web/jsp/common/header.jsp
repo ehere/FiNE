@@ -40,20 +40,11 @@
                     <div class="extras">
                         <ul>
                             <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="page-shopping-cart.html"><b>3 items</b></a></li>
-                            <li>
-                                <div class="dropdown choose-country">
-                                    <a class="#" data-toggle="dropdown" href="#"><img src="<%= F.asset("img/flags/gb.png") %>" alt="Great Britain"> UK</a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li role="menuitem"><a href="#"><img src="<%= F.asset("img/flags/us.png") %>" alt="United States"> US</a></li>
-                                        <li role="menuitem"><a href="#"><img src="<%= F.asset("img/flags/de.png") %>" alt="Germany"> DE</a></li>
-                                        <li role="menuitem"><a href="#"><img src="<%= F.asset("img/flags/es.png") %>" alt="Spain"> ES</a></li>
-                                    </ul>
-                                </div>
-                            </li>
                             <% if (session.getAttribute("user") == null) { %>
                             <li><a href="<%= F.asset("/login") %>">Login</a></li>
                             <% } else { %>
                             <li>Hello, <%= ((User) session.getAttribute("user")).getFullname() %>!</li>
+                            <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> <%= ((User) session.getAttribute("user")).getCredit()%> Coins</li>
                             <li><a href="<%= F.asset("/login.do?action=logout") %>">Logout</a></li>
                             <% } %>
                         </ul>
