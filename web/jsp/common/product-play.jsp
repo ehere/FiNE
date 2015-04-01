@@ -25,7 +25,7 @@
                         <div style="display: table-cell; vertical-align: middle;">
                             <button type="button" class="btn btn-lg btn-orange btn-block btn-menu" onclick="newGameMenu();">New Game</button>
                             <button type="button" class="btn btn-lg btn-blue btn-block btn-menu" onclick="showLoad();">Load Game</button>
-                            <button type="button" class="btn btn-lg btn-blue btn-block btn-menu hidden" >Save Game</button>
+                            <button type="button" class="btn btn-lg btn-blue btn-block btn-menu hidden" onclick="showSave();">Save Game</button>
                             <button type="button" class="btn btn-lg btn-green btn-block btn-menu hidden" onclick="showPlayer();">Back to Game</button>
 
                         </div>
@@ -47,16 +47,16 @@
                 </div>
                 <div id="menu_load_area" class="hidden" style="height: 100%; width: 100%;background-color: white;">
                     <div id="load_menu">
-                        <button class="btn btn-green btn-block" type="button" onclick="showMenu();">Back to Menu</button>
+                        <button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button>
                     </div>
                     <div class="loadgame" style="overflow-y: auto;height: 100%; width: 100%;">
                         <table class="table">
                             <tr style="background-color: #DCDCDC;">
-                                <th></th>
-                                <th>MC Name</th>
-                                <th>Description</th>
-                                <th>Save Date</th>
-                                <th>Action</th>
+                                <th width="10%"></th>
+                                <th >MC Name</th>
+                                <th >Description</th>
+                                <th >Save Date</th>
+                                <th width="20%">Action</th>
                             </tr>
                             <c:forEach var="i" begin="1" end="30">
                                 <tr>
@@ -64,7 +64,11 @@
                                     <td>Name</td>
                                     <td>Description</td>
                                     <td>Date</td>
-                                    <td>Load or save</td>
+                                    <td>
+                                        <button class="btn btn-orange btn-sm btn-loadsave" type="button" onclick="">Load</button>
+                                        <button class="btn btn-green btn-sm btn-newsave" type="button" onclick="">Save</button>
+                                        <button class="btn btn-grey btn-sm btn-removesave" type="button" onclick="">Remove</button>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </table>
@@ -163,6 +167,18 @@
                                 }
                                 function showLoad() {
                                     $('#menu').removeClass("hidden");
+                                    $('.btn-newsave').addClass("hidden")
+                                    $('.btn-loadsave').removeClass("hidden")
+                                    $('#menu_load_area').removeClass("hidden");
+                                    $('#player').addClass("hidden");
+                                    $('#input_name_area').addClass("hidden");
+                                    $('#menu_choice_area').addClass("hidden");
+                                    $('.loadgame').height($('#menu_load_area').height() - $('#load_menu').height());
+                                }
+                                function showSave() {
+                                    $('#menu').removeClass("hidden");
+                                    $('.btn-loadsave').addClass("hidden")
+                                    $('.btn-newsave').removeClass("hidden")
                                     $('#menu_load_area').removeClass("hidden");
                                     $('#player').addClass("hidden");
                                     $('#input_name_area').addClass("hidden");
