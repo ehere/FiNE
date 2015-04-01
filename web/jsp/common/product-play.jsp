@@ -46,8 +46,9 @@
                     </div>
                 </div>
                 <div id="menu_load_area" class="hidden" style="height: 100%; width: 100%;background-color: white;">
-                    <div id="load_menu">
-                        <button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button>
+                    <div id="load_menu" class="row">
+                        <div class="col-md-6" style="padding-left: 0;padding-right: 0;"><button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button></div>
+                        <div class="col-md-6" style="padding-left: 0;padding-right: 0;"><button class="btn btn-green btn-block" type="button" onclick="showMenu();">New save</button></div>
                     </div>
                     <div class="loadgame" style="overflow-y: auto;height: 100%; width: 100%;">
                         <table class="table">
