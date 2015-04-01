@@ -8,7 +8,7 @@
               name="dbfine" 
               password="pbofu9hvoiy[" 
               type="javax.sql.DataSource" 
-              url="jdbc:mysql://www.oldwoodhouse.net:3306/fine?zeroDateTimeBehavior=convertToNull&amp;autoreconnect=true" 
+              url="jdbc:mysql://www.oldwoodhouse.net:3306/fine?zeroDateTimeBehavior=convertToNull&amp;autoreconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8" 
               username="fine"
               validationQuery="SELECT 1"
               testOnBorrow="true"

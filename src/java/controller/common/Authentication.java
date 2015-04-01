@@ -43,17 +43,28 @@ public class Authentication extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getParameter("action").equals("login")) {
-            login(request, response);
+        if (request.getParameter("action") != null) {
+            if (request.getParameter("action").equals("login")) {
+                login(request, response);
+            } else if (request.getParameter("action").equals("logout")) {
+                logout(request, response);
+            }
+        } else if (request.getAttribute("action") != null) {
+            if (request.getAttribute("action").equals("login")) {
+                login(request, response);
+            }
         }
-        else if(request.getParameter("action").equals("logout")) {
-            logout(request, response);
-        }
+
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             response.setContentType("text/html;charset=UTF-8");
+            HttpSession session = request.getSession();
+            if (session.getAttribute("user") != null) {
+                //logged in > go to index.
+                response.sendRedirect(F.asset("/"));
+            }
             //login hereeeeee!!!
             PreparedStatement pstmt = F.getConnection().prepareStatement("SELECT * FROM fine.user WHERE email = ?;");
             String email = request.getParameter("email");
@@ -64,7 +75,6 @@ public class Authentication extends HttpServlet {
             boolean isSuccess = result.next();
             if (isSuccess && (loginValidator(password, result.getString("password")))) {
                 //login success!
-                HttpSession session = request.getSession();
                 User user = new User(result);
                 session.setAttribute("user", user);
                 response.sendRedirect(F.asset("/"));
@@ -76,36 +86,15 @@ public class Authentication extends HttpServlet {
             Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         session.invalidate();
         response.sendRedirect(F.asset("/"));
     }
 
     public boolean loginValidator(String inputPwd, String userPwd) {
-        try {
-            if (byteToBase64(encodePwd(inputPwd)).equals(userPwd)) {
-                return true;
-            }
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
-            Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    public byte[] encodePwd(String pwd) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(pwd.getBytes("UTF-8")); // Change this to "UTF-16" if needed
-        byte[] digest = md.digest();
-        return digest;
-        /*String sDigest = byteToBase64(digest);
-         return sDigest;*/
-    }
-
-    public String byteToBase64(byte[] data) {
-        BASE64Encoder endecoder = new BASE64Encoder();
-        return endecoder.encode(data);
+        return F.encodePwd(inputPwd).equals(userPwd);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
