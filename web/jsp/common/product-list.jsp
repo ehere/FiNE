@@ -20,7 +20,7 @@
             <c:forEach var="product" items="${list}">
                 <div class="col-md-3 col-sm-6">
                     <div class="shop-item">
-                        <div class="shop-item-image">
+                        <div class="shop-item-image" style="text-align: center;">
                             <a href="<%= F.asset("/product") %>/${product.id}/view"><img src="${product.cover}" style="height: 150px" alt="${product.title}"></a>
                         </div>
                         <div class="title">
