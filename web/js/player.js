@@ -43,9 +43,10 @@ function play() {
         $("#btn-play").show();
         $("#btn_toggle_dialog").hide();
         $("#player_title_text").hide().html(data[actity_id].title).fadeIn('slow');
+        var text = data[actity_id].text.replace("MC_NAME", $('.name').html());
         $("#typed").typed('reset');
         $("#typed").typed({
-            strings: [data[actity_id].text],
+            strings: [text],
             typeSpeed: 0,
             backDelay: 500,
             loop: false,
