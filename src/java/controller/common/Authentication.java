@@ -79,6 +79,8 @@ public class Authentication extends HttpServlet {
                 //login fail!
                 response.sendRedirect(F.asset("/login"));
             }
+            result.close();
+            pstmt.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);

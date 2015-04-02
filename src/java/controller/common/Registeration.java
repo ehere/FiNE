@@ -78,6 +78,7 @@ public class Registeration extends HttpServlet {
                 //err occur
                 response.sendRedirect(F.asset("/register"));
             }
+            pstmt.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
@@ -103,6 +104,8 @@ public class Registeration extends HttpServlet {
                 request.getSession().setAttribute("message", "อีเมลนี้ได้ถูกใช้ไปแล้ว!");
                 return false;
             }
+            result.close();
+            pstmt.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
