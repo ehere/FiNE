@@ -23,33 +23,16 @@ import sun.misc.BASE64Encoder;
 public class F implements Serializable {
 
     private static String projectPath;
-    private static Connection connection;
     private static DataSource datasource;
     private static long last_connect = 0;
 
     public static Connection getConnection() {
         try {
-            if (last_connect == 0) {
-                last_connect = System.currentTimeMillis();
-            }
-            else if (System.currentTimeMillis() - last_connect > 300000) {
-                connection = datasource.getConnection();
-            }
-            if (connection != null && connection.isClosed()) {
-                synchronized (F.class) {
-                    connection = datasource.getConnection();
-                }
-
-            } else if (connection == null) {
-                synchronized (F.class) {
-                    connection = datasource.getConnection();
-                }
-            }
-
+            return datasource.getConnection();
         } catch (SQLException ex) {
             Logger.getLogger(F.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return connection;
+        return null;
     }
 
     public DataSource getDatasource() {
@@ -60,9 +43,6 @@ public class F implements Serializable {
         F.datasource = datasource;
     }
 
-    public static void setConnection(Connection connection) {
-        F.connection = connection;
-    }
 
     public static String asset(String url) {
         if(url == null || url.trim().equals("")){

@@ -8,6 +8,7 @@ package controller.common;
 import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,13 +45,14 @@ public class Save extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
         HttpSession session = request.getSession(true);
-
+        
         User user = (User) session.getAttribute("user");
         JSONObject respond = new JSONObject();
         respond.put("status", false);
         try (PrintWriter out = response.getWriter()) {
+            Connection conn = F.getConnection();
             if (request.getParameter("action").equals("view")) {
-                PreparedStatement allsave_query = F.getConnection().prepareStatement("SELECT * FROM `save`  JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? AND `last_activity_id` IN (SELECT id FROM activity WHERE scenario_id IN (SELECT id FROM scenario WHERE project_id = ? )) ORDER BY `save`.created_at DESC;");
+                PreparedStatement allsave_query = conn.prepareStatement("SELECT * FROM `save`  JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? AND `last_activity_id` IN (SELECT id FROM activity WHERE scenario_id IN (SELECT id FROM scenario WHERE project_id = ? )) ORDER BY `save`.created_at DESC;");
                 allsave_query.setInt(1, user.getId());
                 allsave_query.setString(2, request.getParameter("project"));
                 ResultSet allsave = allsave_query.executeQuery();
@@ -77,7 +79,7 @@ public class Save extends HttpServlet {
                 allsave.close();
                 allsave_query.close();
             } else if (request.getParameter("action").equals("newsave")) {
-                PreparedStatement newsave_query = F.getConnection().prepareStatement("INSERT INTO `save`(`user_id`, `name`, `memo`, `last_activity_id`, `bg`, `music`) VALUES (?,?,?,?,?,?);");
+                PreparedStatement newsave_query = conn.prepareStatement("INSERT INTO `save`(`user_id`, `name`, `memo`, `last_activity_id`, `bg`, `music`) VALUES (?,?,?,?,?,?);");
                 newsave_query.setInt(1, user.getId());
                 newsave_query.setString(2, request.getParameter("name"));
                 newsave_query.setString(3, request.getParameter("memo"));
@@ -90,7 +92,7 @@ public class Save extends HttpServlet {
                 }
                 newsave_query.close();
             } else if (request.getParameter("action").equals("replace")) {
-                PreparedStatement update_query = F.getConnection().prepareStatement("UPDATE `save` SET `name`= ? ,`memo`= ?,`last_activity_id`= ? ,`bg`= ? ,`music`= ? WHERE `id` = ? AND user_id = ?;");
+                PreparedStatement update_query = conn.prepareStatement("UPDATE `save` SET `name`= ? ,`memo`= ?,`last_activity_id`= ? ,`bg`= ? ,`music`= ? WHERE `id` = ? AND user_id = ?;");
                 update_query.setString(1, request.getParameter("name"));
                 update_query.setString(2, request.getParameter("memo"));
                 update_query.setString(3, request.getParameter("activity"));
@@ -104,7 +106,7 @@ public class Save extends HttpServlet {
                 }
                 update_query.close();
             } else if (request.getParameter("action").equals("remove")) {
-                PreparedStatement update_query = F.getConnection().prepareStatement("DELETE FROM `save` WHERE `id` = ? AND `user_id` = ?");
+                PreparedStatement update_query = conn.prepareStatement("DELETE FROM `save` WHERE `id` = ? AND `user_id` = ?");
                 update_query.setString(1, request.getParameter("id"));
                 update_query.setInt(2, user.getId());
                 int status = update_query.executeUpdate();
@@ -114,6 +116,7 @@ public class Save extends HttpServlet {
                 update_query.close();
             }
             out.print(respond);
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Save.class.getName()).log(Level.SEVERE, null, ex);
         }

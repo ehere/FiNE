@@ -7,10 +7,7 @@ package controller.common;
 
 import help.F;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.User;
-import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -59,6 +55,7 @@ public class Authentication extends HttpServlet {
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
+            Connection conn = F.getConnection();
             response.setContentType("text/html;charset=UTF-8");
             HttpSession session = request.getSession();
             if (session.getAttribute("user") != null) {
@@ -66,7 +63,7 @@ public class Authentication extends HttpServlet {
                 response.sendRedirect(F.asset("/"));
             }
             //login hereeeeee!!!
-            PreparedStatement pstmt = F.getConnection().prepareStatement("SELECT * FROM fine.user WHERE email = ?;");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM fine.user WHERE email = ?;");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             pstmt.setString(1, email);
@@ -82,6 +79,7 @@ public class Authentication extends HttpServlet {
                 //login fail!
                 response.sendRedirect(F.asset("/login"));
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -42,6 +42,7 @@ public class Product extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
+        Connection conn = F.getConnection();
         String pathInfo;
         if (request.getPathInfo() != null) {
             pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
@@ -52,7 +53,7 @@ public class Product extends HttpServlet {
         if (pathInfo.contains("play")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();
@@ -67,7 +68,7 @@ public class Product extends HttpServlet {
         } else if (pathInfo.contains("view")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();
@@ -85,14 +86,14 @@ public class Product extends HttpServlet {
                 if (request.getParameter("page") != null) {
                     page = Integer.parseInt(request.getParameter("page"));
                 }
-                PreparedStatement csmt = F.getConnection().prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` ;");
+                PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` ;");
                 ResultSet cr = csmt.executeQuery();
                 cr.next();
                 int totalpage = cr.getInt("totalpage");
                 cr.close();
                 csmt.close();
                 
-                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM `project`  LIMIT 8 OFFSET ?;");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project`  LIMIT 8 OFFSET ?;");
                 psmt.setInt(1, (page - 1) * 8);
                 ResultSet result = psmt.executeQuery();
                 ArrayList<Project> list = new ArrayList();
@@ -109,6 +110,11 @@ public class Product extends HttpServlet {
             } catch (SQLException ex) {
                 Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

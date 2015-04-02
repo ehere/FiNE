@@ -9,6 +9,7 @@ import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,11 +43,13 @@ public class Registeration extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
+        
         //Begin input validation
 
         //Begin registration here
         String sql = "INSERT INTO `fine`.`user` (`prefix`, `firstname`, `lastname`, `email`, `password`, `birthday`, `role`, `created_at`) VALUES ( ?, ?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP());";
         try {
+            Connection conn = F.getConnection();
             HttpSession session = request.getSession();
             if (session.getAttribute("user") != null) {
                 //logged in > go to index.
@@ -59,7 +62,7 @@ public class Registeration extends HttpServlet {
                     Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            PreparedStatement pstmt = F.getConnection().prepareStatement(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("prefix"));
             pstmt.setString(2, request.getParameter("firstname"));
             pstmt.setString(3, request.getParameter("lastname"));
@@ -75,6 +78,7 @@ public class Registeration extends HttpServlet {
                 //err occur
                 response.sendRedirect(F.asset("/register"));
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,7 +94,8 @@ public class Registeration extends HttpServlet {
         String sql = "SELECT COUNT(id) FROM user WHERE email = ?;";
         ResultSet result = null;
         try {
-            PreparedStatement pstmt = F.getConnection().prepareStatement(sql);
+            Connection conn = F.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("email"));
             result = pstmt.executeQuery();
             result.next();
@@ -98,6 +103,7 @@ public class Registeration extends HttpServlet {
                 request.getSession().setAttribute("message", "อีเมลนี้ได้ถูกใช้ไปแล้ว!");
                 return false;
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         }

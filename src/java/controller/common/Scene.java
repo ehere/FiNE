@@ -8,6 +8,7 @@ package controller.common;
 import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,7 +38,8 @@ public class Scene extends HttpServlet {
         String id = pathInfo.split("/")[0];
 
         try (PrintWriter out = response.getWriter()) {
-            PreparedStatement activity_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity WHERE scenario_id = ? ORDER BY `activity`.`order` ASC;");
+            Connection conn = F.getConnection();
+            PreparedStatement activity_query = conn.prepareStatement("SELECT * FROM fine.activity WHERE scenario_id = ? ORDER BY `activity`.`order` ASC;");
             activity_query.setString(1, id);
             ResultSet activities = activity_query.executeQuery();
             JSONObject activity = new JSONObject();
@@ -49,7 +51,7 @@ public class Scene extends HttpServlet {
                 activity_order.add(activity_id);
                 if (type == 1) {
                     //dialog
-                    PreparedStatement dialog_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_dialog WHERE activity_id = ?;");
+                    PreparedStatement dialog_query = conn.prepareStatement("SELECT * FROM fine.activity_dialog WHERE activity_id = ?;");
                     dialog_query.setInt(1, activity_id);
                     ResultSet dialog = dialog_query.executeQuery();
                     dialog.next();
@@ -74,7 +76,7 @@ public class Scene extends HttpServlet {
                     // choice
                 } else if (type == 3 || type == 4) {
                     //goto activity or scene
-                    PreparedStatement goto_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_goto WHERE activity_id = ?;");
+                    PreparedStatement goto_query = conn.prepareStatement("SELECT * FROM fine.activity_goto WHERE activity_id = ?;");
                     goto_query.setInt(1, activity_id);
                     ResultSet goto_act = goto_query.executeQuery();
                     goto_act.next();
@@ -86,7 +88,7 @@ public class Scene extends HttpServlet {
                     goto_query.close();
                 } else if (type == 5) {
                     //change background
-                    PreparedStatement bg_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
+                    PreparedStatement bg_query = conn.prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
                     bg_query.setInt(1, activity_id);
                     ResultSet bg_act = bg_query.executeQuery();
                     bg_act.next();
@@ -98,7 +100,7 @@ public class Scene extends HttpServlet {
                     bg_query.close();
                 } else if (type == 6) {
                     // change music
-                    PreparedStatement music_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
+                    PreparedStatement music_query = conn.prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
                     music_query.setInt(1, activity_id);
                     ResultSet music_act = music_query.executeQuery();
                     music_act.next();
@@ -112,6 +114,7 @@ public class Scene extends HttpServlet {
             }
             activities.close();
             activity_query.close();
+            conn.close();
             activity.put("data", activity_data.toJSONString());
             activity.put("order", activity_order.toJSONString());
             out.print(activity);
