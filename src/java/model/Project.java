@@ -83,8 +83,8 @@ public class Project implements Serializable{
         this.user_id = user_id;
     }
 
-    public double getPrice() {
-        return price;
+    public String getPrice() {
+        return String.format("%.2f", price);
     }
 
     public void setPrice(double price) {
