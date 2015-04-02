@@ -29,13 +29,14 @@ public class F implements Serializable {
 
     public static Connection getConnection() {
         try {
+            /*
             if (last_connect == 0) {
                 last_connect = System.currentTimeMillis();
             }
             else if (System.currentTimeMillis() - last_connect > 300000) {
-                connection.close();
                 connection = datasource.getConnection();
             }
+                    */
             if (connection != null && connection.isClosed()) {
                 synchronized (F.class) {
                     connection = datasource.getConnection();

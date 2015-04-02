@@ -55,7 +55,12 @@ public class Scene extends HttpServlet {
                     dialog.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    act.put("title", dialog.getString("title"));
+                    if(dialog.getString("title") != null){
+                        act.put("title", dialog.getString("title"));
+                    }else{
+                        act.put("title", "");
+                    }
+                    
                     act.put("text", dialog.getString("dialog").replace("^", "&#94;"));
                     if(dialog.getString("music") != null){
                         act.put("sound", F.asset("/sound/voice/" + dialog.getString("music")));
