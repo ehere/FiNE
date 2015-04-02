@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.User;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -49,29 +50,33 @@ public class Save extends HttpServlet {
         respond.put("status", false);
         try (PrintWriter out = response.getWriter()) {
             if (request.getParameter("action").equals("view")) {
-                PreparedStatement allsave_query = F.getConnection().prepareStatement("SELECT * FROM `save` WHERE `user_id` = ? AND `last_activity_id` IN (SELECT id FROM activity WHERE scenario_id IN (SELECT id FROM scenario WHERE project_id = ? ));");
+                PreparedStatement allsave_query = F.getConnection().prepareStatement("SELECT * FROM `save`  JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? AND `last_activity_id` IN (SELECT id FROM activity WHERE scenario_id IN (SELECT id FROM scenario WHERE project_id = ? )) ORDER BY `save`.created_at DESC;");
                 allsave_query.setInt(1, user.getId());
                 allsave_query.setString(2, request.getParameter("project"));
                 ResultSet allsave = allsave_query.executeQuery();
-                JSONObject data = new JSONObject();
+                JSONArray data = new JSONArray();
                 int count = 0;
                 while (allsave.next()) {
                     JSONObject save = new JSONObject();
+                    save.put("save_id", allsave.getInt("save.id"));
+                    save.put("scene", allsave.getInt("scenario_id"));
                     save.put("last_activity_id", allsave.getInt("last_activity_id"));
+                    save.put("order", allsave.getInt("order"));
                     save.put("name", allsave.getString("name"));
                     save.put("memo", allsave.getString("memo"));
                     save.put("created_at", allsave.getString("created_at"));
                     save.put("bg", allsave.getString("bg"));
                     save.put("music", allsave.getString("music"));
-                    data.put(allsave.getString("id"), save);
+                    data.add(save);
                     count += 1;
                 }
-                if(count > 0){
+                if (count > 0) {
                     respond.put("status", true);
                     respond.put("data", data);
                 }
-            }
-            else if(request.getParameter("action").equals("newsave")) {
+                allsave.close();
+                allsave_query.close();
+            } else if (request.getParameter("action").equals("newsave")) {
                 PreparedStatement newsave_query = F.getConnection().prepareStatement("INSERT INTO `save`(`user_id`, `name`, `memo`, `last_activity_id`, `bg`, `music`) VALUES (?,?,?,?,?,?);");
                 newsave_query.setInt(1, user.getId());
                 newsave_query.setString(2, request.getParameter("name"));
@@ -80,21 +85,33 @@ public class Save extends HttpServlet {
                 newsave_query.setString(5, request.getParameter("bg"));
                 newsave_query.setString(6, request.getParameter("music"));
                 int status = newsave_query.executeUpdate();
-                if(status == 1){
+                if (status == 1) {
                     respond.put("status", true);
                 }
-            }
-            else if(request.getParameter("action").equals("replace")) {
-                PreparedStatement newsave_query = F.getConnection().prepareStatement("UPDATE `save` SET `name`= ? ,`memo`= ?,`last_activity_id`= ? ,`bg`= ? ,`music`= ? WHERE `id` = ?;");
-                newsave_query.setString(2, request.getParameter("name"));
-                newsave_query.setString(3, request.getParameter("memo"));
-                newsave_query.setString(4, request.getParameter("activity"));
-                newsave_query.setString(5, request.getParameter("bg"));
-                newsave_query.setString(6, request.getParameter("music"));
-                int status = newsave_query.executeUpdate();
-                if(status == 1){
+                newsave_query.close();
+            } else if (request.getParameter("action").equals("replace")) {
+                PreparedStatement update_query = F.getConnection().prepareStatement("UPDATE `save` SET `name`= ? ,`memo`= ?,`last_activity_id`= ? ,`bg`= ? ,`music`= ? WHERE `id` = ? AND user_id = ?;");
+                update_query.setString(1, request.getParameter("name"));
+                update_query.setString(2, request.getParameter("memo"));
+                update_query.setString(3, request.getParameter("activity"));
+                update_query.setString(4, request.getParameter("bg"));
+                update_query.setString(5, request.getParameter("music"));
+                update_query.setString(6, request.getParameter("id"));
+                update_query.setInt(7, user.getId());
+                int status = update_query.executeUpdate();
+                if (status == 1) {
                     respond.put("status", true);
                 }
+                update_query.close();
+            } else if (request.getParameter("action").equals("remove")) {
+                PreparedStatement update_query = F.getConnection().prepareStatement("DELETE FROM `save` WHERE `id` = ? AND `user_id` = ?");
+                update_query.setString(1, request.getParameter("id"));
+                update_query.setInt(2, user.getId());
+                int status = update_query.executeUpdate();
+                if (status == 1) {
+                    respond.put("status", true);
+                }
+                update_query.close();
             }
             out.print(respond);
         } catch (SQLException ex) {

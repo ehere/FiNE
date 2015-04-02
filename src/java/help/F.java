@@ -33,6 +33,7 @@ public class F implements Serializable {
                 last_connect = System.currentTimeMillis();
             }
             else if (System.currentTimeMillis() - last_connect > 300000) {
+                connection.close();
                 connection = datasource.getConnection();
             }
             if (connection != null && connection.isClosed()) {
@@ -65,7 +66,10 @@ public class F implements Serializable {
     }
 
     public static String asset(String url) {
-        if (!url.contains("http://") && !url.contains("https://")) {
+        if(url == null || url.trim().equals("")){
+            return "";
+        }
+        else if (!url.contains("http://") && !url.contains("https://")) {
             return projectPath + "/" + url.replaceAll("^/+", "").replaceAll("/+$", "");
         } else {
             return url;

@@ -56,9 +56,15 @@ public class Scene extends HttpServlet {
                     JSONObject act = new JSONObject();
                     act.put("type", type);
                     act.put("title", dialog.getString("title"));
-                    act.put("text", dialog.getString("dialog"));
-                    act.put("sound", F.asset("/sound/voice/" + dialog.getString("music")));
+                    act.put("text", dialog.getString("dialog").replace("^", "&#94;"));
+                    if(dialog.getString("music") != null){
+                        act.put("sound", F.asset("/sound/voice/" + dialog.getString("music")));
+                    }else{
+                        act.put("sound", "");
+                    }
                     activity_data.put(activity_id + "", act);
+                    dialog.close();
+                    dialog_query.close();
                 } else if (type == 2) {
                     // choice
                 } else if (type == 3 || type == 4) {
@@ -71,6 +77,8 @@ public class Scene extends HttpServlet {
                     act.put("type", type);
                     act.put("nextnode", goto_act.getString("target_id"));
                     activity_data.put(activity_id + "", act);
+                    goto_act.close();
+                    goto_query.close();
                 } else if (type == 5) {
                     //change background
                     PreparedStatement bg_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
@@ -81,18 +89,24 @@ public class Scene extends HttpServlet {
                     act.put("type", type);
                     act.put("url", F.asset("/img/bg/" + bg_act.getString("media")));
                     activity_data.put(activity_id + "", act);
+                    bg_act.close();
+                    bg_query.close();
                 } else if (type == 6) {
                     // change music
-                    PreparedStatement bg_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
-                    bg_query.setInt(1, activity_id);
-                    ResultSet bg_act = bg_query.executeQuery();
-                    bg_act.next();
+                    PreparedStatement music_query = F.getConnection().prepareStatement("SELECT * FROM fine.activity_media WHERE activity_id = ?;");
+                    music_query.setInt(1, activity_id);
+                    ResultSet music_act = music_query.executeQuery();
+                    music_act.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    act.put("url", F.asset("/sound/bgm/" + bg_act.getString("media")));
+                    act.put("url", F.asset("/sound/bgm/" + music_act.getString("media")));
                     activity_data.put(activity_id + "", act);
+                    music_act.close();
+                    music_query.close();
                 }
             }
+            activities.close();
+            activity_query.close();
             activity.put("data", activity_data.toJSONString());
             activity.put("order", activity_order.toJSONString());
             out.print(activity);

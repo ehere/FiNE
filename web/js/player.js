@@ -88,8 +88,8 @@ function play() {
         $('#player_choice_area').hide();
         $("#btn-play").show();
         $("#btn_toggle_dialog").show();
-        alert("Go to Scene "+data[actity_id].nextnode);
-        getScene(data[actity_id].nextnode);
+        //alert("Go to Scene "+data[actity_id].nextnode);
+        getScene(data[actity_id].nextnode,0);
     }
     else if (data[actity_id].type == 5) {
         $('#player_choice_area').hide();

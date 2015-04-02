@@ -51,7 +51,7 @@
                             <button class="btn btn-blue btn-block" type="button" onclick="showMenu();">Back to Menu</button>
                         </div>
                         <div class="col-md-6 newsave-top" style="padding-left: 0;padding-right: 0;">
-                            <button class="btn btn-orange btn-block" type="button" onclick="saveMemo('#typed');" data-toggle="modal" data-target="#myModal">New save</button>
+                            <button class="btn btn-orange btn-block" type="button" onclick="saveMemo('#typed', 0);" data-toggle="modal" data-target="#myModal">New save</button>
                         </div>
                     </div>
                     <div class="loadgame" style="overflow-y: auto;height: 100%; width: 100%;">
@@ -78,7 +78,7 @@
                         </div>
                         <div style="position:absolute;bottom:0em;right:0px;">
                             <button type="button" class="btn btn-sm btn-orange" onclick="showMenu();" style="border-radius: 10em;">
-                                <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                                 Menu
                             </button>
                             <button id="btn_toggle_dialog" type="button" class="btn btn-sm btn-default" onclick="toggleDialog();" style="border-radius: 10em;">
@@ -144,16 +144,23 @@
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script>
                     $('#player_wrapper').height(($('#player_wrapper').width() * 9 / 16));
-                    function getScene(sceneID) {
-                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID, function (data, status) {
-                            if ($.trim(data.data) != "{}" && $.trim(data.order) != "{}") {
-                                $('.activity_data').html(data.data);
-                                $('.activity_order').html(data.order);
-                                $('.play_index').html(0);
-                                play();
-                            }
-                        });
-
+                    function getScene(sceneID, index) {
+                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID)
+                                .done(function (data) {
+                                    if ($.trim(data.data) !== "{}" && $.trim(data.order) !== "{}") {
+                                        $('.activity_data').html(data.data);
+                                        $('.activity_order').html(data.order);
+                                        $("#typed").typed('reset');
+                                        previewActivity(index);
+                                    }
+                                    else {
+                                        //no next scene
+                                        alert("This is the last Scene");
+                                    }
+                                })
+                                .fail(function (jqxhr, textStatus, error) {
+                                    alert("Something wrong.Please try again or refresh this page.");
+                                });
                     }
                     function newGameMenu() {
                         $('#input_name_area').removeClass("hidden");
@@ -164,7 +171,7 @@
                         var name = $(element).parent().find("input").val();
                         if ($.trim(name) != '') {
                             $('.name').html(name);
-                            getScene(${product.first_scene_id});
+                            getScene(${product.first_scene_id}, 0);
                             $('#menu').addClass("hidden");
                             $('.btn-menu').removeClass("hidden");
                             showPlayer();
@@ -181,10 +188,8 @@
                     }
                     function showLoad() {
                         $('#menu').removeClass("hidden");
-
                         $('.newsave-top').addClass("hidden");
                         $('.backtomenu-top').removeClass("col-md-6").addClass("col-md-12");
-
                         $('#menu_load_area').removeClass("hidden");
                         $('#player').addClass("hidden");
                         $('#input_name_area').addClass("hidden");
@@ -194,7 +199,6 @@
                     }
                     function showSave() {
                         $('#menu').removeClass("hidden");
-
                         $('.newsave-top').removeClass("hidden");
                         $('.backtomenu-top').removeClass("col-md-12").addClass("col-md-6");
                         $('#menu_load_area').removeClass("hidden");
@@ -211,17 +215,17 @@
                     function tooltip(element) {
                         $(element).tooltip({content: 'asdasd'});
                     }
-                    function saveMemo(element) {
+                    function saveMemo(element, id) {
                         if (element.indexOf("memo") !== -1) {
                             $('#memo').val($(element).html());
-                            $('.btn-confirmsave').attr('onclick', "save('replace');");
+                            $('.btn-confirmsave').attr('onclick', "save('replace'," + id + ");");
                         } else {
                             $('#memo').val($('#typed').html());
-                            $('.btn-confirmsave').attr('onclick', "save('newsave');");
+                            $('.btn-confirmsave').attr('onclick', "save('newsave',0);");
                         }
 
                     }
-                    function save(action) {
+                    function save(action, id) {
                         var memo = $('#memo').val();
                         var bg = $('#player').css('background-image');
                         bg = bg.replace('url(', '').replace(')', '');
@@ -232,7 +236,7 @@
                             nowindex = nowindex - 1;
                         }
                         var activity = JSON.parse($('.activity_order').html())[nowindex];
-                        $.getJSON("<%= F.asset("/save")%>", {memo: memo, bg: bg, music: music, activity: activity, name: name, action: action})
+                        $.getJSON("<%= F.asset("/save")%>", {memo: memo, bg: bg, music: music, activity: activity, name: name, action: action, id: id})
                                 .done(function (respond) {
                                     $('#myModal').modal('hide');
                                     drawTableSave('save');
@@ -240,6 +244,18 @@
                                 .fail(function (jqxhr, textStatus, error) {
                                     alert("Something wrong.Please try again or refresh this page.");
                                 });
+                    }
+                    function removeSave(id) {
+                        if (confirm("Are you sure to remove this save?")) {
+                            $.getJSON("<%= F.asset("/save")%>", {action:"remove",id: id})
+                                    .done(function (respond) {
+                                        drawTableSave('save');
+                                    })
+                                    .fail(function (jqxhr, textStatus, error) {
+                                        alert("Something wrong.Please try again or refresh this page.");
+                                    });
+                        }
+
                     }
                     function drawTableSave(action) {
                         $('.row-save').remove();
@@ -253,17 +269,17 @@
                                                     '<tr class="row-save">'
                                                     + '<td><a href="#" data-geo="" img="' + obj.bg + '">Saved Image</a></td>'
                                                     + '<td>' + obj.name + '</td>'
-                                                    + '<td id="memo' + index + '">' + obj.memo + '</td>'
+                                                    + '<td id="memo' + obj.save_id + '">' + obj.memo + '</td>'
                                                     + '<td>' + obj.created_at + '</td>'
                                                     + '<td>'
-                                                    + '<button class="btn btn-orange btn-sm btn-loadsave" type="button" onclick="">Load</button>'
-                                                    + '<button class="btn btn-green btn-sm btn-newsave" type="button" onclick="saveMemo(\'#memo' + index + '\');" data-toggle="modal" data-target="#myModal">Save</button>'
-                                                    + '<button class="btn btn-grey btn-sm btn-removesave" type="button" onclick="">Remove</button>'
+                                                    + '<button class="btn btn-orange btn-sm btn-loadsave" type="button" onclick="loadGame(' + obj.scene + ',' + obj.order + ',\'' + obj.bg + '\',\'' + obj.music + '\',\'' + obj.name + '\');">Load</button>'
+                                                    + '<button class="btn btn-green btn-sm btn-newsave" type="button" onclick="saveMemo(\'#memo' + obj.save_id + '\',' + obj.save_id + ');" data-toggle="modal" data-target="#myModal">Save</button>'
+                                                    + '<button class="btn btn-grey btn-sm btn-removesave" type="button" onclick="removeSave(' + obj.save_id + ')">Remove</button>'
                                                     + '</td>'
                                                     + '</tr>');
                                         });
                                     }
-                                    else{
+                                    else {
                                         $('.table-save').append('<tr class="loading" style="text-align: center;"><td colspan="5">No Saved data</td></tr>');
                                     }
                                     if (action === 'load') {
@@ -279,14 +295,35 @@
                                     alert("Something wrong.Please try again or refresh this page.");
                                 });
                     }
+                    function loadGame(sceneID, order, bg, music, name) {
+                        $('.name').html(name);
+                        if (order > 0) {
+                            order = order - 1;
+                        }
+                        getScene(sceneID, order);
+                        $('#player').animate({
+                            opacity: 0.5
+                        }, 'fast', function () {
+                            $(this)
+                                    .css({
+                                        'background-image': 'url(' + bg + ')'
+                                    })
+                                    .animate({
+                                        opacity: 1
+                                    });
+                        });
+                        playSound("player_music", music);
+                        showPlayer();
+                        $('.btn-menu').removeClass("hidden");
+                    }
+
                     $(".btn-menu").hover(
                             function () {
                                 $(this).outerWidth('120%');
                             }, function () {
                         $(this).outerWidth('100%');
                     }
-                    );
-</script>
+                    );</script>
 <script>
     $(function () {
         $(document).tooltip({
@@ -297,7 +334,7 @@
                     var img = element.attr('img');
                     //alert(text);
                     return "<img style='max-width:250px' alt='" + img +
-                            "' src='" + img + "' >"
+                            "' src='" + img + "' >";
                 }
             }
         });
