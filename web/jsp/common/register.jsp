@@ -47,7 +47,7 @@
                             <input class="form-control" id="lastname" name='lastname' type="text" placeholder="" required>
                         </div>
                         <div class="form-group">
-                            <label for="email"><b>อีเมล</b> <small>นี่จะเป็นอีเมลการใช้เข้าสู่ระบบของคุณ</small></label>
+                            <label for="email"><b>อีเมล</b> <small>นี่จะเป็นอีเมลในการใช้เข้าสู่ระบบของคุณ</small></label>
                             <input class="form-control" id="email" name='email' type="email" placeholder="" required>
                         </div>
                         <div class="form-group">
@@ -63,7 +63,7 @@
                             <input class="form-control" id="birthday" name='birthday' type="date" placeholder="" required>
                         </div>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn">Register</button>
+                            <button type="submit" class="btn">สมัครสมาชิก</button>
                             <div class="clearfix"></div>
                         </div>
                     </form>

@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-footer col-md-3 col-xs-6">
-                        <h3>Our Latest Work</h3>
+                        <h3>ผลงานแนะนำล่าสุด</h3>
                         <div class="portfolio-item">
                             <div class="portfolio-image">
                                 <a href="page-portfolio-item.html"><img src="<%= F.asset("img/portfolio6.jpg") %>" alt="Project Name"></a>
@@ -14,14 +14,12 @@
                         </div>
                     </div>
                     <div class="col-footer col-md-3 col-xs-6">
-                        <h3>Navigate</h3>
+                        <h3>การนำทาง</h3>
                         <ul class="no-list-style footer-navigate-section">
-                            <li><a href="page-blog-posts.html">Blog</a></li>
-                            <li><a href="page-portfolio-3-columns-2.html">Portfolio</a></li>
-                            <li><a href="page-products-3-columns.html">eShop</a></li>
-                            <li><a href="page-services-3-columns.html">Services</a></li>
-                            <li><a href="page-pricing.html">Pricing</a></li>
-                            <li><a href="page-faq.html">FAQ</a></li>
+                            <li><a href="<%= F.asset("/") %>">Home</a></li>
+                            <li><a href="<%= F.asset("/product") %>">FiNE Store</a></li>
+                            <li><a href="<%= F.asset("/items") %>">Your Items</a></li>
+                            <li><a href="<%= F.asset("/about") %>">About Us</a></li>
                         </ul>
                     </div>
 
