@@ -24,10 +24,10 @@
                             <a href="<%= F.asset("/product") %>/${product.id}/view"><img src="${product.cover}" style="height: 150px" alt="${product.title}"></a>
                         </div>
                         <div class="title">
-                            <h3><a href="page-product-details.html">${product.title}</a></h3>
+                            <h3><a href="<%= F.asset("/product") %>/${product.id}/view" style="font-size: 1.5em;">${product.title}</a></h3>
                         </div>
-                        <div class="price">
-                            ${product.price}
+                        <div class="price" style="font-size: 1.3em;">
+                            <i class="glyphicon glyphicon-bitcoin icon-white"></i>${product.price}
                         </div>
                         <div class="actions">
                             <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a> <span>or <a href="<%= F.asset("/product") %>/${product.id}/view">Read more</a></span>
