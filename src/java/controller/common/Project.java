@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -20,11 +19,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Project;
 
 
-@WebServlet(name = "productDetail", urlPatterns = {"/product/*"})
-public class Product extends HttpServlet {
+@WebServlet(name = "Project", urlPatterns = {"/project/*"})
+public class Project extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,56 +45,27 @@ public class Product extends HttpServlet {
             pathInfo = "";
         }
 
-        if (pathInfo.contains("view")) {
+        if (pathInfo.contains("play")) {
             try {
                 String id = pathInfo.split("/")[0];
                 PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();
-                Project product = new Project(result);
+                model.Project product = new model.Project(result);
                 request.setAttribute("product", product);
-                request.getRequestDispatcher("/jsp/common/product-detail.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
                 result.close();
                 psmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            try {
-                int page = 1;
-                if (request.getParameter("page") != null) {
-                    page = Integer.parseInt(request.getParameter("page"));
-                }
-                PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` ;");
-                ResultSet cr = csmt.executeQuery();
-                cr.next();
-                int totalpage = cr.getInt("totalpage");
-                cr.close();
-                csmt.close();
-
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project`  LIMIT 8 OFFSET ?;");
-                psmt.setInt(1, (page - 1) * 8);
-                ResultSet result = psmt.executeQuery();
-                ArrayList<Project> list = new ArrayList();
-                while (result.next()) {
-                    Project product = new Project(result);
-                    list.add(product);
-                }
-                request.setAttribute("list", list);
-                request.setAttribute("totalpage", totalpage);
-                request.setAttribute("currentpage", page);
-                result.close();
-                psmt.close();
-                request.getRequestDispatcher("/jsp/common/product-list.jsp").forward(request, response);
             } catch (SQLException ex) {
                 Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         try {
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
