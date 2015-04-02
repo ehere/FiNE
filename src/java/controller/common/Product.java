@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -41,8 +42,12 @@ public class Product extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-
-        String pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
+        String pathInfo;
+        if (request.getPathInfo() != null) {
+            pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
+        } else {
+            pathInfo = "";
+        }
 
         if (pathInfo.contains("play")) {
             try {
@@ -54,6 +59,8 @@ public class Product extends HttpServlet {
                 Project product = new Project(result);
                 request.setAttribute("product", product);
                 request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
+                result.close();
+                psmt.close();
             } catch (SQLException ex) {
                 Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -67,6 +74,38 @@ public class Product extends HttpServlet {
                 Project product = new Project(result);
                 request.setAttribute("product", product);
                 request.getRequestDispatcher("/jsp/common/product-detail.jsp").forward(request, response);
+                result.close();
+                psmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                int page = 1;
+                if (request.getParameter("page") != null) {
+                    page = Integer.parseInt(request.getParameter("page"));
+                }
+                PreparedStatement csmt = F.getConnection().prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` ;");
+                ResultSet cr = csmt.executeQuery();
+                cr.next();
+                int totalpage = cr.getInt("totalpage");
+                cr.close();
+                csmt.close();
+                
+                PreparedStatement psmt = F.getConnection().prepareStatement("SELECT * FROM `project`  LIMIT 8 OFFSET ?;");
+                psmt.setInt(1, (page - 1) * 8);
+                ResultSet result = psmt.executeQuery();
+                ArrayList<Project> list = new ArrayList();
+                while (result.next()) {
+                    Project product = new Project(result);
+                    list.add(product);
+                }
+                request.setAttribute("list", list);
+                request.setAttribute("totalpage", totalpage);
+                request.setAttribute("currentpage", page);
+                result.close();
+                psmt.close();
+                request.getRequestDispatcher("/jsp/common/product-list.jsp").forward(request, response);
             } catch (SQLException ex) {
                 Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -74,7 +113,6 @@ public class Product extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-
     /**
      * Handles the HTTP <code>GET</code> method.
      *
