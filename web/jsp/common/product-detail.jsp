@@ -18,6 +18,14 @@
 <div class="section">
     <div class="container">
         <div class="row">
+            <% if (request.getSession().getAttribute("message") != null) { %>
+            <div class="alert alert-${message_type}" role="alert">
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                ${message}
+            </div>
+            <c:remove var="message" scope="session" /> 
+            <c:remove var="message_type" scope="session" /> 
+            <% }%>
             <!-- Product Image & Available Colors -->
             <div class="col-sm-6">
                 <div class="product-image-large">
@@ -41,7 +49,7 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td>
-                            <a href="#" class="btn btn"><i class="icon-shopping-cart icon-white"></i> Add to Cart</a>
+                            <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn"><i class="icon-shopping-cart icon-white"></i> Add to Cart</a>
                         </td>
                     </tr>
                 </table>
@@ -54,14 +62,14 @@
                     <!-- Tabs -->
                     <ul class="nav nav-tabs product-details-nav">
                         <li class="active"><a href="#tab1" data-toggle="tab">Description</a></li>
-                        <%--<li><a href="#tab2" data-toggle="tab">Specification</a></li>--%>
+                            <%--<li><a href="#tab2" data-toggle="tab">Specification</a></li>--%>
                     </ul>
                     <!-- Tab Content (Full Description) -->
                     <div class="tab-content product-detail-info">
                         <div class="tab-pane active" id="tab1">
                             ${product.description}
                         </div>
-                        
+
                         <%--
                         <!-- Tab Content (Specification) -->
                         <div class="tab-pane" id="tab2">

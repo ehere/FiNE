@@ -74,6 +74,7 @@ public class Authentication extends HttpServlet {
                 //login success!
                 User user = new User(result);
                 session.setAttribute("user", user);
+                session.setAttribute("cart", new model.Cart());
                 response.sendRedirect(F.asset("/"));
             } else {
                 //login fail!

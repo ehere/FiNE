@@ -30,7 +30,7 @@
                             <i class="glyphicon glyphicon-bitcoin icon-white"></i>${product.price}
                         </div>
                         <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a> <span>or <a href="<%= F.asset("/product") %>/${product.id}/view">Read more</a></span>
+                            <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a> <span>or <a href="<%= F.asset("/product") %>/${product.id}/view">Read more</a></span>
                         </div>
                     </div>
                 </div>

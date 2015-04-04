@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import sun.misc.BASE64Encoder;
 
@@ -82,6 +83,10 @@ public class F implements Serializable {
     public static String byteToBase64(byte[] data) {
         BASE64Encoder endecoder = new BASE64Encoder();
         return endecoder.encode(data);
+    }
+    
+    public static boolean isLoggedIn(HttpSession session){
+        return session.getAttribute("user") != null;
     }
 
 }
