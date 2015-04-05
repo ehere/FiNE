@@ -116,7 +116,10 @@ public class Product extends HttpServlet {
                 boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
                 boughtPstmt.setInt(2, product.getId());
                 ResultSet bRes = boughtPstmt.executeQuery();
-                if (bRes.next()) {
+                boolean isnext = bRes.next();
+                boughtPstmt.close();
+                bRes.close();
+                if (isnext) {
                     return true;
                 }
             } catch (SQLException ex) {
