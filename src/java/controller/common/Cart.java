@@ -59,7 +59,7 @@ public class Cart extends HttpServlet {
         double price = 0;
         for (Object i : cart.getItems()) {
             String id = (String) i;
-            System.out.println(i);
+            //System.out.println(i);
             try {
                 pstmt.setString(1, id);
                 ResultSet res = pstmt.executeQuery();
@@ -68,11 +68,15 @@ public class Cart extends HttpServlet {
                     price += res.getDouble("price");
                     projectList.add(p);
                 }
-                pstmt.close();
                 res.close();
             } catch (SQLException ex) {
                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        try {
+            pstmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         request.setAttribute("cart", projectList);

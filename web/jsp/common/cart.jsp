@@ -21,7 +21,7 @@
                 <!-- Action Buttons -->
                 <div class="pull-right">
                     <a href="#" class="btn btn-grey"><i class="glyphicon glyphicon-refresh"></i> UPDATE</a>
-                    <a href="#" class="btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> CHECK OUT</a>
+                    <a href='<%= F.asset("/cartmgnt/buy") %>' class="btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> CHECK OUT</a>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 <!-- Action Buttons -->
                 <div class="pull-right">
                     <a href="#" class="btn btn-grey"><i class="glyphicon glyphicon-refresh"></i> UPDATE</a>
-                    <a href="#" class="btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> CHECK OUT</a>
+                    <a href='<%= F.asset("/cartmgnt/buy") %>' class="btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> CHECK OUT</a>
                 </div>
             </div>
         </div>
