@@ -32,11 +32,11 @@
                         <div class="actions">
                             <c:choose>
                                 <c:when test="${product.is_bought==true}">
-                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
                                 </c:when>
 
                                 <c:otherwise>
-                                    <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a>
+                                    <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn-small"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add</a>
                                 </c:otherwise>
                             </c:choose>
                         </div>

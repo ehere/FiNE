@@ -56,9 +56,22 @@ public class Product extends HttpServlet {
                 result.next();
                 Project product = new Project(result);
 
-                if (isBought(request, product)) {
-                    product.setIs_bought(true);
+                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
+                if (F.isLoggedIn(request.getSession())) {
+                    try {
+                        boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
+                        boughtPstmt.setInt(2, product.getId());
+                        ResultSet bRes = boughtPstmt.executeQuery();
+                        boolean isnext = bRes.next();
+                        if (isnext) {
+                            product.setIs_bought(true);
+                        }
+                        bRes.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                boughtPstmt.close();
 
                 request.setAttribute("product", product);
                 request.getRequestDispatcher("/jsp/common/product-detail.jsp").forward(request, response);
@@ -84,13 +97,31 @@ public class Product extends HttpServlet {
                 psmt.setInt(1, (page - 1) * 8);
                 ResultSet result = psmt.executeQuery();
                 ArrayList<Project> list = new ArrayList();
+                System.out.println("--------");
+                System.out.println("1");
+                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
                 while (result.next()) {
+                    //System.out.print("2 |"+result.getString(1)+"|");
                     Project product = new Project(result);
-                    if (isBought(request, product)) {
-                        product.setIs_bought(true);
+                    if (F.isLoggedIn(request.getSession())) {
+                        try {
+                            boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
+                            boughtPstmt.setInt(2, product.getId());
+                            ResultSet bRes = boughtPstmt.executeQuery();
+                            boolean isnext = bRes.next();
+                            if (isnext) {
+                                product.setIs_bought(true);
+                            }
+                            bRes.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     list.add(product);
                 }
+                boughtPstmt.close();
+                
+                System.out.println("5");
                 request.setAttribute("list", list);
                 request.setAttribute("totalpage", totalpage);
                 request.setAttribute("currentpage", page);
@@ -106,27 +137,6 @@ public class Product extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    protected boolean isBought(HttpServletRequest request, Project product) {
-        Connection conn = F.getConnection();
-        if (F.isLoggedIn(request.getSession())) {
-            try {
-                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
-                boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
-                boughtPstmt.setInt(2, product.getId());
-                ResultSet bRes = boughtPstmt.executeQuery();
-                boolean isnext = bRes.next();
-                boughtPstmt.close();
-                bRes.close();
-                if (isnext) {
-                    return true;
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

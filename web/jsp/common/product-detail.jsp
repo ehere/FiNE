@@ -51,7 +51,7 @@
                         <td>
                             <c:choose>
                                 <c:when test="${product.is_bought==true}">
-                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
                                 </c:when>
 
                                 <c:otherwise>
