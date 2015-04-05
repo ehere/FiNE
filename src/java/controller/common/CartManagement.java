@@ -115,10 +115,16 @@ public class CartManagement extends HttpServlet {
                     session.setAttribute("message_type", "danger");
                     session.setAttribute("message", "คุณได้เคยซื้อนิยายเรื่องนี้ไปแล้ว!");
                 }
+                psmt.close();
+                buyPstmt.close();
+                result.close();
+                res2.close();
                 return true;
             } else {
                 //session.setAttribute("message_type", "danger");
                 //session.setAttribute("message", "ขออภัย! ไม่พบนิยายเรื่องนี้ในระบบ");
+                psmt.close();
+                result.close();
                 return false;
             }
         } catch (SQLException ex) {

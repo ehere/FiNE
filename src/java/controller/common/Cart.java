@@ -47,7 +47,7 @@ public class Cart extends HttpServlet {
             return;
         }
         Connection conn = F.getConnection();
-        PreparedStatement pstmt = null, buyPstmt = null;
+        PreparedStatement pstmt = null;
         ArrayList<model.Project> projectList = new ArrayList();
 
         try {
@@ -68,10 +68,13 @@ public class Cart extends HttpServlet {
                     price += res.getDouble("price");
                     projectList.add(p);
                 }
+                pstmt.close();
+                res.close();
             } catch (SQLException ex) {
                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         request.setAttribute("cart", projectList);
         request.setAttribute("total", price);
         request.getRequestDispatcher("/jsp/common/cart.jsp").forward(request, response);
