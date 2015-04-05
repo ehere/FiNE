@@ -49,8 +49,15 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td>
-                            <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn"><i class="icon-shopping-cart icon-white"></i> Add to Cart</a>
-                        </td>
+                            <c:choose>
+                                <c:when test="${product.is_bought==true}">
+                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <a href='<%= F.asset("/cartmgnt")%>/${product.id}/add' class="btn btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add to Cart</a>
+                                </c:otherwise>
+                            </c:choose>
                     </tr>
                 </table>
             </div>

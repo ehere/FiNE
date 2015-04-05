@@ -27,6 +27,7 @@ public class Project implements Serializable{
     private int first_scene_id;
     private String created_at;
     private String updated_at;
+    private boolean is_bought;
     
     public Project(ResultSet result) throws SQLException{
         
@@ -40,7 +41,15 @@ public class Project implements Serializable{
         first_scene_id = result.getInt("first_scene_id");
         created_at = result.getString("created_at");
         updated_at = result.getString("updated_at");
+        is_bought = false;
+    }
 
+    public boolean isIs_bought() {
+        return is_bought;
+    }
+
+    public void setIs_bought(boolean is_bought) {
+        this.is_bought = is_bought;
     }
 
     public int getFirst_scene_id() {

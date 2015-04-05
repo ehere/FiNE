@@ -30,7 +30,15 @@
                             <i class="glyphicon glyphicon-bitcoin icon-white"></i>${product.price}
                         </div>
                         <div class="actions">
-                            <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a> <span>or <a href="<%= F.asset("/product") %>/${product.id}/view">Read more</a></span>
+                            <c:choose>
+                                <c:when test="${product.is_bought==true}">
+                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <a href='<%= F.asset("/cartmgnt") %>/${product.id}/add' class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Add</a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>

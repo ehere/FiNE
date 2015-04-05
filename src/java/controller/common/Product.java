@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Project;
-
+import model.User;
 
 @WebServlet(name = "productDetail", urlPatterns = {"/product/*"})
 public class Product extends HttpServlet {
@@ -55,6 +55,11 @@ public class Product extends HttpServlet {
                 ResultSet result = psmt.executeQuery();
                 result.next();
                 Project product = new Project(result);
+
+                if (isBought(request, product)) {
+                    product.setIs_bought(true);
+                }
+
                 request.setAttribute("product", product);
                 request.getRequestDispatcher("/jsp/common/product-detail.jsp").forward(request, response);
                 result.close();
@@ -81,6 +86,9 @@ public class Product extends HttpServlet {
                 ArrayList<Project> list = new ArrayList();
                 while (result.next()) {
                     Project product = new Project(result);
+                    if (isBought(request, product)) {
+                        product.setIs_bought(true);
+                    }
                     list.add(product);
                 }
                 request.setAttribute("list", list);
@@ -98,6 +106,24 @@ public class Product extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    protected boolean isBought(HttpServletRequest request, Project product) {
+        Connection conn = F.getConnection();
+        if (F.isLoggedIn(request.getSession())) {
+            try {
+                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
+                boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
+                boughtPstmt.setInt(2, product.getId());
+                ResultSet bRes = boughtPstmt.executeQuery();
+                if (bRes.next()) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
