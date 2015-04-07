@@ -97,11 +97,8 @@ public class Product extends HttpServlet {
                 psmt.setInt(1, (page - 1) * 8);
                 ResultSet result = psmt.executeQuery();
                 ArrayList<Project> list = new ArrayList();
-                System.out.println("--------");
-                System.out.println("1");
                 PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
                 while (result.next()) {
-                    //System.out.print("2 |"+result.getString(1)+"|");
                     Project product = new Project(result);
                     if (F.isLoggedIn(request.getSession())) {
                         try {
@@ -121,7 +118,6 @@ public class Product extends HttpServlet {
                 }
                 boughtPstmt.close();
                 
-                System.out.println("5");
                 request.setAttribute("list", list);
                 request.setAttribute("totalpage", totalpage);
                 request.setAttribute("currentpage", page);

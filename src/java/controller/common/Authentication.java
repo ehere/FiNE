@@ -68,7 +68,6 @@ public class Authentication extends HttpServlet {
             String password = request.getParameter("password");
             pstmt.setString(1, email);
             ResultSet result = pstmt.executeQuery();
-            System.out.println(password);
             boolean isSuccess = result.next();
             if (isSuccess && (loginValidator(password, result.getString("password")))) {
                 //login success!
