@@ -211,9 +211,7 @@ public class CartManagement extends HttpServlet {
                 cutCreditPstmt.executeUpdate();
                 res = creditPstmt.executeQuery();
                 res.next();
-                user = new User(res);
                 res.close();
-                request.getSession().setAttribute("user", user);
                 purPstmt = conn.prepareStatement("INSERT INTO `purchase`(`user_id`, `project_id`, `price`, `created_at`) VALUES (?, ?, ?, CURRENT_TIMESTAMP());");
                 for (model.Project i : projectList) {
                     try {
@@ -225,6 +223,7 @@ public class CartManagement extends HttpServlet {
                         Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                //close it all
                 cutCreditPstmt.close();
                 creditPstmt.close();
                 conn.close();
