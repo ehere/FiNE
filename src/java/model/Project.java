@@ -7,20 +7,23 @@ package model;
 
 import help.F;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author tanasab
  */
-public class Project implements Serializable{
+public class Project implements Serializable {
+
     private int id;
     private String title;
     private String description;
     private int user_id;
-    private double price;
     private int visible;
     private int rate;
     private String cover;
@@ -28,13 +31,12 @@ public class Project implements Serializable{
     private String created_at;
     private String updated_at;
     private boolean is_bought;
-    
-    public Project(ResultSet result) throws SQLException{
-        
+
+    public Project(ResultSet result) throws SQLException {
+
         id = result.getInt("id");
         title = result.getString("title");
         description = result.getString("description");
-        price = result.getDouble("price");
         visible = result.getInt("visible");
         rate = result.getInt("rate");
         cover = result.getString("cover");
@@ -59,7 +61,7 @@ public class Project implements Serializable{
     public void setFirst_scene_id(int first_scene_id) {
         this.first_scene_id = first_scene_id;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -93,11 +95,22 @@ public class Project implements Serializable{
     }
 
     public String getPrice() {
-        return String.format("%.2f", price);
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+        String price = "0.00";
+        
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT price FROM project WHERE id = ?");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            if (result.next()) {
+                price = String.format("%.2f", result.getDouble("price"));
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return price;
     }
 
     public int getVisible() {
@@ -117,7 +130,7 @@ public class Project implements Serializable{
     }
 
     public String getCover() {
-        return F.asset("img/cover/"+cover);
+        return F.asset("img/cover/" + cover);
     }
 
     public void setCover(String cover) {

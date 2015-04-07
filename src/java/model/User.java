@@ -6,9 +6,14 @@
 
 package model;
 
+import help.F;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,7 +27,6 @@ public class User implements Serializable{
     private String email;
     private String password;
     private String birthday;
-    private String credit;
     private String role;
     private String image;
     private String created_at;
@@ -36,7 +40,6 @@ public class User implements Serializable{
         email = result.getString("email");
         password = result.getString("password");
         birthday = result.getString("birthday");
-        credit = result.getString("credit");
         role = result.getString("role");
         image = result.getString("image");
         created_at = result.getString("created_at");
@@ -104,12 +107,24 @@ public class User implements Serializable{
     }
 
     public String getCredit() {
+        String credit = "0.00";
+        
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT credit FROM user WHERE id = ?");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            if (result.next()) {
+                credit = String.format("%.2f", result.getDouble("credit"));
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return credit;
     }
 
-    public void setCredit(String credit) {
-        this.credit = credit;
-    }
 
     public String getRole() {
         return role;
