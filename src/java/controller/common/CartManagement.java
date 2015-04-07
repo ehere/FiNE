@@ -78,6 +78,7 @@ public class CartManagement extends HttpServlet {
     protected boolean addCart(HttpServletRequest request, String pathInfo) throws UnsupportedEncodingException {
         Connection conn = F.getConnection();
         //int id = Integer.parseInt(pathInfo.split("/")[0]);
+        boolean toReturn = false;
         String id = pathInfo.split("/")[0];
         HttpSession session = request.getSession();
         model.Cart cart;
@@ -99,11 +100,11 @@ public class CartManagement extends HttpServlet {
         PreparedStatement psmt, buyPstmt;
         try {
             psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ? AND visible = 1;");
-            buyPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = " + userId + " AND project_id = ?");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
             if (result.next()) {
                 //Check if user already buy it.
+                buyPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = " + userId + " AND project_id = ?");
                 buyPstmt.setString(1, id);
                 ResultSet res2 = buyPstmt.executeQuery();
                 if (!res2.next()) {
@@ -116,24 +117,21 @@ public class CartManagement extends HttpServlet {
                     session.setAttribute("message_type", "danger");
                     session.setAttribute("message", "คุณได้เคยซื้อนิยายเรื่องนี้ไปแล้ว!");
                 }
-                psmt.close();
                 buyPstmt.close();
-                result.close();
                 res2.close();
-                return true;
-            } else {
-                //session.setAttribute("message_type", "danger");
-                //session.setAttribute("message", "ขออภัย! ไม่พบนิยายเรื่องนี้ในระบบ");
-                psmt.close();
-                result.close();
-                return false;
+                //return true;
+                toReturn = true;
             }
+            psmt.close();
+            result.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(CartManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
         //session.setAttribute("message_type", "danger");
         //session.setAttribute("message", "มีบางอย่างผิดพลาด กรุณาติดต่อผู้ดูแลระบบ!");
-        return false;
+
+        return toReturn;
     }
 
     protected void removeCart(HttpServletRequest request, String pathInfo) throws UnsupportedEncodingException {
@@ -160,9 +158,6 @@ public class CartManagement extends HttpServlet {
         int userId = ((User) request.getSession().getAttribute("user")).getId();
         try {
             pstmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
-            purPstmt = conn.prepareStatement("INSERT INTO `purchase`(`user_id`, `project_id`, `price`, `created_at`) VALUES (?, ?, ?, CURRENT_TIMESTAMP());");
-            creditPstmt = conn.prepareStatement("SELECT * FROM fine.user WHERE id = ?;");
-            cutCreditPstmt = conn.prepareStatement("UPDATE `fine`.`user` SET `credit` = ? WHERE `user`.`id` = ?;");
         } catch (SQLException ex) {
             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -181,34 +176,45 @@ public class CartManagement extends HttpServlet {
                     price += res.getDouble("price");
                     projectList.add(p);
                 } else {
+                    res.close();
+                    pstmt.close();
+                    conn.close();
                     session.setAttribute("message_type", "danger");
                     session.setAttribute("message", "นิยายบางเรื่องได้ยกเลิกการขายแล้ว!");
                     return false;
                 }
+                res.close();
             } catch (SQLException ex) {
                 Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         try {
+            pstmt.close();
+            creditPstmt = conn.prepareStatement("SELECT * FROM fine.user WHERE id = ?;");
             creditPstmt.setInt(1, userId);
             ResultSet res = creditPstmt.executeQuery();
             if (res.next()) {
                 User user = new User(res);
                 if (Double.parseDouble(user.getCredit()) < price) {
                     //return false / purchase fail
+                    creditPstmt.close();
+                    res.close();
                     session.setAttribute("message_type", "danger");
                     session.setAttribute("message", "คุณมีเครดิตไม่พอที่จะซื้อ!");
                     return false;
                 }
+                res.close();
                 double newCredit = Double.parseDouble(user.getCredit()) - price;
+                cutCreditPstmt = conn.prepareStatement("UPDATE `fine`.`user` SET `credit` = ? WHERE `user`.`id` = ?;");
                 cutCreditPstmt.setDouble(1, newCredit);
                 cutCreditPstmt.setInt(2, userId);
                 cutCreditPstmt.executeUpdate();
                 res = creditPstmt.executeQuery();
                 res.next();
                 user = new User(res);
+                res.close();
                 request.getSession().setAttribute("user", user);
-
+                purPstmt = conn.prepareStatement("INSERT INTO `purchase`(`user_id`, `project_id`, `price`, `created_at`) VALUES (?, ?, ?, CURRENT_TIMESTAMP());");
                 for (model.Project i : projectList) {
                     try {
                         purPstmt.setInt(1, userId);
@@ -219,12 +225,17 @@ public class CartManagement extends HttpServlet {
                         Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                cutCreditPstmt.close();
+                creditPstmt.close();
+                conn.close();
+                purPstmt.close();
                 session.setAttribute("cart", new model.Cart());
                 session.setAttribute("message_type", "success");
                 session.setAttribute("message", "การสั่งซื้อสำเร็จเรียบร้อย!");
                 return true;
             }
-
+            creditPstmt.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(CartManagement.class.getName()).log(Level.SEVERE, null, ex);
         }

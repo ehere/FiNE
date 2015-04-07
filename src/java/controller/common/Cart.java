@@ -75,6 +75,7 @@ public class Cart extends HttpServlet {
         }
         try {
             pstmt.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }
