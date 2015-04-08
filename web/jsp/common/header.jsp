@@ -61,7 +61,7 @@
                             <a href="<%= F.asset("/product") %>">FiNE Store</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/items") %>">Your Items</a>
+                            <a href="<%= F.asset("/inventory") %>">Your Inventory</a>
                         </li>
                         <li>
                             <a href="<%= F.asset("/about") %>">About Us</a>

@@ -17,6 +17,14 @@
 <div class="section">
     <div class="container">
         <div class="row">
+            <% if (request.getSession().getAttribute("message") != null) { %>
+            <div class="alert alert-${message_type}" role="alert">
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                ${message}
+            </div>
+            <c:remove var="message" scope="session" /> 
+            <c:remove var="message_type" scope="session" /> 
+            <% }%>
             <div class="col-md-12">
                 <!-- Action Buttons -->
                 <div class="pull-right">

@@ -70,8 +70,11 @@ public class CartManagement extends HttpServlet {
             removeCart(request, pathInfo);
             response.sendRedirect(F.asset("/cart"));
         } else if (pathInfo.contains("buy")) {
-            buy(request, response);
-            response.sendRedirect(F.asset("/cart"));
+            if (buy(request, response)) {
+                response.sendRedirect(F.asset("/inventory"));
+            } else {
+                response.sendRedirect(F.asset("/cart"));
+            }
         }
     }
 
@@ -153,6 +156,13 @@ public class CartManagement extends HttpServlet {
     protected boolean buy(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
+        HttpSession session = request.getSession();
+        model.Cart cart = (model.Cart) session.getAttribute("cart");
+        if (cart.getItems().size() < 1) {
+            session.setAttribute("message_type", "warning");
+            session.setAttribute("message", "คุณไม่มีสินค้าใดๆ ในตระกร้า!");
+            return true;
+        }
         Connection conn = F.getConnection();
         PreparedStatement pstmt = null, purPstmt = null, creditPstmt = null, cutCreditPstmt = null;
         int userId = ((User) request.getSession().getAttribute("user")).getId();
@@ -163,8 +173,7 @@ public class CartManagement extends HttpServlet {
         }
         //get all items
         ArrayList<model.Project> projectList = new ArrayList();
-        HttpSession session = request.getSession();
-        model.Cart cart = (model.Cart) session.getAttribute("cart");
+
         double price = 0;
         for (Object i : cart.getItems()) {
             String id = (String) i;
