@@ -18,7 +18,7 @@
 
 <div class="section">
     <div class="container">
-        <div id="player_wrapper" style="background-image: url(https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE);margin-left: auto;margin-right: auto;background-size: 100% auto;overflow:hidden;">
+        <div class="player_wrapper" style="background-image: url(https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE);margin-left: auto;margin-right: auto;background-size: 100% auto;overflow:hidden;">
             <div id="menu" style="background-image: url(https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE);width: 100%;height: 100%;background-size: 100% auto;overflow:hidden;">
                 <div id="menu_choice_area" style="position: relative;height: 100%; width: 100%;">
                     <div style="display: table;position: absolute; height: 100%; width: 40%;">
@@ -143,7 +143,7 @@
 <script src="<%= F.asset("/js/typed.js")%>"></script>
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script>
-                    $('#player_wrapper').height(($('#player_wrapper').width() * 9 / 16));
+                    
                     function getScene(sceneID, index) {
                         $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID)
                                 .done(function (data) {

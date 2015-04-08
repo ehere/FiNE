@@ -164,3 +164,4 @@ function blinking(elm) {
     }
 }
 var timer;
+$('.player_wrapper').height(($('.player_wrapper').width() * 9 / 16));
