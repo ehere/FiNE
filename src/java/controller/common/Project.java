@@ -48,7 +48,7 @@ public class Project extends HttpServlet {
         if (pathInfo.contains("play")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();

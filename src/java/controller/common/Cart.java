@@ -51,7 +51,7 @@ public class Cart extends HttpServlet {
         ArrayList<model.Project> projectList = new ArrayList();
 
         try {
-            pstmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+            pstmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
         } catch (SQLException ex) {
             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -63,7 +63,7 @@ public class Authentication extends HttpServlet {
                 response.sendRedirect(F.asset("/"));
             }
             //login hereeeeee!!!
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM fine.user WHERE email = ?;");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM user WHERE email = ?;");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             pstmt.setString(1, email);

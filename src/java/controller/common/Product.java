@@ -50,13 +50,13 @@ public class Product extends HttpServlet {
         if (pathInfo.contains("view")) {
             try {
                 String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
                 psmt.setString(1, id);
                 ResultSet result = psmt.executeQuery();
                 result.next();
                 Project product = new Project(result);
 
-                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
+                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = ? AND project_id = ?");
                 if (F.isLoggedIn(request.getSession())) {
                     try {
                         boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
@@ -97,7 +97,7 @@ public class Product extends HttpServlet {
                 psmt.setInt(1, (page - 1) * 8);
                 ResultSet result = psmt.executeQuery();
                 ArrayList<Project> list = new ArrayList();
-                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = ? AND project_id = ?");
+                PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = ? AND project_id = ?");
                 while (result.next()) {
                     Project product = new Project(result);
                     if (F.isLoggedIn(request.getSession())) {

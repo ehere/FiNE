@@ -102,12 +102,12 @@ public class CartManagement extends HttpServlet {
 
         PreparedStatement psmt, buyPstmt;
         try {
-            psmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ? AND visible = 1;");
+            psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ? AND visible = 1;");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
             if (result.next()) {
                 //Check if user already buy it.
-                buyPstmt = conn.prepareStatement("SELECT * FROM fine.purchase WHERE user_id = " + userId + " AND project_id = ?");
+                buyPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = " + userId + " AND project_id = ?");
                 buyPstmt.setString(1, id);
                 ResultSet res2 = buyPstmt.executeQuery();
                 if (!res2.next()) {
@@ -167,7 +167,7 @@ public class CartManagement extends HttpServlet {
         PreparedStatement pstmt = null, purPstmt = null, creditPstmt = null, cutCreditPstmt = null;
         int userId = ((User) request.getSession().getAttribute("user")).getId();
         try {
-            pstmt = conn.prepareStatement("SELECT * FROM fine.project WHERE id = ?;");
+            pstmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
         } catch (SQLException ex) {
             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -199,7 +199,7 @@ public class CartManagement extends HttpServlet {
         }
         try {
             pstmt.close();
-            creditPstmt = conn.prepareStatement("SELECT * FROM fine.user WHERE id = ?;");
+            creditPstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?;");
             creditPstmt.setInt(1, userId);
             ResultSet res = creditPstmt.executeQuery();
             if (res.next()) {
