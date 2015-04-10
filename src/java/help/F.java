@@ -90,8 +90,15 @@ public class F implements Serializable {
     }
 
     public static boolean isUrlMatch(String pattern, String url){
+        if(url.contains("?")){
+            int pos = url.indexOf("?");
+            url = url.substring(0, pos);
+        }
         String[] sPattern = pattern.split("/+");
         String[] sUrl = url.split("/+");
+        if(sPattern.length != sUrl.length){
+            return false;
+        }
         for(int i = 0; i < sPattern.length; i++){
             if(!sPattern[i].contains("{")){
                 if(!sPattern[i].equals(sUrl[i])){
@@ -102,7 +109,11 @@ public class F implements Serializable {
         return true;
     }
     
-    public static HttpServletRequest urlMapper(String pattern, String url, HttpServletRequest request){
+    public static String urlMapper(String pattern, String url, HttpServletRequest request){
+        if(url.contains("?")){
+            int pos = url.indexOf("?");
+            return url.substring(pos, url.length());
+        }
         String[] sPattern = pattern.split("/+");
         String[] sUrl = url.split("/+");
         for(int i = 0; i < sPattern.length; i++){
@@ -112,6 +123,6 @@ public class F implements Serializable {
                 System.out.println(key+" "+sUrl[i]);
             }
         }
-        return request;
+        return "";
     }
 }
