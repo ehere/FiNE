@@ -32,6 +32,26 @@ public class Route implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
+    private void routing(HttpServletRequest request, HttpServletResponse response, String url) throws IOException, ServletException {
+        //Register route here
+        if (F.isUrlMatch("/product", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/product", url, request);
+            request.getRequestDispatcher("/common.product").forward(request, response);
+        } 
+        else if (F.isUrlMatch("/product/{id}/view", url)) {
+            request.setAttribute("do", "view");
+            F.urlMapper("/product/{id}/view", url, request);
+            request.getRequestDispatcher("/common.product").forward(request, response);
+        }
+        else if (F.isUrlMatch("/project/{id}/play", url)) {
+            request.setAttribute("do", "play");
+            F.urlMapper("/project/{id}/play", url, request);
+            request.getRequestDispatcher("/common.project").forward(request, response);
+        }
+
+    }
+
     public Route() {
     }
 
@@ -112,16 +132,12 @@ public class Route implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
             String url = req.getRequestURI().replace(F.getProjectPath(), "");
-            if (F.isUrlMatch("/test/{id}", url)) {
-                F.urlMapper("/test/{id}", url, req);
-                req.getRequestDispatcher("/common.test").forward(req, res);
-            } 
-            else if(false){
-                
-            }
-            else {
+            routing(req, res, url);
+            try {
                 chain.doFilter(request, response);
+            } catch (Exception e) {
             }
+            
         } catch (Throwable t) {
             // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then

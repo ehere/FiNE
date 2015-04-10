@@ -20,8 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-@WebServlet(name = "Project", urlPatterns = {"/project/*"})
+@WebServlet(name = "Project", urlPatterns = {"/common.project"})
 public class Project extends HttpServlet {
 
     /**
@@ -37,39 +36,37 @@ public class Project extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        Connection conn = F.getConnection();
-        String pathInfo;
-        if (request.getPathInfo() != null) {
-            pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
-        } else {
-            pathInfo = "";
+        
+        String method = (String) request.getAttribute("do");
+
+        if (method.equals("play")) {
+            play(request, response);
         }
 
-        if (pathInfo.contains("play")) {
-            try {
-                String id = pathInfo.split("/")[0];
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
-                psmt.setString(1, id);
-                ResultSet result = psmt.executeQuery();
-                result.next();
-                model.Project product = new model.Project(result);
-                request.setAttribute("product", product);
-                request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
-                result.close();
-                psmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
+    }
+
+    protected void play(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
+            Connection conn = F.getConnection();
+            String id = (String) request.getAttribute("id");
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
+            psmt.setString(1, id);
+            ResultSet result = psmt.executeQuery();
+            result.next();
+            model.Project product = new model.Project(result);
+            request.setAttribute("product", product);   
+            result.close();
+            psmt.close();
             conn.close();
+            request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

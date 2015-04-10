@@ -116,7 +116,6 @@ public class F implements Serializable {
             if(sPattern[i].contains("{")){
                 String key = sPattern[i].substring(1, sPattern[i].length()-1);
                 request.setAttribute(key, sUrl[i]);
-                System.out.println(key+" "+sUrl[i]);
             }
         }
         return "";
