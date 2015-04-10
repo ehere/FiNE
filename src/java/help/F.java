@@ -110,10 +110,6 @@ public class F implements Serializable {
     }
     
     public static String urlMapper(String pattern, String url, HttpServletRequest request){
-        if(url.contains("?")){
-            int pos = url.indexOf("?");
-            return url.substring(pos, url.length());
-        }
         String[] sPattern = pattern.split("/+");
         String[] sUrl = url.split("/+");
         for(int i = 0; i < sPattern.length; i++){
