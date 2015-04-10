@@ -26,7 +26,6 @@ public class F implements Serializable {
 
     private static String projectPath;
     private static DataSource datasource;
-    private static long last_connect = 0;
 
     public static Connection getConnection() {
         try {
