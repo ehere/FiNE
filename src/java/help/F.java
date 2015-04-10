@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import sun.misc.BASE64Encoder;
@@ -89,4 +90,29 @@ public class F implements Serializable {
         return session.getAttribute("user") != null;
     }
 
+    public static boolean isUrlMatch(String pattern, String url){
+        String[] sPattern = pattern.split("/+");
+        String[] sUrl = url.split("/+");
+        for(int i = 0; i < sPattern.length; i++){
+            if(!sPattern[i].contains("{")){
+                if(!sPattern[i].equals(sUrl[i])){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public static HttpServletRequest urlMapper(String pattern, String url, HttpServletRequest request){
+        String[] sPattern = pattern.split("/+");
+        String[] sUrl = url.split("/+");
+        for(int i = 0; i < sPattern.length; i++){
+            if(sPattern[i].contains("{")){
+                String key = sPattern[i].substring(1, sPattern[i].length()-1);
+                request.setAttribute(key, sUrl[i]);
+                System.out.println(key+" "+sUrl[i]);
+            }
+        }
+        return request;
+    }
 }
