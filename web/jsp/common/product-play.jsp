@@ -74,7 +74,7 @@
                     </div>
                     <div style="height: 15%;width:100%;position:absolute;bottom:0.3em;">
                         <div class="player_title">
-                            <span id="player_title_text" style="font-weight: bold;font-size: 1.5em;color: black;"></span>
+                            <span id="player_title_text"></span>
                         </div>
                         <div style="position:absolute;bottom:0em;right:0px;">
                             <button type="button" class="btn btn-sm btn-orange" onclick="showMenu();" style="border-radius: 10em;">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div style="width:80%;height: 35%;margin-left: auto;margin-right: auto;">
-                    <div class="player_dialog_open" style="font-size: 1.5em;color: black;">
+                    <div class="player_dialog_open">
                         <span class="dialog_textbox" id="typed"></span>
                         <a id="endtext" href="#" class="">.</a>
                     </div>

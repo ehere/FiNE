@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -5,7 +6,39 @@
 
 
 <div class="row menu-panel" style="padding: 0px;margin: 0px;width: 100%;">
-    <div class="col-md-2" style="height: 100%;padding: 0px;margin: 0px;">asdasd</div>
+    <div class="col-md-2" style="height: 100%;padding: 0px;margin: 0px;">
+        <div class="panel panel-success">
+            <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
+                Scene
+                <span style="position: absolute;right: 0;top: 0;">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal">New</button>
+                </span>
+
+            </div>
+            <div class="menu-panel-list" style="height: 100%;overflow: auto;">
+                <!---   ---->
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <c:forEach begin="1" end="10" step="1" var="i">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading${i}">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                                    Collapsible Group Item #${i}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse${i}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${i}">
+                            <div class="panel-body">
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            </div>
+                        </div>
+                    </div>
+                    </c:forEach>
+                </div>
+                
+            </div>
+        </div>
+    </div>
     <!-- ----------------------------------------------------------------------------------------------------
     ------------------------------------------------------------------------------------------------------- -->
 
@@ -52,14 +85,14 @@
     ------------------------------------------------------------------------------------------------------- -->
     <div class="col-md-3" style="height: 100%;padding: 0px;margin: 0px;">
         <div class="panel panel-success">
-            <div class="panel-heading" style="border-radius: 0px;">
+            <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Activity
                 <span style="position: absolute;right: 0;top: 0;">
                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal">New</button>
                 </span>
 
             </div>
-            <div class="panel-body activity_bar">
+            <div class="panel-body activity_bar menu-panel-list">
                 #activity here
             </div>
         </div>
@@ -100,6 +133,7 @@
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script src="<%= F.asset("/js/activity_bar.js")%>"></script>
 <script>
-                        $('.menu-panel').height($('html').height() - $('.mainmenu-wrapper').height());
+                            $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
+                            $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
 </script>
 <jsp:include page="footer.jsp" />

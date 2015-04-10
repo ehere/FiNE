@@ -25,23 +25,28 @@
     padding: 1em;
     padding-top: 0.5em;
     background: rgba(153, 255, 255, 0.7);
-    border: 0.5em solid;
+    border: 0.3em solid;
     border-color: white;
     border-radius: 1em;
     height: 3.5em;
     min-width: 5em;
     position: absolute;
     bottom: 0em;
+    font-weight: bold;
+    font-size: 1.5em;
+    color: black;
 }
 .player_dialog_open {
     background: rgba(153, 255, 255, 0.7);
-    border: 0.5em solid;
+    border: 0.3em solid;
     border-color: white;
     border-radius: 1em;
     padding: 1em;
     padding-top: 0.5em;
     height: 98%;
     overflow-y: auto;
+    font-size: 1.5em;
+    color: black;
 }
 .dialog_textbox {
     white-space: pre;
