@@ -26,16 +26,22 @@ import org.json.simple.JSONObject;
  *
  * @author tanasab
  */
-@WebServlet(name = "Scene", urlPatterns = {"/scene/*"})
+@WebServlet(name = "Scene", urlPatterns = {"/common.scene"})
 public class Scene extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            index(request, response);
+        }
+    }
 
-        String pathInfo = request.getPathInfo().replaceAll("^/+", "").replaceAll("/+$", "");
-        String id = pathInfo.split("/")[0];
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
 
         try (PrintWriter out = response.getWriter()) {
             Connection conn = F.getConnection();
@@ -57,16 +63,16 @@ public class Scene extends HttpServlet {
                     dialog.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    if(dialog.getString("title") != null){
+                    if (dialog.getString("title") != null) {
                         act.put("title", dialog.getString("title"));
-                    }else{
+                    } else {
                         act.put("title", "");
                     }
-                    
+
                     act.put("text", dialog.getString("dialog").replace("^", "&#94;"));
-                    if(dialog.getString("music") != null){
+                    if (dialog.getString("music") != null) {
                         act.put("sound", F.asset("/sound/voice/" + dialog.getString("music")));
-                    }else{
+                    } else {
                         act.put("sound", "");
                     }
                     activity_data.put(activity_id + "", act);

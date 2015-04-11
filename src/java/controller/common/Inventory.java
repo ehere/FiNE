@@ -7,7 +7,6 @@ package controller.common;
 
 import help.F;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +26,7 @@ import model.User;
  *
  * @author Administrator
  */
-@WebServlet(name = "Inventory", urlPatterns = {"/inventory"})
+@WebServlet(name = "Inventory", urlPatterns = {"/common.inventory"})
 public class Inventory extends HttpServlet {
 
     /**
@@ -42,12 +41,19 @@ public class Inventory extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            index(request, response);
+        }
+    }
 
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         if (!F.isLoggedIn(request.getSession())) {
             response.sendRedirect(F.asset("/login"));
             return;
         }
-        
         try {
             Connection conn = F.getConnection();
             int page = 1;
@@ -63,7 +69,7 @@ public class Inventory extends HttpServlet {
             int totalpage = cr.getInt("totalpage");
             cr.close();
             csmt.close();
-            
+
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `purchase` WHERE `user_id` = ? LIMIT 9 OFFSET ?;");
             psmt.setInt(1, user.getId());
             psmt.setInt(2, (page - 1) * 9);

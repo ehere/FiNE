@@ -28,7 +28,7 @@ import org.json.simple.JSONObject;
  *
  * @author tanasab
  */
-@WebServlet(name = "Save", urlPatterns = {"/save"})
+@WebServlet(name = "Save", urlPatterns = {"/common.save"})
 public class Save extends HttpServlet {
 
     /**
@@ -44,8 +44,18 @@ public class Save extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        HttpSession session = request.getSession(true);
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            index(request, response);
+        }
+
+    }
+
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         
+        HttpSession session = request.getSession(true);
+
         User user = (User) session.getAttribute("user");
         JSONObject respond = new JSONObject();
         respond.put("status", false);
@@ -123,6 +133,7 @@ public class Save extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

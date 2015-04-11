@@ -71,6 +71,21 @@ public class Route implements Filter {
             F.urlMapper("/login", url, request);
             request.getRequestDispatcher("/common.login").forward(request, response);
         }
+        else if (F.isUrlMatch("/inventory", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/inventory", url, request);
+            request.getRequestDispatcher("/common.inventory").forward(request, response);
+        }        
+        else if (F.isUrlMatch("/save", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/save", url, request);
+            request.getRequestDispatcher("/common.save").forward(request, response);
+        }
+        else if (F.isUrlMatch("/scene/{id}", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/scene/{id}", url, request);
+            request.getRequestDispatcher("/common.scene").forward(request, response);
+        }
     }
 
     public Route() {

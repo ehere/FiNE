@@ -58,7 +58,7 @@
             <div class="pagination-wrapper ">
                 <ul class="pagination pagination-lg">
                     <c:if test="${requestScope.currentpage != 1}">
-                        <li><a href="<%= F.asset("/inventory")%>">Previous</a></li>
+                        <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage-1}">Previous</a></li>
                         </c:if>
                         <c:forEach begin="1" end="${requestScope.totalpage}" step="1" var="i">
                             <c:choose>
@@ -71,7 +71,7 @@
                             </c:choose>
                         </c:forEach>
                         <c:if test="${requestScope.currentpage != requestScope.totalpage}">
-                        <li><a href="<%= F.asset("/inventory?page=" + request.getAttribute("totalpage"))%>">Next</a></li>
+                        <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage+1}">Next</a></li>
                         </c:if>
                 </ul>
             </div>
