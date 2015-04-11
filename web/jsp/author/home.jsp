@@ -15,27 +15,11 @@
                 </span>
 
             </div>
-            <div class="menu-panel-list" style="height: 100%;overflow: auto;">
+            <div class="menu-panel-list" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
                 <!---   ---->
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <c:forEach begin="1" end="10" step="1" var="i">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="heading${i}">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                                    Collapsible Group Item #${i}
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapse${i}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${i}">
-                            <div class="panel-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                    </c:forEach>
+                <div class="panel-group" id="scene-list" role="tablist" aria-multiselectable="true">
+                    
                 </div>
-                
             </div>
         </div>
     </div>
@@ -127,6 +111,12 @@
 <div class="hidden play_index">
     0
 </div>
+<div class="hidden allscene-list">
+    {
+    "1":{"title":"aaa"},
+    "2":{"title":"bbb"}
+    }
+</div>
 <div class="hidden name">MC_NAME</div>
 
 <script src="<%= F.asset("/js/typed.js")%>"></script>
@@ -135,5 +125,48 @@
 <script>
                             $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
                             $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
+</script>
+<script>
+    function drawSceneBar() {
+        var scenelist = JSON.parse($(".allscene-list").html());
+        for(var key in scenelist) {
+            var sceneID = key;
+            var title = scenelist[key].title;
+            var row =                 
+                        '<div class="panel panel-default bs-callout bs-callout-default" style="padding-bottom: 0px">'+
+                            '<div class="" role="tab" id="heading'+sceneID+'">'+
+                                '<h4 class="panel-title">'+
+                                    '<a class="truncate" onclick="getDescription('+sceneID+',this)" data-toggle="collapse" data-parent="#scene-list" href="#collapse'+sceneID+'" aria-expanded="true" aria-controls="collapse'+sceneID+'">'+
+                                        sceneID + ': '+title+
+                                    '</a>'+
+                                '</h4>'+
+                            '</div>'+
+                            '<div id="collapse'+sceneID+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+sceneID+'">'+
+                                '<div class="panel-body" style="padding-top: 0px;"></div>'+
+                            '</div>'+
+                        '</div>';
+            $("#scene-list").append(row);
+
+        }
+        
+    }
+    function getDescription(sceneID,element) {
+        $.getJSON("<%= F.asset("/scene")%>"+"/"+sceneID)
+            .done(function (respond) {
+                var description = respond[sceneID].description;
+                var body = 
+                            '<div class="panel-body" style="padding-top: 0px;">'+
+                                description+'<br><br>'+
+                                '<button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>'+
+                                '<button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-blackboard"></i> Edit Activity</button>'+
+                            '</div>';
+                $('#collapse'+sceneID).html(body);
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                alert("Something wrong.Please try again or refresh this page.");
+            });
+    }
+    
+    drawSceneBar();
 </script>
 <jsp:include page="footer.jsp" />

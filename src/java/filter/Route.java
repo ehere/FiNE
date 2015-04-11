@@ -86,6 +86,11 @@ public class Route implements Filter {
             F.urlMapper("/scene/{id}", url, request);
             request.getRequestDispatcher("/common.scene").forward(request, response);
         }
+        else if (F.isUrlMatch("/scene/{id}/activity", url)) {
+            request.setAttribute("do", "activity");
+            F.urlMapper("/scene/{id}/activity", url, request);
+            request.getRequestDispatcher("/common.scene").forward(request, response);
+        }
     }
 
     public Route() {

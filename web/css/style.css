@@ -108,3 +108,8 @@
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

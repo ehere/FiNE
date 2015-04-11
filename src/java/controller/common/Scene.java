@@ -36,10 +36,36 @@ public class Scene extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("index")) {
             index(request, response);
+        }else if(method.equals("activity")) {
+            activity(request, response);
         }
     }
-
     protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        try (PrintWriter out = response.getWriter()) {
+            Connection conn = F.getConnection();
+            PreparedStatement scene_query = conn.prepareStatement("SELECT * FROM scenario WHERE id = ?;");
+            scene_query.setString(1, id);
+            ResultSet result = scene_query.executeQuery();
+            JSONObject scene_list = new JSONObject();
+            
+            while(result.next()){
+                JSONObject scene_data = new JSONObject();
+                scene_data.put("title", result.getString("title"));
+                scene_data.put("description", result.getString("description"));
+                scene_list.put(result.getString("id"), scene_data);
+            }
+            out.println(scene_list.toJSONString());
+            result.close();
+            scene_query.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    protected void activity(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
 

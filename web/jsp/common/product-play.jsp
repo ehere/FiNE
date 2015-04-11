@@ -145,7 +145,7 @@
 <script>
                     
                     function getScene(sceneID, index) {
-                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID)
+                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID+"/activity")
                                 .done(function (data) {
                                     if ($.trim(data.data) !== "{}" && $.trim(data.order) !== "{}") {
                                         $('.activity_data').html(data.data);
