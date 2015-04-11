@@ -25,7 +25,7 @@ import model.User;
  *
  * @author Administrator
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/login.do"})
+@WebServlet(name = "Authentication", urlPatterns = {"/common.login"})
 public class Authentication extends HttpServlet {
 
     /**
@@ -39,6 +39,30 @@ public class Authentication extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            index(request, response);
+        } else if (method.equals("authen")) {
+            authen(request, response);
+        }
+
+    }
+
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            //redir to login pg.
+            request.getRequestDispatcher("/jsp/common/login.jsp").forward(request, response);
+        } else {
+            //redir to index pg.
+            response.sendRedirect(F.asset("/"));
+        }
+    }
+
+    protected void authen(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         if (request.getParameter("action") != null) {
             if (request.getParameter("action").equals("login")) {
                 login(request, response);
@@ -50,10 +74,9 @@ public class Authentication extends HttpServlet {
                 login(request, response);
             }
         }
-
     }
 
-    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             Connection conn = F.getConnection();
             response.setContentType("text/html;charset=UTF-8");
@@ -87,13 +110,13 @@ public class Authentication extends HttpServlet {
         }
     }
 
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         session.invalidate();
         response.sendRedirect(F.asset("/"));
     }
 
-    public boolean loginValidator(String inputPwd, String userPwd) {
+    protected boolean loginValidator(String inputPwd, String userPwd) {
         return F.encodePwd(inputPwd).equals(userPwd);
     }
 

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package controller.common;
 
 import help.F;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Administrator
  */
-@WebServlet(name = "Login", urlPatterns = {"/login"})
+@WebServlet(name = "Login", urlPatterns = {"/common.login2"})
 public class Login extends HttpServlet {
 
     /**
@@ -35,18 +34,26 @@ public class Login extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        if(session.getAttribute("user") == null){
-            //redir to login pg.
-            request.getRequestDispatcher("/jsp/common/login.jsp").forward(request, response);
-        }
-        else{
-            //redir to index pg.
-            response.sendRedirect(F.asset("/"));
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            index(request, response);
+        } else if (method.equals("authen")) {
+
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            //redir to login pg.
+            request.getRequestDispatcher("/jsp/common/login.jsp").forward(request, response);
+        } else {
+            //redir to index pg.
+            response.sendRedirect(F.asset("/"));
+        }
+    } // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

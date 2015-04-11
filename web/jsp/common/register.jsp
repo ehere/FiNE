@@ -27,7 +27,7 @@
                     <c:remove var="message" scope="session" /> 
                 <% } %>
                 <div class="basic-login">
-                    <form role="form" method="POST" action='register.do'>
+                    <form role="form" method="POST" action='<%= F.asset("/register/add")%>'>
                         <div class="form-group">
                             <label for="prefix"><b>คำนำหน้า</b></label>
                             <select class="form-control" id="prefix" name="prefix" required>

@@ -214,7 +214,7 @@ public class CartManagement extends HttpServlet {
                 }
                 res.close();
                 double newCredit = Double.parseDouble(user.getCredit()) - price;
-                cutCreditPstmt = conn.prepareStatement("UPDATE `fine`.`user` SET `credit` = ? WHERE `user`.`id` = ?;");
+                cutCreditPstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ? WHERE `user`.`id` = ?;");
                 cutCreditPstmt.setDouble(1, newCredit);
                 cutCreditPstmt.setInt(2, userId);
                 cutCreditPstmt.executeUpdate();

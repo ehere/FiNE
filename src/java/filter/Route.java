@@ -18,6 +18,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -33,6 +34,7 @@ public class Route implements Filter {
     private FilterConfig filterConfig = null;
 
     private void routing(HttpServletRequest request, HttpServletResponse response, String url) throws IOException, ServletException {
+        HttpSession session = request.getSession();
         //Register route here
         if (F.isUrlMatch("/product", url)) {
             request.setAttribute("do", "index");
@@ -49,7 +51,26 @@ public class Route implements Filter {
             F.urlMapper("/project/{id}/play", url, request);
             request.getRequestDispatcher("/common.project").forward(request, response);
         }
-
+        else if (F.isUrlMatch("/register", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/register", url, request);
+            request.getRequestDispatcher("/common.register").forward(request, response);
+        }
+        else if (F.isUrlMatch("/register/add", url)) {
+            request.setAttribute("do", "add");
+            F.urlMapper("/register", url, request);
+            request.getRequestDispatcher("/common.register").forward(request, response);
+        }
+        else if (F.isUrlMatch("/login", url)) {
+            request.setAttribute("do", "index");
+            F.urlMapper("/login", url, request);
+            request.getRequestDispatcher("/common.login").forward(request, response);
+        }
+        else if (F.isUrlMatch("/login.do", url)) {
+            request.setAttribute("do", "authen");
+            F.urlMapper("/login", url, request);
+            request.getRequestDispatcher("/common.login").forward(request, response);
+        }
     }
 
     public Route() {
