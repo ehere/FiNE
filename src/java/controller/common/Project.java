@@ -7,7 +7,6 @@ package controller.common;
 
 import help.F;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +18,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.User;
 
 @WebServlet(name = "Project", urlPatterns = {"/common.project"})
 public class Project extends HttpServlet {
@@ -38,7 +39,7 @@ public class Project extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         
         String method = (String) request.getAttribute("do");
-
+        
         if (method.equals("play")) {
             play(request, response);
         }
@@ -47,19 +48,29 @@ public class Project extends HttpServlet {
 
     protected void play(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Connection conn = F.getConnection();
+        try(Connection conn = F.getConnection();) {
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            
             String id = (String) request.getAttribute("id");
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
             result.next();
             model.Project product = new model.Project(result);
-            request.setAttribute("product", product);   
+            if( F.isLoggedIn(session) && 
+                (user.getPurchaseProjectID().contains(product.getId()) || user.getOwnProjectID().contains(product.getId()))
+              ){
+                request.setAttribute("product", product);
+                request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
+            }else{
+                response.sendRedirect(F.asset("/product/"+product.getId()+"/view"));
+            }
+               
             result.close();
             psmt.close();
             conn.close();
-            request.getRequestDispatcher("/jsp/common/product-play.jsp").forward(request, response);
+            
         } catch (SQLException ex) {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }

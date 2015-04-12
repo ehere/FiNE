@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -158,7 +159,77 @@ public class User implements Serializable{
         this.updated_at = updated_at;
     }
     
+    public ArrayList<Project> getPurchaseProject(){
+        ArrayList<Project> list = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id IN (SELECT project_id FROM purchase WHERE user_id = ?);");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            while (result.next()) {
+                Project project = new Project(result);
+                list.add(project);
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+        return list;
+    }
+    public ArrayList<Integer> getPurchaseProjectID(){
+        ArrayList<Integer> list = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT project_id FROM purchase WHERE user_id = ?;");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            while (result.next()) {
+                list.add(result.getInt("project_id"));
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+        return list;
+    }    
     
+    public ArrayList<Project> getOwnProject(){
+        ArrayList<Project> list = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE user_id = ?;");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            while (result.next()) {
+                Project project = new Project(result);
+                list.add(project);
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+        return list;
+    }
+    public ArrayList<Integer> getOwnProjectID(){
+        ArrayList<Integer> list = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT id FROM project WHERE user_id = ?;");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            while (result.next()) {
+                list.add(result.getInt("id"));
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+        return list;
+    }      
     
     
 }
