@@ -1,156 +1,159 @@
-function  draw_activityBar(){
-    $( ".activity_bar").text('');
-    var data = JSON.parse( $(".activity_data").html());
-    var order = JSON.parse( $(".activity_order").html());
-    for (var index = 0; index < order.length; index++) {      
+function  draw_activityBar() {
+    $(".activity_bar").text('');
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    for (var index = 0; index < order.length; index++) {
         var activityID = order[index];
         var title;
         var classColor;
         var body = "";
         var expand = "";
-        if(data[order[index]].type == 1){
+        if (data[order[index]].type == 1) {
             title = data[order[index]].title;
-            if(title.trim() == ''){
+            if (title.trim() == '') {
                 title = "No Title";
             }
             classColor = "bs-callout-info";
             body = data[order[index]].text;
         }
-        else if(data[order[index]].type == 2){
+        else if (data[order[index]].type == 2) {
             title = "Choice";
             classColor = "bs-callout-default";
             expand = "in";
             var alphabet = 'ABCDEFGHIGKLMNOPQRSTUVWXYZ'
             for (var c = 0; c < data[order[index]].choice.length; c++) {
-                body = body+
-                    '<div class="bs-callout bs-callout-success" id="choice_'+order[index]+'">'+
-                    alphabet[c]+'.'+data[order[index]].choice[c].text+' => Activity '+(parseInt(data[order[index]].choice[c].nextnode)+1)+'</div>' ;  
+                body = body +
+                        '<div class="bs-callout bs-callout-success" id="choice_' + order[index] + '">' +
+                        alphabet[c] + '.' + data[order[index]].choice[c].text + ' => Activity ' + (parseInt(data[order[index]].choice[c].nextnode) + 1) + '</div>';
             }
         }
-        else if(data[order[index]].type == 3){
-            title = "Go to Activity "+(parseInt(data[order[index]].nextnode)+1);
-            classColor = "bs-callout-success";            
+        else if (data[order[index]].type == 3) {
+            title = "Go to Activity " + (parseInt(data[order[index]].nextnode) + 1);
+            classColor = "bs-callout-success";
         }
-        else if(data[order[index]].type == 4){
-            title = "Go to Scene "+(data[order[index]].nextnode);
-            classColor = "bs-callout-danger";             
+        else if (data[order[index]].type == 4) {
+            title = "Go to Scene " + (data[order[index]].nextnode);
+            classColor = "bs-callout-danger";
         }
-        else if(data[order[index]].type == 5){
+        else if (data[order[index]].type == 5) {
             title = "Change Background";
             classColor = "bs-callout-warning";
-            body = '<br><img src="'+ data[order[index]].url +'" style="max-width:350px;max-height:350px;" />';
+            body = '<br><img src="' + data[order[index]].url + '" style="max-width:350px;max-height:350px;" />';
         }
-        else if(data[order[index]].type == 6){
+        else if (data[order[index]].type == 6) {
             title = "Change Music";
-            classColor = "bs-callout-warning";            
+            classColor = "bs-callout-warning";
         }
-        var button = 
-            '<div class="btn-group pull-right"> '+
-                '<button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp('+order[index]+','+index+');">'+
-                    '<span class="glyphicon glyphicon-arrow-up"></span>' +
-                '</button>'+
-                '<button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown('+order[index]+','+index+');">'+
-                    '<span class="glyphicon glyphicon-arrow-down"></span>' +
+        var button =
+                '<div class="btn-group pull-right"> ' +
+                '<button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp(' + order[index] + ',' + index + ');">' +
+                '<span class="glyphicon glyphicon-arrow-up"></span>' +
                 '</button>' +
-                '<button type="button" onclick="previewActivity('+index+');" class="btn btn-sm btn-default">' +
-                    '<span class="glyphicon glyphicon-play"></span>' +
+                '<button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown(' + order[index] + ',' + index + ');">' +
+                '<span class="glyphicon glyphicon-arrow-down"></span>' +
                 '</button>' +
-                '<button type="button" onclick="removeActivity('+index+');" class="btn btn-sm btn-default">' +
-                    '<span class="glyphicon glyphicon-remove"></span>' +
+                '<button type="button" onclick="previewActivity(' + index + ');" class="btn btn-sm btn-default">' +
+                '<span class="glyphicon glyphicon-play"></span>' +
+                '</button>' +
+                '<button type="button" onclick="editActivity(' + index + ');" class="btn btn-sm btn-default">' +
+                '<span class="glyphicon glyphicon-edit"></span>' +
+                '</button>' +
+                '<button type="button" onclick="removeActivity(' + index + ');" class="btn btn-sm btn-default">' +
+                '<span class="glyphicon glyphicon-remove"></span>' +
                 '</button>' +
                 '<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">' +
-                    '<span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span>' +
+                '<span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span>' +
                 '</button>' +
                 '<ul class="dropdown-menu" role="menu">' +
-                    '<li><a href="#">Action</a></li>' +
-                    '<li><a href="#">Another action</a></li>' +
-                    '<li><a href="#">Something else here</a></li>' +
-                    '<li class="divider"></li><li><a href="#">Separated link</a></li>' +
+                '<li><a href="#">Action</a></li>' +
+                '<li><a href="#">Another action</a></li>' +
+                '<li><a href="#">Something else here</a></li>' +
+                '<li class="divider"></li><li><a href="#">Separated link</a></li>' +
                 '</ul>' +
-            '</div>';
-        var row =                 
-                '<div class="panel panel-default bs-callout '+classColor+'">'+
-                    '<div class="" role="tab" id="actHeading'+activityID+'">'+
-                        '<h4 class="panel-title">'+
-                            '<a class="truncate" data-toggle="collapse" data-parent="#scene-list" href="#actCollapse'+activityID+'" aria-expanded="true" aria-controls="actCollapse'+activityID+'">'+
-                                (index+1) + ': '+title+
-                            '</a>'+button+
-                        '</h4>'+
-                    '</div>'+
-                    '<div id="actCollapse'+activityID+'" class="panel-collapse collapse '+expand+'" role="tabpanel" aria-labelledby="actHeading'+activityID+'">'+
-                        '<div class="panel-body" style="padding-top: 0px;" id="actity_'+activityID+'">'+body+'</div>'+
-                    '</div>'+
+                '</div>';
+        var row =
+                '<div class="panel panel-default bs-callout ' + classColor + '">' +
+                '<div class="" role="tab" id="actHeading' + activityID + '">' +
+                '<h4 class="panel-title">' +
+                '<a class="truncate" data-toggle="collapse" data-parent="#scene-list" href="#actCollapse' + activityID + '" aria-expanded="true" aria-controls="actCollapse' + activityID + '">' +
+                (index + 1) + ': ' + title +
+                '</a>' + button +
+                '</h4>' +
+                '</div>' +
+                '<div id="actCollapse' + activityID + '" class="panel-collapse collapse ' + expand + '" role="tabpanel" aria-labelledby="actHeading' + activityID + '">' +
+                '<div class="panel-body" style="padding-top: 0px;" id="actity_' + activityID + '">' + body + '</div>' +
+                '</div>' +
                 '</div>';
         $(".activity_bar").append(row);
     }
 }
 function draw_activityBar1() {
-    $( ".activity_bar").text('');
-    var data = JSON.parse( $(".activity_data").html());
-    var order = JSON.parse( $(".activity_order").html());
+    $(".activity_bar").text('');
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
     for (var index = 0; index < order.length; index++) {
-        if(data[order[index]].type == 1){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-info" id="actity_'+order[index]+'">'+
-                (index+1)+'.'+(data[order[index]].title)+'</div>' 
-            );
+        if (data[order[index]].type == 1) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-info" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.' + (data[order[index]].title) + '</div>'
+                    );
         }
-        else if(data[order[index]].type == 2){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-default" id="actity_'+order[index]+'">'+
-                (index+1)+'.Choice</div>' 
-            );  
+        else if (data[order[index]].type == 2) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-default" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.Choice</div>'
+                    );
             var alphabet = 'ABCDEFGHIGKLMNOPQRSTUVWXYZ'
             for (var c = 0; c < data[order[index]].choice.length; c++) {
-                if(data[order[index]].choice[c].action == 1){
-                    $( "#actity_"+order[index] ).append( 
-                        '<div class="bs-callout bs-callout-success" id="choice_'+order[index]+'">'+
-                        alphabet[c]+'.'+data[order[index]].choice[c].text+' => Activity '+(parseInt(data[order[index]].choice[c].nextnode)+1)+'</div>' 
-                    );  
+                if (data[order[index]].choice[c].action == 1) {
+                    $("#actity_" + order[index]).append(
+                            '<div class="bs-callout bs-callout-success" id="choice_' + order[index] + '">' +
+                            alphabet[c] + '.' + data[order[index]].choice[c].text + ' => Activity ' + (parseInt(data[order[index]].choice[c].nextnode) + 1) + '</div>'
+                            );
                 }
-                else if(data[order[index]].choice[c].action == 2){
-                    $( "#actity_"+order[index] ).append( 
-                        '<div class="bs-callout bs-callout-danger" id="choice_'+order[index]+'">'+
-                        alphabet[c]+'.'+data[order[index]].choice[c].text+' => Scene '+(data[order[index]].choice[c].nextnode)+'</div>'
-                    );  
+                else if (data[order[index]].choice[c].action == 2) {
+                    $("#actity_" + order[index]).append(
+                            '<div class="bs-callout bs-callout-danger" id="choice_' + order[index] + '">' +
+                            alphabet[c] + '.' + data[order[index]].choice[c].text + ' => Scene ' + (data[order[index]].choice[c].nextnode) + '</div>'
+                            );
                 }
-            }     
+            }
         }
-        else if(data[order[index]].type == 3){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-success" id="actity_'+order[index]+'">'+
-                (index+1)+'.Go to Activity '+(parseInt(data[order[index]].nextnode)+1)+'</div>' 
-            );           
+        else if (data[order[index]].type == 3) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-success" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.Go to Activity ' + (parseInt(data[order[index]].nextnode) + 1) + '</div>'
+                    );
         }
-        else if(data[order[index]].type == 4){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-danger" id="actity_'+order[index]+'">'+
-                (index+1)+'.Go to Scene '+(data[order[index]].nextnode)+'</div>' 
-            );        
+        else if (data[order[index]].type == 4) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-danger" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.Go to Scene ' + (data[order[index]].nextnode) + '</div>'
+                    );
         }
-        else if(data[order[index]].type == 5){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-warning" id="actity_'+order[index]+'">'+
-                (index+1)+'.Change Background</div>' 
-            );       
+        else if (data[order[index]].type == 5) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-warning" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.Change Background</div>'
+                    );
         }
-        else if(data[order[index]].type == 6){
-            $( ".activity_bar" ).append( 
-                '<div class="bs-callout bs-callout-warning" id="actity_'+order[index]+'">'+
-                (index+1)+'.Change Music</div>' 
-            );            
+        else if (data[order[index]].type == 6) {
+            $(".activity_bar").append(
+                    '<div class="bs-callout bs-callout-warning" id="actity_' + order[index] + '">' +
+                    (index + 1) + '.Change Music</div>'
+                    );
         }
-        
+
         //add action button
-        $( "#actity_"+order[index] ).html( 
-            '<div class="btn-group pull-right"> \
-                <button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp('+order[index]+','+index+');">  \
+        $("#actity_" + order[index]).html(
+                '<div class="btn-group pull-right"> \
+                <button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp(' + order[index] + ',' + index + ');">  \
                     <span class="glyphicon glyphicon-arrow-up"></span> \
                 </button> \
-                <button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown('+order[index]+','+index+');">  \
+                <button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown(' + order[index] + ',' + index + ');">  \
                     <span class="glyphicon glyphicon-arrow-down"></span> \
                 </button> \
-                <button type="button" onclick="previewActivity('+index+');" class="btn btn-sm btn-default"> \
+                <button type="button" onclick="previewActivity(' + index + ');" class="btn btn-sm btn-default"> \
                     <span class="glyphicon glyphicon-play"></span> \
                 </button> \
                 <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"> \
@@ -163,40 +166,40 @@ function draw_activityBar1() {
                     <li class="divider"></li><li><a href="#">Separated link</a></li> \
                 </ul> \
             </div>'
-            +$( "#actity_"+order[index] ).html()
-        );
+                + $("#actity_" + order[index]).html()
+                );
     }
 }
 
-function moveActivityUp(actity_id, index){
-    var order = JSON.parse( $(".activity_order").html());
-    if(index != 0){
+function moveActivityUp(actity_id, index) {
+    var order = JSON.parse($(".activity_order").html());
+    if (index != 0) {
         var temp = order[index];
-        order[index] = order[index-1];
-        order[index-1] = temp;
+        order[index] = order[index - 1];
+        order[index - 1] = temp;
         $(".activity_order").html(JSON.stringify(order));
         draw_activityBar();
     }
 }
 
-function moveActivityDown(actity_id, index){
-    var order = JSON.parse( $(".activity_order").html());
-    if(index != order.length-1){
+function moveActivityDown(actity_id, index) {
+    var order = JSON.parse($(".activity_order").html());
+    if (index != order.length - 1) {
         var temp = order[index];
-        order[index] = order[index+1];
-        order[index+1] = temp;
+        order[index] = order[index + 1];
+        order[index + 1] = temp;
         $(".activity_order").html(JSON.stringify(order));
         draw_activityBar();
     }
 }
 
-function newDialogActivity(actity_id, index){
-    var newActivity = JSON.parse( $(".activity_newID").html());
-    if(newActivity.length == 0){
+function newDialogActivity(actity_id, index) {
+    var newActivity = JSON.parse($(".activity_newID").html());
+    if (newActivity.length == 0) {
         newActivityID = -1;
     }
-    else{
-        newActivityID = newActivity[newActivity.length-1]-1;
+    else {
+        newActivityID = newActivity[newActivity.length - 1] - 1;
     }
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
@@ -204,40 +207,40 @@ function newDialogActivity(actity_id, index){
     var titleDialog = $("#titleDialog").val();
     var textDialog = $("#textDialog").val();
     var soundDialog = $("#soundDialog").val();
-    
-    var order = JSON.parse( $(".activity_order").html());
+
+    var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
     $(".activity_order").html(JSON.stringify(order));
-    
-    var data = JSON.parse( $(".activity_data").html());
-    data[newActivityID] = {"type":1, "title":titleDialog, "text":textDialog, "sound":soundDialog};
+
+    var data = JSON.parse($(".activity_data").html());
+    data[newActivityID] = {"type": 1, "title": titleDialog, "text": textDialog, "sound": soundDialog};
     $(".activity_data").html(JSON.stringify(data));
-    
+
     $("#titleDialog").val("");
     $("#textDialog").val("");
     $("#soundDialog").val("");
-    
+
     $('.activity-modal').modal('hide');
-    
+
     draw_activityBar();
-    
+
 }
 
-function newChoiceActivity(actity_id, index){
+function newChoiceActivity(actity_id, index) {
     /*
      "13":{"type":2, "choice":[
-                                        {"text":"A.Yes","action":1,"nextnode":21},
-                                        {"text":"B.No","action":2,"nextnode":3}
-                                    ]}, 
-    */
-    
-    
-    var newActivity = JSON.parse( $(".activity_newID").html());
-    if(newActivity.length == 0){
+     {"text":"A.Yes","action":1,"nextnode":21},
+     {"text":"B.No","action":2,"nextnode":3}
+     ]}, 
+     */
+
+
+    var newActivity = JSON.parse($(".activity_newID").html());
+    if (newActivity.length == 0) {
         newActivityID = -1;
     }
-    else{
-        newActivityID = newActivity[newActivity.length-1]-1;
+    else {
+        newActivityID = newActivity[newActivity.length - 1] - 1;
     }
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
@@ -246,151 +249,151 @@ function newChoiceActivity(actity_id, index){
     var action;
     var nextnode;
     var choices = new Array();
-    $('.choiceInput').each(function() {
-        text =  $( this ).find(".choiceText").val();
-        action = $( this ).find(".nodetype").val();
-        nextnode = $( this ).find(".goid").val();
-        nextnode = parseInt(nextnode, 10)-1;
-        choices.push({"text": text, "action": action, "nextnode":nextnode});
+    $('.choiceInput').each(function () {
+        text = $(this).find(".choiceText").val();
+        action = $(this).find(".nodetype").val();
+        nextnode = $(this).find(".goid").val();
+        nextnode = parseInt(nextnode, 10) - 1;
+        choices.push({"text": text, "action": action, "nextnode": nextnode});
         //alert(nextnode);
-        $( this ).find(".choiceText").val("");
-        $( this ).find(".nodetype").val("1");
-        $( this ).find(".goid").val("");
+        $(this).find(".choiceText").val("");
+        $(this).find(".nodetype").val("1");
+        $(this).find(".goid").val("");
         index = index + 1;
     });
-    
-    var order = JSON.parse( $(".activity_order").html());
+
+    var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
     $(".activity_order").html(JSON.stringify(order));
-    
-    var data = JSON.parse( $(".activity_data").html());
-    data[newActivityID] = {"type":2, "choice":choices};
+
+    var data = JSON.parse($(".activity_data").html());
+    data[newActivityID] = {"type": 2, "choice": choices};
     $(".activity_data").html(JSON.stringify(data));
-    
+
     $('.activity-modal').modal('hide');
-    
+
     draw_activityBar();
-    
-    
-    
+
+
+
 }
 
 
-function newGoToActivity(actity_id, index){
+function newGoToActivity(actity_id, index) {
     /*
-    "15":{"type":3, "nextnode":"17"},
-    "16":{"type":4, "nextnode":"21"}, 
-    */
-    var newActivity = JSON.parse( $(".activity_newID").html());
-    if(newActivity.length == 0){
+     "15":{"type":3, "nextnode":"17"},
+     "16":{"type":4, "nextnode":"21"}, 
+     */
+    var newActivity = JSON.parse($(".activity_newID").html());
+    if (newActivity.length == 0) {
         newActivityID = -1;
     }
-    else{
-        newActivityID = newActivity[newActivity.length-1]-1;
+    else {
+        newActivityID = newActivity[newActivity.length - 1] - 1;
     }
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
 
-    if($("#nodetype").val() == 1){
+    if ($("#nodetype").val() == 1) {
         var type = 3;
     }
-    else{
+    else {
         var type = 4;
     }
     var nextnode = $("#nextnode").val();
-    
-    var order = JSON.parse( $(".activity_order").html());
+
+    var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
     $(".activity_order").html(JSON.stringify(order));
-    
-    var data = JSON.parse( $(".activity_data").html());
-    data[newActivityID] = {"type":type, "nextnode":nextnode};
+
+    var data = JSON.parse($(".activity_data").html());
+    data[newActivityID] = {"type": type, "nextnode": nextnode};
     $(".activity_data").html(JSON.stringify(data));
-    
+
     $("#nodetype").val("1");
     $("#nextnode").val("");
-    
+
     $('.activity-modal').modal('hide');
-    
+
     draw_activityBar();
-    
+
 }
 
-function newChangeBgActivity(actity_id, index){
+function newChangeBgActivity(actity_id, index) {
     /*
      "17":{"type":5, "url":"http://aaa.com"} 
-    */
-    var newActivity = JSON.parse( $(".activity_newID").html());
-    if(newActivity.length == 0){
+     */
+    var newActivity = JSON.parse($(".activity_newID").html());
+    if (newActivity.length == 0) {
         newActivityID = -1;
     }
-    else{
-        newActivityID = newActivity[newActivity.length-1]-1;
+    else {
+        newActivityID = newActivity[newActivity.length - 1] - 1;
     }
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
 
     var type = 5
     var url = $("#bgurl").val();
-    
-    var order = JSON.parse( $(".activity_order").html());
+
+    var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
     $(".activity_order").html(JSON.stringify(order));
-    
-    var data = JSON.parse( $(".activity_data").html());
-    data[newActivityID] = {"type":type, "url":url};
+
+    var data = JSON.parse($(".activity_data").html());
+    data[newActivityID] = {"type": type, "url": url};
     $(".activity_data").html(JSON.stringify(data));
-    
+
     $("#bgurl").val("");
-    
+
     $('.activity-modal').modal('hide');
-    
+
     draw_activityBar();
-    
+
 }
 
-function newChangeMusicActivity(actity_id, index){
+function newChangeMusicActivity(actity_id, index) {
     /*
-    "14":{"type":6, "url":"http://aaa.com"}, 
-    */
-    var newActivity = JSON.parse( $(".activity_newID").html());
-    if(newActivity.length == 0){
+     "14":{"type":6, "url":"http://aaa.com"}, 
+     */
+    var newActivity = JSON.parse($(".activity_newID").html());
+    if (newActivity.length == 0) {
         newActivityID = -1;
     }
-    else{
-        newActivityID = newActivity[newActivity.length-1]-1;
+    else {
+        newActivityID = newActivity[newActivity.length - 1] - 1;
     }
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
 
     var type = 6
     var url = $("#musicurl").val();
-    
-    var order = JSON.parse( $(".activity_order").html());
+
+    var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
     $(".activity_order").html(JSON.stringify(order));
-    
-    var data = JSON.parse( $(".activity_data").html());
-    data[newActivityID] = {"type":type, "url":url};
+
+    var data = JSON.parse($(".activity_data").html());
+    data[newActivityID] = {"type": type, "url": url};
     $(".activity_data").html(JSON.stringify(data));
-    
+
     $("#musicurl").val("");
-    
+
     $('.activity-modal').modal('hide');
-    
+
     draw_activityBar();
-    
+
 }
 
 
-function appendChoice(){
-    
+function appendChoice() {
+
     var count = $('.choice').length;
     var text = ["A", "B", "C", "D"];
-    if(count < 4){
-        var choiceScript = '<div class="choiceInput choice'+text[count]+'"> \
+    if (count < 4) {
+        var choiceScript = '<div class="choiceInput choice' + text[count] + '"> \
                                 <div class="input-group"> \
-                                    <span class="input-group-addon choice">'+text[count]+'.</span> \
+                                    <span class="input-group-addon choice">' + text[count] + '.</span> \
                                     <input class="form-control choiceText" name="choiceText"> \
                                     <div class="row"> \
                                         <div class="col-md-4"> \
@@ -403,70 +406,132 @@ function appendChoice(){
                                             <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0"> \
                                         </div> \
                                         <div class="col-md-4"> \
-                                            <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice(\''+text[count]+'\');">Remove</button> \
+                                            <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice(\'' + text[count] + '\');">Remove</button> \
                                         </div> \
                                     </div> \
                                 </div> \
                                 <br> \
                             </div> \
                             ';
-    
+
         $("#choiceArea").append(choiceScript);
         $("select").selecter();
     }
-    else{
+    else {
         alert("Limit exceed!");
     }
-    
-    
+
+
 }
 
-function removeChoice(choice){
+function removeChoice(choice) {
     //do it yourself plzzzz
-    $(".choice"+choice).remove();
+    $(".choice" + choice).remove();
     var text = ["A.", "B.", "C.", "D."];
     var index = 0;
-    $( ".choice" ).each(function() {
-        $( this ).html(text[index]);
+    $(".choice").each(function () {
+        $(this).html(text[index]);
         index = index + 1;
     });
     var text = ["A", "B", "C", "D"];
     var index = 0;
-    $( ".removebtn" ).each(function() {
-        $( this ).attr("onclick","removeChoice('"+text[index]+"');");
+    $(".removebtn").each(function () {
+        $(this).attr("onclick", "removeChoice('" + text[index] + "');");
         index = index + 1;
     });
-    
+
     var text = ["A", "B", "C", "D"];
     var index = 0;
-    $( ".choiceInput" ).each(function() {
-        $( this ).attr("class","choiceInput choice"+text[index]);
+    $(".choiceInput").each(function () {
+        $(this).attr("class", "choiceInput choice" + text[index]);
         index = index + 1;
     });
 }
 
-function removeActivity(index){
+function removeActivity(index) {
     var order = JSON.parse($(".activity_order").html());
     var actity_id = order[index];
-    var activityData = JSON.parse( $(".activity_data").html());
-    if(activityData.hasOwnProperty(actity_id)){
+    var activityData = JSON.parse($(".activity_data").html());
+    if (activityData.hasOwnProperty(actity_id)) {
         delete activityData[actity_id];
         $(".activity_data").html(JSON.stringify(activityData));
     }
-    var activityOrder = JSON.parse( $(".activity_order").html() );
-    if(activityOrder.indexOf(actity_id) >= 0){
+    var activityOrder = JSON.parse($(".activity_order").html());
+    if (activityOrder.indexOf(actity_id) >= 0) {
         activityOrder.splice(index, 1);
         alert("Changed" + activityOrder.toString());
         $(".activity_order").html(JSON.stringify(activityOrder));
     }
-    var activityNew = JSON.parse( $(".activity_newID").html() );
-    if(activityNew.indexOf(actity_id) >= 0){
+    var activityNew = JSON.parse($(".activity_newID").html());
+    if (activityNew.indexOf(actity_id) >= 0) {
         activityNew.splice(activityNew.indexOf(actity_id), 1);
         $(".activity_newID").html(JSON.stringify(activityNew));
     }
-    
+
     draw_activityBar();
-    
+
+}
+
+function editActivity(index) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+
+    if (data[order[index]].type == 1) {
+        //Dialog
+        editDialog(index);
+    }
+    else if(data[order[index]].type == 2){
+        //Choice
+        editChoice(index);
+    }
+    else if(data[order[index]].type == 3){
+        //Go to act
+        editGoto(index, "act");
+    }
+    else if(data[order[index]].type == 4){
+        //Go to scene
+        editGoto(index, "scene");
+    }
+    else if(data[order[index]].type == 5){
+        //Change BG img
+        editBackground(index);
+    }
+    else if(data[order[index]].type == 6){
+        //Change music
+        editMusic(index);
+    }
+    draw_activityBar();
+}
+
+function editDialog(index){
+    $('.activity-modal').modal('show');
+    $('#activityTab a[href="#dialog"]').tab('show');
+}
+
+function editChoice(index){
+    $('.activity-modal').modal('show');
+    $('#activityTab a[href="#choice"]').tab('show');
+}
+
+function editGoto(index, type){
+    $('.activity-modal').modal('show');
+    $('#activityTab a[href="#goto"]').tab('show');
+    if(type == "act"){
+        //do
+    }
+    else if(type == "scene"){
+        //do
+    }
+}
+
+function editBackground(index){
+    $('.activity-modal').modal('show');
+    $('#activityTab a[href="#background"]').tab('show');
+}
+
+function editMusic(index){
+    $('.activity-modal').modal('show');
+    $('#activityTab a[href="#music"]').tab('show');
 }
 
 draw_activityBar();
