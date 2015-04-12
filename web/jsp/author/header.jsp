@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css")%>">
         <link rel="stylesheet" href="<%= F.asset("css/bootflat.min.css")%>">
         <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'> -->
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="<%= F.asset("css/jquery-ui.css") %>">
 
         <link rel="stylesheet" href="<%= F.asset("css/leaflet.css")%>" />
         <!--[if lte IE 8]>

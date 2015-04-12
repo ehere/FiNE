@@ -89,8 +89,11 @@ function play() {
         $('#player_choice_area').hide();
         $("#btn-play").show();
         $("#btn_toggle_dialog").show();
-        //alert("Go to Scene "+data[actity_id].nextnode);
-        getScene(data[actity_id].nextnode,0);
+        if($(".mode").html() === 'edit'){
+            alert("Go to Scene "+data[actity_id].nextnode);
+        }else{
+            getScene(data[actity_id].nextnode,0);
+        }
     }
     else if (data[actity_id].type == 5) {
         $('#player_choice_area').hide();
@@ -131,13 +134,13 @@ function choiceClick(index) {
     var actity_id = order[current_order];
     var data = JSON.parse($(".activity_data").html());
     $('#player_choice_area').hide();
-    if (data[actity_id].choice[index].action == 1) {
+    //if (data[actity_id].choice[index].action == 1) {
         $(".play_index").html(data[actity_id].choice[index].nextnode);
         play();
-    }
-    else {
-        alert("Go to Scene " + data[actity_id].choice[index].nextnode);
-    }
+    //}
+    //else {
+    //    alert("Go to Scene " + data[actity_id].choice[index].nextnode);
+    //}
 
 }
 function previewActivity(index){
@@ -162,6 +165,30 @@ function blinking(elm) {
            elm.fadeIn(400);
         });
     }
+}
+function getScene(sceneID, index) {
+    $.getJSON("/fine/scene/" + sceneID + "/activity")
+            .done(function (data) {
+                if ($.trim(data.data) !== "{}" && $.trim(data.order) !== "{}") {
+                    $('.activity_data').html(data.data);
+                    $('.activity_order').html(data.order);
+                    $("#typed").typed('reset');
+                    $("#player_title_text").html('');
+                    previewActivity(index);
+                }
+                else {
+                    //no next scene
+                    alert("This is the last Scene");
+                }
+                if($('.mode').html() == 'edit'){
+                    draw_activityBar();
+                    $('.scene-row').removeClass('bs-callout-warning').addClass("bs-callout-default");
+                    $('#heading'+sceneID).parent().removeClass('bs-callout-default').addClass("bs-callout-warning");
+                }
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                alert("Something wrong.Please try again or refresh this page.");
+            });
 }
 var timer;
 $('.player_wrapper').height(($('.player_wrapper').width() * 9 / 16));

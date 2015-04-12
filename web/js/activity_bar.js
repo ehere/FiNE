@@ -1,4 +1,87 @@
-function draw_activityBar() {
+function  draw_activityBar(){
+    $( ".activity_bar").text('');
+    var data = JSON.parse( $(".activity_data").html());
+    var order = JSON.parse( $(".activity_order").html());
+    for (var index = 0; index < order.length; index++) {      
+        var activityID = order[index];
+        var title;
+        var classColor;
+        var body = "";
+        var expand = "";
+        if(data[order[index]].type == 1){
+            title = data[order[index]].title;
+            if(title.trim() == ''){
+                title = "No Title";
+            }
+            classColor = "bs-callout-info";
+            body = data[order[index]].text;
+        }
+        else if(data[order[index]].type == 2){
+            title = "Choice";
+            classColor = "bs-callout-default";
+            expand = "in";
+            var alphabet = 'ABCDEFGHIGKLMNOPQRSTUVWXYZ'
+            for (var c = 0; c < data[order[index]].choice.length; c++) {
+                body = body+
+                    '<div class="bs-callout bs-callout-success" id="choice_'+order[index]+'">'+
+                    alphabet[c]+'.'+data[order[index]].choice[c].text+' => Activity '+(parseInt(data[order[index]].choice[c].nextnode)+1)+'</div>' ;  
+            }
+        }
+        else if(data[order[index]].type == 3){
+            title = "Go to Activity "+(parseInt(data[order[index]].nextnode)+1);
+            classColor = "bs-callout-success";            
+        }
+        else if(data[order[index]].type == 4){
+            title = "Go to Scene "+(data[order[index]].nextnode);
+            classColor = "bs-callout-danger";             
+        }
+        else if(data[order[index]].type == 5){
+            title = "Change Background";
+            classColor = "bs-callout-warning";
+            body = '<br><img src="'+ data[order[index]].url +'" style="max-width:350px;max-height:350px;" />';
+        }
+        else if(data[order[index]].type == 6){
+            title = "Change Music";
+            classColor = "bs-callout-warning";            
+        }
+        var button = 
+            '<div class="btn-group pull-right"> '+
+                '<button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp('+order[index]+','+index+');">'+
+                    '<span class="glyphicon glyphicon-arrow-up"></span>' +
+                '</button>'+
+                '<button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown('+order[index]+','+index+');">'+
+                    '<span class="glyphicon glyphicon-arrow-down"></span>' +
+                '</button>' +
+                '<button type="button" onclick="previewActivity('+index+');" class="btn btn-sm btn-default">' +
+                    '<span class="glyphicon glyphicon-play"></span>' +
+                '</button>' +
+                '<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">' +
+                    '<span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span>' +
+                '</button>' +
+                '<ul class="dropdown-menu" role="menu">' +
+                    '<li><a href="#">Action</a></li>' +
+                    '<li><a href="#">Another action</a></li>' +
+                    '<li><a href="#">Something else here</a></li>' +
+                    '<li class="divider"></li><li><a href="#">Separated link</a></li>' +
+                '</ul>' +
+            '</div>';
+        var row =                 
+                '<div class="panel panel-default bs-callout '+classColor+'">'+
+                    '<div class="" role="tab" id="actHeading'+activityID+'">'+
+                        '<h4 class="panel-title">'+
+                            '<a class="truncate" data-toggle="collapse" data-parent="#scene-list" href="#actCollapse'+activityID+'" aria-expanded="true" aria-controls="actCollapse'+activityID+'">'+
+                                (index+1) + ': '+title+
+                            '</a>'+button+
+                        '</h4>'+
+                    '</div>'+
+                    '<div id="actCollapse'+activityID+'" class="panel-collapse collapse '+expand+'" role="tabpanel" aria-labelledby="actHeading'+activityID+'">'+
+                        '<div class="panel-body" style="padding-top: 0px;" id="actity_'+activityID+'">'+body+'</div>'+
+                    '</div>'+
+                '</div>';
+        $(".activity_bar").append(row);
+    }
+}
+function draw_activityBar1() {
     $( ".activity_bar").text('');
     var data = JSON.parse( $(".activity_data").html());
     var order = JSON.parse( $(".activity_order").html());

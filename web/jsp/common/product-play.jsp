@@ -134,7 +134,7 @@
 <div class="hidden activity_data"></div>
 <div class="hidden activity_order"></div>
 <div class="hidden name"></div>
-
+<div class="hidden mode">play</div>
 <div class="hidden play_index"></div>
 
 
@@ -143,25 +143,6 @@
 <script src="<%= F.asset("/js/typed.js")%>"></script>
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script>
-                    
-                    function getScene(sceneID, index) {
-                        $.getJSON("<%= F.asset("/scene/")%>" + "/" + sceneID+"/activity")
-                                .done(function (data) {
-                                    if ($.trim(data.data) !== "{}" && $.trim(data.order) !== "{}") {
-                                        $('.activity_data').html(data.data);
-                                        $('.activity_order').html(data.order);
-                                        $("#typed").typed('reset');
-                                        previewActivity(index);
-                                    }
-                                    else {
-                                        //no next scene
-                                        alert("This is the last Scene");
-                                    }
-                                })
-                                .fail(function (jqxhr, textStatus, error) {
-                                    alert("Something wrong.Please try again or refresh this page.");
-                                });
-                    }
                     function newGameMenu() {
                         $('#input_name_area').removeClass("hidden");
                         $('#menu_choice_area').addClass("hidden");
@@ -247,7 +228,7 @@
                     }
                     function removeSave(id) {
                         if (confirm("Are you sure to remove this save?")) {
-                            $.getJSON("<%= F.asset("/save")%>", {action:"remove",id: id})
+                            $.getJSON("<%= F.asset("/save")%>", {action: "remove", id: id})
                                     .done(function (respond) {
                                         drawTableSave('save');
                                     })
@@ -323,7 +304,8 @@
                             }, function () {
                         $(this).outerWidth('100%');
                     }
-                    );</script>
+                    );
+</script>
 <script>
     $(function () {
         $(document).tooltip({

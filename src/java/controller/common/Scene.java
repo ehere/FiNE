@@ -36,10 +36,11 @@ public class Scene extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("index")) {
             index(request, response);
-        }else if(method.equals("activity")) {
+        } else if (method.equals("activity")) {
             activity(request, response);
         }
     }
+
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
@@ -49,8 +50,8 @@ public class Scene extends HttpServlet {
             scene_query.setString(1, id);
             ResultSet result = scene_query.executeQuery();
             JSONObject scene_list = new JSONObject();
-            
-            while(result.next()){
+
+            while (result.next()) {
                 JSONObject scene_data = new JSONObject();
                 scene_data.put("title", result.getString("title"));
                 scene_data.put("description", result.getString("description"));
@@ -64,7 +65,7 @@ public class Scene extends HttpServlet {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     protected void activity(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
@@ -105,7 +106,23 @@ public class Scene extends HttpServlet {
                     dialog.close();
                     dialog_query.close();
                 } else if (type == 2) {
-                    // choice
+                    JSONObject act = new JSONObject();
+                    act.put("type", type);
+                    JSONArray choices = new JSONArray();
+                    PreparedStatement choice_query = conn.prepareStatement("SELECT * FROM activity_choice WHERE activity_id = ?;");
+                    choice_query.setInt(1, activity_id);
+                    ResultSet result = choice_query.executeQuery();
+                    while (result.next()) {
+                        JSONObject choice = new JSONObject();
+                        choice.put("text", result.getString("text"));
+                        choice.put("nextnode", result.getInt("target_id"));
+                        choices.add(choice);
+                    }
+                    act.put("choice", choices);
+                    activity_data.put(activity_id + "", act);
+                    result.close();
+                    choice_query.close();
+                    
                 } else if (type == 3 || type == 4) {
                     //goto activity or scene
                     PreparedStatement goto_query = conn.prepareStatement("SELECT * FROM activity_goto WHERE activity_id = ?;");

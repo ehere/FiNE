@@ -91,6 +91,11 @@ public class Route implements Filter {
             F.urlMapper("/scene/{id}/activity", url, request);
             request.getRequestDispatcher("/common.scene").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/project/{id}", url)) {
+            request.setAttribute("do", "show");
+            F.urlMapper("/author/project/{id}", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
     }
 
     public Route() {
