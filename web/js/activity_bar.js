@@ -55,6 +55,9 @@ function  draw_activityBar(){
                 '<button type="button" onclick="previewActivity('+index+');" class="btn btn-sm btn-default">' +
                     '<span class="glyphicon glyphicon-play"></span>' +
                 '</button>' +
+                '<button type="button" onclick="removeActivity('+index+');" class="btn btn-sm btn-default">' +
+                    '<span class="glyphicon glyphicon-remove"></span>' +
+                '</button>' +
                 '<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">' +
                     '<span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span>' +
                 '</button>' +
@@ -440,6 +443,30 @@ function removeChoice(choice){
         $( this ).attr("class","choiceInput choice"+text[index]);
         index = index + 1;
     });
+}
+
+function removeActivity(index){
+    var order = JSON.parse($(".activity_order").html());
+    var actity_id = order[index];
+    var activityData = JSON.parse( $(".activity_data").html());
+    if(activityData.hasOwnProperty(actity_id)){
+        delete activityData[actity_id];
+        $(".activity_data").html(JSON.stringify(activityData));
+    }
+    var activityOrder = JSON.parse( $(".activity_order").html() );
+    if(activityOrder.indexOf(actity_id) >= 0){
+        activityOrder.splice(index, 1);
+        alert("Changed" + activityOrder.toString());
+        $(".activity_order").html(JSON.stringify(activityOrder));
+    }
+    var activityNew = JSON.parse( $(".activity_newID").html() );
+    if(activityNew.indexOf(actity_id) >= 0){
+        activityNew.splice(activityNew.indexOf(actity_id), 1);
+        $(".activity_newID").html(JSON.stringify(activityNew));
+    }
+    
+    draw_activityBar();
+    
 }
 
 draw_activityBar();
