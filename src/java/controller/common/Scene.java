@@ -131,7 +131,7 @@ public class Scene extends HttpServlet {
                     goto_act.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    act.put("nextnode", goto_act.getString("target_id"));
+                    act.put("nextnode", goto_act.getInt("target_id"));
                     activity_data.put(activity_id + "", act);
                     goto_act.close();
                     goto_query.close();
