@@ -267,7 +267,7 @@
 ------------------------------------------------------------------------------------------------------- -->
 <div class="hidden activity_data"></div>
 <div class="hidden activity_order"></div>
-<div class="hidden activity_newID"></div>    
+<div class="hidden activity_newID">[]</div>    
 <div class="hidden play_index"></div>
 <div class="hidden allscene-list">
     ${requestScope.allscene}
