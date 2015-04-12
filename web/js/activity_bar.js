@@ -294,13 +294,16 @@ function newGoToActivity(actity_id, index) {
     newActivity.push(newActivityID);
     $(".activity_newID").html(JSON.stringify(newActivity));
 
+    var nextnode = -1;
     if ($("#nodetype").val() == 1) {
         var type = 3;
+        nextnode = (parseInt($("#nextnode").val()) - 1);
     }
     else {
         var type = 4;
+        nextnode = $("#nextnode").val();
     }
-    var nextnode = $("#nextnode").val();
+
 
     var order = JSON.parse($(".activity_order").html());
     order.push(newActivityID);
@@ -394,7 +397,7 @@ function appendChoice() {
         var choiceScript = '<div class="choiceInput choice' + text[count] + '"> \
                                 <div class="input-group"> \
                                     <span class="input-group-addon choice">' + text[count] + '.</span> \
-                                    <input class="form-control choiceText" name="choiceText"> \
+                                    <input class="form-control choiceText choiceText'+ text[count] +'" name="choiceText"> \
                                     <div class="row"> \
                                         <div class="col-md-4"> \
                                             <select name="nodetype[]" class="selecter_basic nodetype"> \
@@ -403,7 +406,7 @@ function appendChoice() {
                                             </select> \
                                         </div> \
                                         <div class="col-md-4"> \
-                                            <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0"> \
+                                            <input type="number" class="form-control goid goid'+ text[count] +'" name="goid[]" placeholder="Activity or Scene ID" min="0"> \
                                         </div> \
                                         <div class="col-md-4"> \
                                             <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice(\'' + text[count] + '\');">Remove</button> \
@@ -415,7 +418,7 @@ function appendChoice() {
                             ';
 
         $("#choiceArea").append(choiceScript);
-        $("select").selecter();
+        //$("select").selecter();
     }
     else {
         alert("Limit exceed!");
@@ -444,6 +447,16 @@ function removeChoice(choice) {
     var index = 0;
     $(".choiceInput").each(function () {
         $(this).attr("class", "choiceInput choice" + text[index]);
+        index = index + 1;
+    });
+    index = 0;
+    $(".choiceText").each(function () {
+        $(this).attr("class", "form-control choiceText choiceText" + text[index]);
+        index = index + 1;
+    });
+    index = 0;
+    $(".goid").each(function () {
+        $(this).attr("class", "form-control goid goid" + text[index]);
         index = index + 1;
     });
 }
@@ -480,58 +493,96 @@ function editActivity(index) {
         //Dialog
         editDialog(index);
     }
-    else if(data[order[index]].type == 2){
+    else if (data[order[index]].type == 2) {
         //Choice
         editChoice(index);
     }
-    else if(data[order[index]].type == 3){
+    else if (data[order[index]].type == 3) {
         //Go to act
         editGoto(index, "act");
     }
-    else if(data[order[index]].type == 4){
+    else if (data[order[index]].type == 4) {
         //Go to scene
         editGoto(index, "scene");
     }
-    else if(data[order[index]].type == 5){
+    else if (data[order[index]].type == 5) {
         //Change BG img
         editBackground(index);
     }
-    else if(data[order[index]].type == 6){
+    else if (data[order[index]].type == 6) {
         //Change music
         editMusic(index);
     }
     draw_activityBar();
 }
 
-function editDialog(index){
+function editDialog(index) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    var toEdit = data[order[index]];
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#dialog"]').tab('show');
+    $('#titleDialog').val(toEdit.title);
+    $('#textDialog').val(toEdit.text);
+    $('#soundDialog').val(toEdit.sound);
+
 }
 
-function editChoice(index){
+function editChoice(index) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    var toEdit = data[order[index]];
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#choice"]').tab('show');
+    var text = ["A", "B", "C", "D"];
+    for(var i=0; i < 4; i++){
+        removeChoice('A');
+    }
+    for(var i=0; i < toEdit.choice.length; i++){
+        appendChoice();
+    }
+    var x = 0;
+    $.each(toEdit.choice, function (i, item) {
+        var selector = '.choiceText'+text[x];
+        $(selector).val(item.text);
+        selector = '.goid'+text[x];
+        $(selector).val(parseInt(item.nextnode)+1);
+        x = x + 1;
+    });
 }
 
-function editGoto(index, type){
+function editGoto(index, type) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    var toEdit = data[order[index]];
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#goto"]').tab('show');
-    if(type == "act"){
-        //do
+    if (type == "act") {
+        $('#nodetype').val("1");
+        $('#nextnode').val(parseInt(toEdit.nextnode) + 1);
     }
-    else if(type == "scene"){
-        //do
+    else if (type == "scene") {
+        $('#nodetype').val("2");
+        $('#nextnode').val(toEdit.nextnode);
     }
 }
 
-function editBackground(index){
+function editBackground(index) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    var toEdit = data[order[index]];
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#background"]').tab('show');
+    $('#bgurl').val(toEdit.url);
 }
 
-function editMusic(index){
+function editMusic(index) {
+    var data = JSON.parse($(".activity_data").html());
+    var order = JSON.parse($(".activity_order").html());
+    var toEdit = data[order[index]];
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#music"]').tab('show');
+    $('#musicurl').val(toEdit.url);
 }
 
 draw_activityBar();
