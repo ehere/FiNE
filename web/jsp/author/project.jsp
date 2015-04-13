@@ -71,8 +71,8 @@
         <div class="panel panel-success">
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Activity
-                <span style="position: absolute;right: 0;top: 0;">
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();changeSaveBtnToNew();">New</button>
+                <span  style="position: absolute;right: 0;top: 0;">
+                    <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();changeSaveBtnToNew();">New</button>
                 </span>
 
             </div>
