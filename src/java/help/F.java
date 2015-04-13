@@ -145,7 +145,7 @@ public class F implements Serializable {
         if(session.getAttribute("message") != null){
             String[] message = (String[]) session.getAttribute("message");
             String text = 
-                     "<div class=\"alert alert-"+message[1]+" alert-dismissible fade in\" role=\"alert\" style=\"margin-bottom: 0px;\">"
+                     "<div class=\"alert alert-"+message[1]+" alert-dismissible fade in\" role=\"alert\" style=\"margin-bottom: 0px;text-align: center;\">"
                     +    "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>"
                     +    "<strong>"+message[0] +"</strong>"
                     +"</div>";
