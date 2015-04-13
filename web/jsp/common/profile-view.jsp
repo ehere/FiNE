@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Your Name Here</h1>
+                <h1>ข้อมูลส่วนตัว</h1>
             </div>
         </div>
     </div>
@@ -42,37 +42,35 @@
                                         <table class="table table-user-information">
                                             <tbody>
                                                 <tr>
-                                                    <td>Department:</td>
-                                                    <td>Programming</td>
+                                                    <td>ชื่อ:</td>
+                                                    <td>${profile.fullname}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Hire date:</td>
-                                                    <td>06/23/2013</td>
+                                                    <td>อีเมล:</td>
+                                                    <td>${profile.email}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Date of Birth</td>
-                                                    <td>01/24/1988</td>
+                                                    <td>วันเกิด:</td>
+                                                    <td>${profile.birthday}</td>
                                                 </tr>
 
                                                 <tr>
                                                 <tr>
-                                                    <td>Gender</td>
-                                                    <td>Male</td>
+                                                    <td>สมัครสมาชิกเมื่อ:</td>
+                                                    <td>${profile.created_at}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Home Address</td>
-                                                    <td>Metro Manila,Philippines</td>
+                                                    <td>เล่นครั้งสุดท้าย:</td>
+                                                    <td>${lastplayTime}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Email</td>
-                                                    <td><a href="mailto:info@support.com">info@support.com</a></td>
+                                                    <td>Visual Novel ที่สร้าง:</td>
+                                                    <td>${profile.ownProjectID.size()} เรื่อง</td>
                                                 </tr>
-                                            <td>Phone Number</td>
-                                            <td>123-4567-890(Landline)<br><br>555-4567-890(Mobile)
-                                            </td>
-
-                                            </tr>
-
+                                                <tr>
+                                                    <td>Visual Novel ที่เคยซื้อ:</td>
+                                                    <td>${profile.purchaseProjectID.size()} เรื่อง</td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -97,60 +95,12 @@
                                 <h3 class="panel-title">Visual Novel by this user</h3>
                             </div>
                             <div class="panel-body">
-                                <div class="row">
+                                <c:forEach var="product" items="${profile.ownProject}">
                                     <div class="col-md-3 col-lg-3 " align="center">
                                         <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
+                                        <p style="text-align: center;">${product.title}</p>
                                     </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                    <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">This is a test novel.</p>
-                                    </div>
-                                </div>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>

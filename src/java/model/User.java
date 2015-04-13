@@ -12,7 +12,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,11 +43,11 @@ public class User implements Serializable{
         lastname = result.getString("lastname");
         email = result.getString("email");
         password = result.getString("password");
-        birthday = result.getString("birthday");
+        birthday = F.convertDate(result.getString("birthday"), "dd MMMMM yyyy");
         role = result.getString("role");
         image = result.getString("image");
-        created_at = result.getString("created_at");
-        updated_at = result.getString("updated_at");
+        created_at = F.convertDate(result.getString("created_at"), "dd MMMMM yyyy");
+        updated_at = F.convertDate(result.getString("updated_at"), "dd MMMMM yyyy");
 
     }
     
@@ -229,7 +232,6 @@ public class User implements Serializable{
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
         }   
         return list;
-    }      
-    
+    }
     
 }

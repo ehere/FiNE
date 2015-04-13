@@ -11,11 +11,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import model.Purchased;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -119,5 +123,20 @@ public class F implements Serializable {
             }
         }
         return "";
+    }
+    
+    public static String convertDate(String toConvert, String newFormat){
+        if(toConvert == null){
+            return null;
+        }
+        try {
+            SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            Date MyDate = newDateFormat.parse(toConvert);
+            newDateFormat.applyPattern(newFormat);
+            return newDateFormat.format(MyDate);
+        } catch (ParseException ex) {
+            Logger.getLogger(Purchased.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

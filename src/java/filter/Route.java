@@ -96,6 +96,15 @@ public class Route implements Filter {
             F.urlMapper("/author/project/{id}", url, request);
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
+        else if (F.isUrlMatch("/profile/{id}", url)) {
+            request.setAttribute("do", "view");
+            F.urlMapper("/profile/{id}", url, request);
+            request.getRequestDispatcher("/common.profile").forward(request, response);
+        }
+        else if (F.isUrlMatch("/profile", url)) {
+            request.setAttribute("do", "view");
+            request.getRequestDispatcher("/common.profile").forward(request, response);
+        }
     }
 
     public Route() {
