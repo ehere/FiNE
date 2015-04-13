@@ -32,7 +32,12 @@
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Profile</h3>
+                                <h3 class="panel-title">Profile
+                                <span class="pull-right">
+                                    <c:if test="${canEdit}">
+                                    <a href="edit" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit your profile</a>
+                                    </c:if>
+                                </span>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -77,12 +82,6 @@
                                 </div>
                             </div>
                             <div class="panel-footer">
-                                <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
-                                <span class="pull-right">
-                                    <c:if test="${canEdit}">
-                                    <a href="edit" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit your profile</a>
-                                    </c:if>
-                                </span>
                             </div>
 
                         </div>
@@ -93,10 +92,10 @@
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Visual Novel by this user</h3>
+                                <h3 class="panel-title">12 Latest Visual Novels by this user</h3>
                             </div>
                             <div class="panel-body">
-                                <c:forEach var="product" items="${profile.lastestOwnProject}">
+                                <c:forEach var="product" items="${profile.latestOwnProject}">
                                     <div class="col-md-3 col-lg-3 " align="center">
                                         <a href="<%= F.asset("/product")%>/${product.id}/view" style='text-decoration: none;'>
                                             <img src="${product.cover}" style="height: 100px; width: 100px;" class="img-circle" alt="${product.title}">

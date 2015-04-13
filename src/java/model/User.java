@@ -234,7 +234,7 @@ public class User implements Serializable{
         return list;
     }
     
-    public ArrayList<Project> getLastestOwnProject(){
+    public ArrayList<Project> getLatestOwnProject(){
         ArrayList<Project> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE `user_id` = ? ORDER BY `created_at` DESC LIMIT 0, 12;");
