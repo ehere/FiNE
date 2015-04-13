@@ -18,7 +18,7 @@
             <div class="menu-panel-list" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
                 <!---   ---->
                 <div class="panel-group" id="scene-list" role="tablist" aria-multiselectable="true">
-                    
+
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Activity
                 <span style="position: absolute;right: 0;top: 0;">
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal">New</button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();changeSaveBtnToNew();">New</button>
                 </span>
 
             </div>
@@ -87,127 +87,127 @@
 
 <div class="modal fade activity-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                    <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">Select Your activity</h4>
-                    </div>
-                    <div class="modal-body">
-                            <div class="panel">
-                                    <div class="tabbable tabs-left clearfix">
-                                            <ul id="activityTab" class="nav nav-tabs nav-justified">
-                                                    <li class="active"><a href="#dialog" data-toggle="tab">Dialog</a>
-                                                    </li>
-                                                    <li class=""><a href="#choice" data-toggle="tab">Choice</a>
-                                                    </li>
-                                                    <li class=""><a href="#goto" data-toggle="tab">Go to</a>
-                                                    </li>
-                                                    <li class=""><a href="#background" data-toggle="tab">Background</a>
-                                                    </li>
-                                                    <li class=""><a href="#music" data-toggle="tab">Music</a>
-                                                    </li>
-                                            </ul>
-                                            <div id="myTabContent" class="tab-content">
-                                                    <div class="tab-pane fade active in" id="dialog">
-                                                            <br>
-                                                            <br>
-                                                            <br>
-                                                            <div class="input-group">
-                                                                    <span class="input-group-addon">Title Box&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                                                    <input class="form-control" id="titleDialog">
-                                                            </div>
-                                                            <br>
-                                                            <div class="input-group">
-                                                                    <span class="input-group-addon">Dialog Box</span>
-                                                                    <textarea class="form-control" rows="5" style="resize: none;" id="textDialog"></textarea>
-                                                            </div>
-                                                            <br>
-                                                            <div class="input-group">
-                                                                    <input class="form-control" type="file">
-                                                                    <div class="input-group-btn">
-                                                                            <button type="submit" name="submit" class="btn btn-primary" tabindex="-1">Upload Dubsound</button>
-                                                                    </div>
-                                                            </div>
-                                                            <br> OR
-                                                            <br>
-                                                            <br>
-                                                            <div class="input-group">
-                                                                    <span class="input-group-addon">Sound URL</span>
-                                                                    <input class="form-control" id="soundDialog">
-                                                            </div>
-                                                            <br>
-                                                            <div class="pull-right">
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn btn-primary" onclick="newDialogActivity();">Save changes</button>
-                                                            </div>
-                                                            <br>
-                                                            <br>
-                                                    </div>
-                                                    <div class="tab-pane fade" id="choice">
-                                                            <br>
-                                                            <br>
-                                                            <br>
-                                                            <button type="button" class="btn btn-success" onclick="appendChoice();">New Choice</button>
-                                                            <br>
-                                                            <br>
-                                                            <div id="choiceArea">
-                                                                    <div class="choiceInput choiceA">
-                                                                            <div class="input-group">
-                                                                                    <span class="input-group-addon choice">A.</span>
-                                                                                    <input class="form-control choiceText" name="choiceText[]">
-                                                                                    <div class="row">
-                                                                                            <div class="col-md-4">
-                                                                                                    <select name="nodetype[]" class="selecter_basic nodetype">
-                                                                                                            <option value="1">Go to Activity</option>
-                                                                                                            <option value="2">Go to Scene</option>
-                                                                                                    </select>
-                                                                                            </div>
-                                                                                            <div class="col-md-4">
-                                                                                                    <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0">
-                                                                                            </div>
-                                                                                            <div class="col-md-4">
-                                                                                                    <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice('A');">Remove</button>
-                                                                                            </div>
-                                                                                    </div>
-                                                                            </div>
-                                                                    </div>
-                                                                    <br>
-                                                            </div>
-                                                            <div class="pull-right">
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn btn-primary" onclick="newChoiceActivity();">Save changes</button>
-                                                            </div>
-                                                            <br>
-                                                            <br>
-                                                    </div>
-                                                    <div class="tab-pane fade" id="goto">
-                                                            <br>
-                                                            <br>
-                                                            <br>
-                                                            <div class="col-md-4">
-                                                                    <select name="nodetype" id="nodetype" class="selecter_basict">
-                                                                            <option value="1">Go to Activity</option>
-                                                                            <option value="2">Go to Scene</option>
-                                                                    </select>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                    <input type="number" class="form-control" name="nextnode" id="nextnode" placeholder="Activity or Scene ID" min="0">
-                                                            </div>
-                                                            <br>
-                                                            <br>
-                                                            <br>
-                                                            <div class="pull-right">
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn btn-primary" onclick="newGoToActivity();">Save changes</button>
-                                                            </div>
-                                                            <br>
-                                                            <br>
-                                                    </div>
-                                                    <div class="tab-pane fade" id="background">
-                                                            <br>
-                                                            <br>
-                                                            <br>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Select Your activity</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel">
+                    <div class="tabbable tabs-left clearfix">
+                        <ul id="activityTab" class="nav nav-tabs nav-justified">
+                            <li class="active"><a href="#dialog" data-toggle="tab">Dialog</a>
+                            </li>
+                            <li class=""><a href="#choice" data-toggle="tab">Choice</a>
+                            </li>
+                            <li class=""><a href="#goto" data-toggle="tab">Go to</a>
+                            </li>
+                            <li class=""><a href="#background" data-toggle="tab">Background</a>
+                            </li>
+                            <li class=""><a href="#music" data-toggle="tab">Music</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade active in" id="dialog">
+                                <br>
+                                <br>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Title Box&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <input class="form-control" id="titleDialog">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Dialog Box</span>
+                                    <textarea class="form-control" rows="5" style="resize: none;" id="textDialog"></textarea>
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <input class="form-control" type="file">
+                                    <div class="input-group-btn">
+                                        <button type="submit" name="submit" class="btn btn-primary" tabindex="-1">Upload Dubsound</button>
+                                    </div>
+                                </div>
+                                <br> OR
+                                <br>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Sound URL</span>
+                                    <input class="form-control" id="soundDialog">
+                                </div>
+                                <br>
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary btn-newDialog" onclick="newDialogActivity();">Save changes</button>
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="tab-pane fade" id="choice">
+                                <br>
+                                <br>
+                                <br>
+                                <button type="button" class="btn btn-success" onclick="appendChoice();">New Choice</button>
+                                <br>
+                                <br>
+                                <div id="choiceArea">
+                                    <div class="choiceInput choiceA">
+                                        <div class="input-group">
+                                            <span class="input-group-addon choice">A.</span>
+                                            <input class="form-control choiceText" name="choiceText[]">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <select name="nodetype[]" class="selecter_basic nodetype">
+                                                        <option value="1">Go to Activity</option>
+                                                        <option value="2">Go to Scene</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice('A');">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary btn-newChoice" onclick="newChoiceActivity();">Save changes</button>
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="tab-pane fade" id="goto">
+                                <br>
+                                <br>
+                                <br>
+                                <div class="col-md-4">
+                                    <select name="nodetype" id="nodetype" class="selecter_basict">
+                                        <option value="1">Go to Activity</option>
+                                        <option value="2">Go to Scene</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" name="nextnode" id="nextnode" placeholder="Activity or Scene ID" min="0">
+                                </div>
+                                <br>
+                                <br>
+                                <br>
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary btn-newGoTo" onclick="newGoToActivity();">Save changes</button>
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="tab-pane fade" id="background">
+                                <br>
+                                <br>
+                                <br>
                                 <!-- <div class="input-group">
                                     <input class="form-control" type="file">
                                     <div class="input-group-btn">
@@ -225,15 +225,15 @@
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="newChangeBgActivity();">Save changes</button>
+                                    <button type="button" class="btn btn-primary btn-newChangeBg" onclick="newChangeBgActivity();">Save changes</button>
                                 </div>
                                 <br>
                                 <br>
                             </div>
                             <div class="tab-pane fade" id="music">
-                                    <br>
-                                    <br>
-                                    <br>
+                                <br>
+                                <br>
+                                <br>
                                 <!-- <div class="input-group">
                                     <input class="form-control" type="file">
                                     <div class="input-group-btn">
@@ -251,7 +251,7 @@
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="newChangeMusicActivity();">Save changes</button>
+                                    <button type="button" class="btn btn-primary btn-newChangeMusic" onclick="newChangeMusicActivity();">Save changes</button>
                                 </div>
                                 <br>
                                 <br>
@@ -263,6 +263,8 @@
         </div>
     </div>
 </div>
+
+
 <!-- -------------------- data zone --------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------- -->
 <div class="hidden activity_data"></div>
@@ -279,51 +281,51 @@
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script src="<%= F.asset("/js/activity_bar.js")%>"></script>
 <script>
-                            $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
-                            $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
+                                        $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
+                                        $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
 </script>
 <script>
     function drawSceneBar() {
         var scenelist = JSON.parse($(".allscene-list").html());
-        for(var key in scenelist) {
+        for (var key in scenelist) {
             var sceneID = key;
             var title = scenelist[key].title;
-            var row =                 
-                        '<div class="panel panel-default bs-callout bs-callout-default scene-row" style="padding-bottom: 0px">'+
-                            '<div class="" role="tab" id="heading'+sceneID+'">'+
-                                '<h4 class="panel-title">'+
-                                    '<a class="truncate" onclick="getDescription('+sceneID+',this)" data-toggle="collapse" data-parent="#scene-list" href="#collapse'+sceneID+'" aria-expanded="true" aria-controls="collapse'+sceneID+'">'+
-                                        sceneID + ': '+title+
-                                    '</a>'+
-                                '</h4>'+
-                            '</div>'+
-                            '<div id="collapse'+sceneID+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'+sceneID+'">'+
-                                '<div class="panel-body" style="padding-top: 0px;"></div>'+
-                            '</div>'+
-                        '</div>';
+            var row =
+                    '<div class="panel panel-default bs-callout bs-callout-default scene-row" style="padding-bottom: 0px">' +
+                    '<div class="" role="tab" id="heading' + sceneID + '">' +
+                    '<h4 class="panel-title">' +
+                    '<a class="truncate" onclick="getDescription(' + sceneID + ',this)" data-toggle="collapse" data-parent="#scene-list" href="#collapse' + sceneID + '" aria-expanded="true" aria-controls="collapse' + sceneID + '">' +
+                    sceneID + ': ' + title +
+                    '</a>' +
+                    '</h4>' +
+                    '</div>' +
+                    '<div id="collapse' + sceneID + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading' + sceneID + '">' +
+                    '<div class="panel-body" style="padding-top: 0px;"></div>' +
+                    '</div>' +
+                    '</div>';
             $("#scene-list").append(row);
 
         }
-        
+
     }
-    function getDescription(sceneID,element) {
-        $('#collapse'+sceneID).html("Loading...");
-        $.getJSON("<%= F.asset("/scene")%>"+"/"+sceneID)
-            .done(function (respond) {
-                var description = respond[sceneID].description;
-                var body = 
-                            '<div class="panel-body" style="padding-top: 0px;">'+
-                                description+'<br><br>'+
-                                '<button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>'+
-                                '<button type="button" class="btn btn-default" onclick="getScene('+ sceneID +',0)"><i class="glyphicon glyphicon-blackboard"></i> Edit Activity</button>'+
+    function getDescription(sceneID, element) {
+        $('#collapse' + sceneID).html("Loading...");
+        $.getJSON("<%= F.asset("/scene")%>" + "/" + sceneID)
+                .done(function (respond) {
+                    var description = respond[sceneID].description;
+                    var body =
+                            '<div class="panel-body" style="padding-top: 0px;">' +
+                            description + '<br><br>' +
+                            '<button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>' +
+                            '<button type="button" class="btn btn-default" onclick="getScene(' + sceneID + ',0)"><i class="glyphicon glyphicon-blackboard"></i> Edit Activity</button>' +
                             '</div>';
-                $('#collapse'+sceneID).html(body);
-            })
-            .fail(function (jqxhr, textStatus, error) {
-                alert("Something wrong.Please try again or refresh this page.");
-            });
+                    $('#collapse' + sceneID).html(body);
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    alert("Something wrong.Please try again or refresh this page.");
+                });
     }
-    
+
     drawSceneBar();
 </script>
 <jsp:include page="footer.jsp" />

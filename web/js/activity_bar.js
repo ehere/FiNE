@@ -491,26 +491,32 @@ function editActivity(index) {
 
     if (data[order[index]].type == 1) {
         //Dialog
+        changeSaveBtnToEdit("Dialog", index);
         editDialog(index);
     }
     else if (data[order[index]].type == 2) {
         //Choice
+        changeSaveBtnToEdit("Choice", index);
         editChoice(index);
     }
     else if (data[order[index]].type == 3) {
         //Go to act
+        changeSaveBtnToEdit("GoTo", index);
         editGoto(index, "act");
     }
     else if (data[order[index]].type == 4) {
         //Go to scene
+        changeSaveBtnToEdit("GoTo", index);
         editGoto(index, "scene");
     }
     else if (data[order[index]].type == 5) {
         //Change BG img
+        changeSaveBtnToEdit("ChangeBg", index);
         editBackground(index);
     }
     else if (data[order[index]].type == 6) {
         //Change music
+        changeSaveBtnToEdit("ChangeMusic", index);
         editMusic(index);
     }
     draw_activityBar();
@@ -585,5 +591,21 @@ function editMusic(index) {
     $('#musicurl').val(toEdit.url);
 }
 
+function clearInput(){
+    $('.activity-modal, input').val('');
+    $('.activity-modal, textarea').val('');
+}
+
+function changeSaveBtnToNew(){
+    $('btn-newDialog').attr("onclick", "newDialogActivity();");
+    $('btn-newChoice').attr("onclick", "newChoiceActivity();");
+    $('btn-newGoTo').attr("onclick", "newGoToActivity();");
+    $('btn-newChangeBg').attr("onclick", "newChangeBgActivity();");
+    $('btn-newChangeMusic').attr("onclick", "newChangeMusicActivity();");
+}
+
+function changeSaveBtnToEdit(button, idx){
+    $('btn-new'+button).attr("onclick", "edit"+button+"Activity("+idx+");");
+}
 draw_activityBar();
 $("select").selecter();
