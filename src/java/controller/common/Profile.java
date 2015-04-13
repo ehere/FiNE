@@ -78,8 +78,16 @@ public class Profile extends HttpServlet {
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?;");
                 pstmt.setString(1, id);
                 ResultSet result = pstmt.executeQuery();
-                result.next();
-                User viewUser = new User(result);
+                User viewUser;
+                if (result.next()) {
+                    //found
+                    viewUser = new User(result);
+                } else {
+                    //not found
+                    viewUser = user;
+                    String[] message = {"ไม่พบข้อมูลของผู้ใช้ดังกล่าว", "danger"};
+                    session.setAttribute("message", message);
+                }
 
                 request.setAttribute("profile", viewUser);
                 result.close();
@@ -124,20 +132,19 @@ public class Profile extends HttpServlet {
             pstmt.close();
             if (success != 0) {
                 //success
-                if(!request.getParameter("password").equals("")){
-                    if(request.getParameter("password").equals(request.getParameter("c-password"))){
+                if (!request.getParameter("password").equals("")) {
+                    if (request.getParameter("password").equals(request.getParameter("c-password"))) {
                         PreparedStatement pstmt2 = conn.prepareStatement("UPDATE `user` SET `password` = ?, `updated_at` = CURRENT_TIMESTAMP() WHERE `user`.`id` = " + user.getId() + ";");
                         pstmt2.setString(1, F.encodePwd(request.getParameter("password")));
                         success2 = pstmt2.executeUpdate();
                         pstmt2.close();
-                    }
-                    else{
+                    } else {
                         success2 = 0;
                     }
                 }
             }
-            
-            if(success != 0 && success2 != 0){
+
+            if (success != 0 && success2 != 0) {
                 PreparedStatement userPstmt = conn.prepareStatement("SELECT * FROM user WHERe id = ?");
                 userPstmt.setInt(1, user.getId());
                 ResultSet result = userPstmt.executeQuery();
@@ -162,7 +169,6 @@ public class Profile extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-
     /**
      * Handles the HTTP <code>GET</code> method.
      *

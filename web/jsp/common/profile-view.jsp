@@ -95,6 +95,9 @@
                                 <h3 class="panel-title">12 Latest Visual Novels by this user</h3>
                             </div>
                             <div class="panel-body">
+                                <c:if test="${profile.latestOwnProjectID.size() == 0}">
+                                    <h5 style="text-align: center;">ไม่มี Visual Novel ที่เป็นของผู้ใช้คนนี้</h5>
+                                </c:if>
                                 <c:forEach var="product" items="${profile.latestOwnProject}">
                                     <div class="col-md-3 col-lg-3 " align="center">
                                         <a href="<%= F.asset("/product")%>/${product.id}/view" style='text-decoration: none;'>
