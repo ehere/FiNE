@@ -47,41 +47,40 @@ public class Profile extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        if(!F.isLoggedIn(request.getSession())){
+        if (!F.isLoggedIn(request.getSession())) {
             response.sendRedirect(F.asset("/login"));
             return;
         }
         String method = (String) request.getAttribute("do");
         if (method.equals("edit")) {
-            //go edit
-        } else if(method.equals("view")) {
+            edit(request, response);
+        } else if (method.equals("view")) {
             show(request, response);
         }
     }
-    
-    protected void show(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException{
+
+    protected void show(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
         Connection conn = F.getConnection();
         HttpSession session = request.getSession();
         String id = (String) request.getAttribute("id");
-        System.out.println("ID : "+id);
+        System.out.println("ID : " + id);
         User user = (User) session.getAttribute("user");
-        if(id == null){
+        if (id == null) {
             //send user to profile
             request.setAttribute("profile", user);
             request.setAttribute("canEdit", true);
-        }
-        else{
+        } else {
             //search for new user
-            
+
             try {
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?;");
                 pstmt.setString(1, id);
                 ResultSet result = pstmt.executeQuery();
                 result.next();
                 User viewUser = new User(result);
-                
+
                 request.setAttribute("profile", viewUser);
                 result.close();
                 pstmt.close();
@@ -95,10 +94,9 @@ public class Profile extends HttpServlet {
             PreparedStatement lastplayPsmt = conn.prepareStatement("SELECT * FROM `save` JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? ORDER BY `save`.created_at DESC;");
             lastplayPsmt.setInt(1, profileUser.getId());
             ResultSet result = lastplayPsmt.executeQuery();
-            if(result.next()){
+            if (result.next()) {
                 request.setAttribute("lastplayTime", F.convertDate(result.getString("created_at"), "dd MMMMM yyyy"));
-            }
-            else{
+            } else {
                 request.setAttribute("lastplayTime", "ยังไม่เคยเล่น");
             }
             lastplayPsmt.close();
@@ -107,11 +105,64 @@ public class Profile extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         request.getRequestDispatcher("/jsp/common/profile-view.jsp").forward(request, response);
     }
 
+    protected void edit(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+        request.setCharacterEncoding("utf-8");
+        Connection conn = F.getConnection();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE `user` SET `prefix` = ?, `firstname` = ?, `lastname` = ?, `updated_at` = CURRENT_TIMESTAMP() WHERE `user`.`id` = " + user.getId() + ";");
+            pstmt.setString(1, request.getParameter("prefix"));
+            pstmt.setString(2, request.getParameter("firstname"));
+            pstmt.setString(3, request.getParameter("lastname"));
+            int success = pstmt.executeUpdate();
+            int success2 = 1;
+            pstmt.close();
+            if (success != 0) {
+                //success
+                if(!request.getParameter("password").equals("")){
+                    if(request.getParameter("password").equals(request.getParameter("c-password"))){
+                        PreparedStatement pstmt2 = conn.prepareStatement("UPDATE `user` SET `password` = ?, `updated_at` = CURRENT_TIMESTAMP() WHERE `user`.`id` = " + user.getId() + ";");
+                        pstmt2.setString(1, F.encodePwd(request.getParameter("password")));
+                        success2 = pstmt2.executeUpdate();
+                        pstmt2.close();
+                    }
+                    else{
+                        success2 = 0;
+                    }
+                }
+            }
+            
+            if(success != 0 && success2 != 0){
+                PreparedStatement userPstmt = conn.prepareStatement("SELECT * FROM user WHERe id = ?");
+                userPstmt.setInt(1, user.getId());
+                ResultSet result = userPstmt.executeQuery();
+                result.next();
+                user = new User(result);
+                session.setAttribute("user", user);
+                result.close();
+                userPstmt.close();
+                conn.close();
+                String[] message = {"แก้ไขข้อมูลส่วนตัวเรียบร้อยแล้ว", "success"};
+                session.setAttribute("message", message);
+                response.sendRedirect(F.asset("/profile"));
+            } else {
+                conn.close();
+                String[] message = {"มีข้อผิดพลาดเกิดขึ้น กรุณาตรวจสอบว่าใส่ข้อมูลถูกต้องหรือไม่", "danger"};
+                session.setAttribute("message", message);
+                response.sendRedirect(F.asset("/profile/edit"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

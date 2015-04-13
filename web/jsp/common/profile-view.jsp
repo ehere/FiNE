@@ -33,11 +33,11 @@
                         <div class="panel panel-info">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Profile
-                                <span class="pull-right">
-                                    <c:if test="${canEdit}">
-                                    <a href="edit" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit your profile</a>
-                                    </c:if>
-                                </span>
+                                    <span class="pull-right">
+                                        <c:if test="${canEdit}">
+                                            <a href="<%= F.asset("/profile/edit") %>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
+                                        </c:if>
+                                    </span>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -86,7 +86,7 @@
 
                         </div>
                     </div>
-                    
+
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 toppad" >
 
 
@@ -112,5 +112,6 @@
         </div>
     </div>
 </div>
+
 
 <jsp:include page="footer.jsp" />
