@@ -169,7 +169,7 @@ function blinking(elm) {
 function getScene(sceneID, index) {
     $.getJSON("/fine/scene/" + sceneID + "/activity")
             .done(function (data) {
-                if ($.trim(data.data) !== "{}" && $.trim(data.order) !== "{}") {
+                if (data.data.indexOf("{") !== -1) {
                     $('.activity_data').html(data.data);
                     $('.activity_order').html(data.order);
                     $("#typed").typed('reset');
@@ -178,7 +178,7 @@ function getScene(sceneID, index) {
                 }
                 else {
                     //no next scene
-                    alert("This is the last Scene");
+                    alert(data.data);
                 }
                 if($('.mode').html() == 'edit'){
                     draw_activityBar();

@@ -19,6 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -44,20 +46,30 @@ public class Scene extends HttpServlet {
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
         try (PrintWriter out = response.getWriter()) {
             Connection conn = F.getConnection();
             PreparedStatement scene_query = conn.prepareStatement("SELECT * FROM scenario WHERE id = ?;");
             scene_query.setString(1, id);
             ResultSet result = scene_query.executeQuery();
+
             JSONObject scene_list = new JSONObject();
 
-            while (result.next()) {
+            if (result.next()) {
+                Integer projectID = result.getInt("project_id");
+                if (!F.isLoggedIn(session)
+                        || !(user.getPurchaseProjectID().contains(projectID) || user.getOwnProjectID().contains(projectID))) {
+                    return;
+                }
                 JSONObject scene_data = new JSONObject();
                 scene_data.put("title", result.getString("title"));
                 scene_data.put("description", result.getString("description"));
                 scene_list.put(result.getString("id"), scene_data);
+                out.println(scene_list.toJSONString());
             }
-            out.println(scene_list.toJSONString());
+
             result.close();
             scene_query.close();
             conn.close();
@@ -69,13 +81,40 @@ public class Scene extends HttpServlet {
     protected void activity(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
         try (PrintWriter out = response.getWriter()) {
             Connection conn = F.getConnection();
+            JSONObject activity = new JSONObject();
+
+            PreparedStatement scene_query = conn.prepareStatement("SELECT * FROM scenario WHERE id = ?;");
+            scene_query.setString(1, id);
+            ResultSet scene_result = scene_query.executeQuery();
+            if (!scene_result.next()) {
+                activity.put("data", "Scene not found.");
+                out.print(activity);
+                scene_result.close();
+                scene_query.close();
+                conn.close();
+                return;
+            } else {
+                Integer projectID = scene_result.getInt("project_id");
+                if (!F.isLoggedIn(session)
+                        || !(user.getPurchaseProjectID().contains(projectID) || user.getOwnProjectID().contains(projectID))) {
+                    activity.put("data", "Permission Denied.");
+                    out.print(activity);
+                    scene_result.close();
+                    scene_query.close();
+                    conn.close();
+                    return;
+                }
+            }
+
             PreparedStatement activity_query = conn.prepareStatement("SELECT * FROM activity WHERE scenario_id = ? ORDER BY `activity`.`order` ASC;");
             activity_query.setString(1, id);
             ResultSet activities = activity_query.executeQuery();
-            JSONObject activity = new JSONObject();
+
             JSONObject activity_data = new JSONObject();
             JSONArray activity_order = new JSONArray();
             while (activities.next()) {
@@ -122,7 +161,7 @@ public class Scene extends HttpServlet {
                     activity_data.put(activity_id + "", act);
                     result.close();
                     choice_query.close();
-                    
+
                 } else if (type == 3 || type == 4) {
                     //goto activity or scene
                     PreparedStatement goto_query = conn.prepareStatement("SELECT * FROM activity_goto WHERE activity_id = ?;");
