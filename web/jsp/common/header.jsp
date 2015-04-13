@@ -65,6 +65,9 @@
                             <a href="<%= F.asset("/inventory") %>">Your Inventory</a>
                         </li>
                         <li>
+                            <a href="<%= F.asset("/profile") %>">Your Profile</a>
+                        </li>
+                        <li>
                             <a href="<%= F.asset("/about") %>">About Us</a>
                         </li>
                     </ul>
