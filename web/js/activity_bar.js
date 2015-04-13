@@ -626,8 +626,7 @@ function editDialogActivity(index){
     $('.activity-modal').modal('hide');
 
     draw_activityBar();
-    var playing = $(".play_index").html();
-    previewActivity(parseInt(playing));
+    previewActivity(index);
 }
 
 function editChoiceActivity(index){
@@ -656,8 +655,7 @@ function editChoiceActivity(index){
     $('.activity-modal').modal('hide');
 
     draw_activityBar();
-    var playing = $(".play_index").html();
-    previewActivity(parseInt(playing));
+    previewActivity(index);
 }
 
 function editGoToActivity(index) {
@@ -687,8 +685,7 @@ function editGoToActivity(index) {
     $('.activity-modal').modal('hide');
 
     draw_activityBar();
-    var playing = $(".play_index").html();
-    previewActivity(parseInt(playing));
+    previewActivity(index);
 }
 
 function editChangeBgActivity(index) {
@@ -710,10 +707,10 @@ function editChangeBgActivity(index) {
 
     draw_activityBar();
     var playing = $(".play_index").html();
-    previewActivity(parseInt(playing));
+    previewActivity(index);
 }
 
-function newChangeMusicActivity(actity_id, index) {
+function editChangeMusicActivity(actity_id, index) {
     /*
      "14":{"type":6, "url":"http://aaa.com"}, 
      */

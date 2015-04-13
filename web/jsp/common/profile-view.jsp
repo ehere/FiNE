@@ -79,8 +79,9 @@
                             <div class="panel-footer">
                                 <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
                                 <span class="pull-right">
-                                    <a href="edit.html" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <a data-original-title="Remove this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                                    <c:if test="${canEdit}">
+                                    <a href="edit" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit your profile</a>
+                                    </c:if>
                                 </span>
                             </div>
 
@@ -95,10 +96,12 @@
                                 <h3 class="panel-title">Visual Novel by this user</h3>
                             </div>
                             <div class="panel-body">
-                                <c:forEach var="product" items="${profile.ownProject}">
+                                <c:forEach var="product" items="${profile.lastestOwnProject}">
                                     <div class="col-md-3 col-lg-3 " align="center">
-                                        <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle">
-                                        <p style="text-align: center;">${product.title}</p>
+                                        <a href="<%= F.asset("/product")%>/${product.id}/view" style='text-decoration: none;'>
+                                            <img src="${product.cover}" style="height: 100px; width: 100px;" class="img-circle" alt="${product.title}">
+                                            <p style="text-align: center;">${product.title}</p>
+                                        </a>
                                     </div>
                                 </c:forEach>
                             </div>

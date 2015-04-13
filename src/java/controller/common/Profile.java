@@ -70,6 +70,7 @@ public class Profile extends HttpServlet {
         if(id == null){
             //send user to profile
             request.setAttribute("profile", user);
+            request.setAttribute("canEdit", true);
         }
         else{
             //search for new user
@@ -87,6 +88,7 @@ public class Profile extends HttpServlet {
             } catch (SQLException ex) {
                 Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
             }
+            request.setAttribute("canEdit", false);
         }
         User profileUser = (User) request.getAttribute("profile");
         try {

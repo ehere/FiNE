@@ -234,4 +234,22 @@ public class User implements Serializable{
         return list;
     }
     
+    public ArrayList<Project> getLastestOwnProject(){
+        ArrayList<Project> list = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE `user_id` = ? ORDER BY `created_at` DESC LIMIT 0, 12;");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            while (result.next()) {
+                Project project = new Project(result);
+                list.add(project);
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+        return list;
+    }
 }
