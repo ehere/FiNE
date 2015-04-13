@@ -20,6 +20,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.User;
 import org.json.simple.JSONObject;
 
 /**
@@ -51,17 +53,25 @@ public class AuthorProject extends HttpServlet {
     protected void show(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
-        try(Connection conn = F.getConnection()) {
-            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM scenario;");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
+            String[] message = {"You doesn't have permission to edit this project !","danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/product"));
+            return;
+        }
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM scenario WHERE project_id =?;");
+            psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
             JSONObject allscene = new JSONObject();
-            while(result.next()){
+            while (result.next()) {
                 JSONObject scene = new JSONObject();
                 scene.put("title", result.getString("title"));
                 allscene.put(result.getString("id"), scene);
             }
             request.setAttribute("allscene", allscene.toJSONString());
-            System.out.println(allscene.toJSONString());
             result.close();
             psmt.close();
             conn.close();

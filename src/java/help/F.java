@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import sun.misc.BASE64Encoder;
@@ -119,5 +120,25 @@ public class F implements Serializable {
             }
         }
         return "";
+    }
+    
+    public static String getMessage(HttpSession session){
+        if(session.getAttribute("message") != null){
+            String[] message = (String[]) session.getAttribute("message");
+            String text = 
+                     "<div class=\"alert alert-"+message[1]+" alert-dismissible fade in\" role=\"alert\" style=\"margin-bottom: 0px;\">"
+                    +    "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>"
+                    +    "<strong>"+message[0] +"</strong>"
+                    +"</div>";
+            session.setAttribute("message",null);
+            return text;
+        }
+        return "";
+    }
+    public static boolean hasMessage(HttpSession session){
+        if(session.getAttribute("message") != null){
+            return true;
+        }
+        return false;
     }
 }
