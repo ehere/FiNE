@@ -519,7 +519,7 @@ function editActivity(index) {
         changeSaveBtnToEdit("ChangeMusic", index);
         editMusic(index);
     }
-    draw_activityBar();
+    
 }
 
 function editDialog(index) {
@@ -607,5 +607,133 @@ function changeSaveBtnToNew(){
 function changeSaveBtnToEdit(button, idx){
     $('.btn-new'+button+'').attr("onclick", "edit"+button+"Activity("+idx+");");
 }
+
+function editDialogActivity(index){
+    var order = JSON.parse($(".activity_order").html());
+    
+    var titleDialog = $("#titleDialog").val();
+    var textDialog = $("#textDialog").val();
+    var soundDialog = $("#soundDialog").val();
+
+    var data = JSON.parse($(".activity_data").html());
+    data[""+order[index]] = {"type": 1, "title": titleDialog, "text": textDialog, "sound": soundDialog};
+    $(".activity_data").html(JSON.stringify(data));
+
+    $("#titleDialog").val("");
+    $("#textDialog").val("");
+    $("#soundDialog").val("");
+
+    $('.activity-modal').modal('hide');
+
+    draw_activityBar();
+    var playing = $(".play_index").html();
+    previewActivity(parseInt(playing));
+}
+
+function editChoiceActivity(index){
+    var text;
+    var action;
+    var nextnode;
+    var choices = new Array();
+    $('.choiceInput').each(function () {
+        text = $(this).find(".choiceText").val();
+        action = $(this).find(".nodetype").val();
+        nextnode = $(this).find(".goid").val();
+        nextnode = parseInt(nextnode, 10) - 1;
+        choices.push({"text": text, "action": action, "nextnode": nextnode});
+        //alert(nextnode);
+        $(this).find(".choiceText").val("");
+        $(this).find(".nodetype").val("1");
+        $(this).find(".goid").val("");
+    });
+
+    var order = JSON.parse($(".activity_order").html());
+
+    var data = JSON.parse($(".activity_data").html());
+    data[""+order[index]] = {"type": 2, "choice": choices};
+    $(".activity_data").html(JSON.stringify(data));
+
+    $('.activity-modal').modal('hide');
+
+    draw_activityBar();
+    var playing = $(".play_index").html();
+    previewActivity(parseInt(playing));
+}
+
+function editGoToActivity(index) {
+    /*
+     "15":{"type":3, "nextnode":"17"},
+     "16":{"type":4, "nextnode":"21"}, 
+     */
+    var nextnode = -1;
+    if ($("#nodetype").val() == 1) {
+        var type = 3;
+        nextnode = (parseInt($("#nextnode").val()) - 1);
+    }
+    else {
+        var type = 4;
+        nextnode = $("#nextnode").val();
+    }
+    
+    var order = JSON.parse($(".activity_order").html());
+
+    var data = JSON.parse($(".activity_data").html());
+    data[order[index]] = {"type": type, "nextnode": nextnode};
+    $(".activity_data").html(JSON.stringify(data));
+
+    $("#nodetype").val("1");
+    $("#nextnode").val("");
+
+    $('.activity-modal').modal('hide');
+
+    draw_activityBar();
+    var playing = $(".play_index").html();
+    previewActivity(parseInt(playing));
+}
+
+function editChangeBgActivity(index) {
+    /*
+     "17":{"type":5, "url":"http://aaa.com"} 
+     */
+    var type = 5
+    var url = $("#bgurl").val();
+
+    var order = JSON.parse($(".activity_order").html());
+
+    var data = JSON.parse($(".activity_data").html());
+    data[order[index]] = {"type": type, "url": url};
+    $(".activity_data").html(JSON.stringify(data));
+
+    $("#bgurl").val("");
+
+    $('.activity-modal').modal('hide');
+
+    draw_activityBar();
+    var playing = $(".play_index").html();
+    previewActivity(parseInt(playing));
+}
+
+function newChangeMusicActivity(actity_id, index) {
+    /*
+     "14":{"type":6, "url":"http://aaa.com"}, 
+     */
+    var type = 6
+    var url = $("#musicurl").val();
+
+    var order = JSON.parse($(".activity_order").html());
+
+    var data = JSON.parse($(".activity_data").html());
+    data[order[index]] = {"type": type, "url": url};
+    $(".activity_data").html(JSON.stringify(data));
+
+    $("#musicurl").val("");
+
+    $('.activity-modal').modal('hide');
+
+    draw_activityBar();
+    var playing = $(".play_index").html();
+    previewActivity(parseInt(playing));
+}
+
 draw_activityBar();
 $("select").selecter();
