@@ -1,5 +1,6 @@
 function  draw_activityBar() {
     $(".activity_bar").text('');
+    $('#newActBtn').removeClass("hidden");
     var data = JSON.parse($(".activity_data").html());
     var order = JSON.parse($(".activity_order").html());
     for (var index = 0; index < order.length; index++) {
@@ -60,16 +61,6 @@ function  draw_activityBar() {
                 '</button>' +
                 '<button type="button" onclick="removeActivity(' + index + ');" class="btn btn-sm btn-default">' +
                 '<span class="glyphicon glyphicon-remove"></span>' +
-                '</button>' +
-                '<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">' +
-                '<span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span>' +
-                '</button>' +
-                '<ul class="dropdown-menu" role="menu">' +
-                '<li><a href="#">Action</a></li>' +
-                '<li><a href="#">Another action</a></li>' +
-                '<li><a href="#">Something else here</a></li>' +
-                '<li class="divider"></li><li><a href="#">Separated link</a></li>' +
-                '</ul>' +
                 '</div>';
         var row =
                 '<div class="panel panel-default bs-callout ' + classColor + '">' +
@@ -732,5 +723,5 @@ function editChangeMusicActivity(actity_id, index) {
     previewActivity(parseInt(playing));
 }
 
-draw_activityBar();
+//draw_activityBar();
 $("select").selecter();
