@@ -597,15 +597,15 @@ function clearInput(){
 }
 
 function changeSaveBtnToNew(){
-    $('btn-newDialog').attr("onclick", "newDialogActivity();");
-    $('btn-newChoice').attr("onclick", "newChoiceActivity();");
-    $('btn-newGoTo').attr("onclick", "newGoToActivity();");
-    $('btn-newChangeBg').attr("onclick", "newChangeBgActivity();");
-    $('btn-newChangeMusic').attr("onclick", "newChangeMusicActivity();");
+    $('.btn-newDialog').attr("onclick", "newDialogActivity();");
+    $('.btn-newChoice').attr("onclick", "newChoiceActivity();");
+    $('.btn-newGoTo').attr("onclick", "newGoToActivity();");
+    $('.btn-newChangeBg').attr("onclick", "newChangeBgActivity();");
+    $('.btn-newChangeMusic').attr("onclick", "newChangeMusicActivity();");
 }
 
 function changeSaveBtnToEdit(button, idx){
-    $('btn-new'+button).attr("onclick", "edit"+button+"Activity("+idx+");");
+    $('.btn-new'+button+'').attr("onclick", "edit"+button+"Activity("+idx+");");
 }
 draw_activityBar();
 $("select").selecter();
