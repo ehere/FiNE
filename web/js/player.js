@@ -181,6 +181,7 @@ function getScene(sceneID, index) {
                     alert(data.data);
                 }
                 if($('.mode').html() == 'edit'){
+                    $('#saveActBtn').attr("onclick","saveActivity("+ sceneID +");");
                     draw_activityBar();
                     $('.scene-row').removeClass('bs-callout-warning').addClass("bs-callout-default");
                     $('#heading'+sceneID).parent().removeClass('bs-callout-default').addClass("bs-callout-warning");

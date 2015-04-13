@@ -11,6 +11,7 @@ function  draw_activityBar() {
         var expand = "";
         if (data[order[index]].type == 1) {
             title = data[order[index]].title;
+            expand = "in";
             if (title.trim() == '') {
                 title = "No Title";
             }
@@ -163,6 +164,7 @@ function draw_activityBar1() {
 }
 
 function moveActivityUp(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     var order = JSON.parse($(".activity_order").html());
     if (index != 0) {
         var temp = order[index];
@@ -174,6 +176,7 @@ function moveActivityUp(actity_id, index) {
 }
 
 function moveActivityDown(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     var order = JSON.parse($(".activity_order").html());
     if (index != order.length - 1) {
         var temp = order[index];
@@ -185,6 +188,7 @@ function moveActivityDown(actity_id, index) {
 }
 
 function newDialogActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     var newActivity = JSON.parse($(".activity_newID").html());
     if (newActivity.length == 0) {
         newActivityID = -1;
@@ -218,6 +222,7 @@ function newDialogActivity(actity_id, index) {
 }
 
 function newChoiceActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "13":{"type":2, "choice":[
      {"text":"A.Yes","action":1,"nextnode":21},
@@ -271,6 +276,7 @@ function newChoiceActivity(actity_id, index) {
 
 
 function newGoToActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "15":{"type":3, "nextnode":"17"},
      "16":{"type":4, "nextnode":"21"}, 
@@ -314,6 +320,7 @@ function newGoToActivity(actity_id, index) {
 }
 
 function newChangeBgActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "17":{"type":5, "url":"http://aaa.com"} 
      */
@@ -347,6 +354,7 @@ function newChangeBgActivity(actity_id, index) {
 }
 
 function newChangeMusicActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "14":{"type":6, "url":"http://aaa.com"}, 
      */
@@ -388,7 +396,7 @@ function appendChoice() {
         var choiceScript = '<div class="choiceInput choice' + text[count] + '"> \
                                 <div class="input-group"> \
                                     <span class="input-group-addon choice">' + text[count] + '.</span> \
-                                    <input class="form-control choiceText choiceText'+ text[count] +'" name="choiceText"> \
+                                    <input class="form-control choiceText choiceText' + text[count] + '" name="choiceText"> \
                                     <div class="row"> \
                                         <div class="col-md-4"> \
                                             <select name="nodetype[]" class="selecter_basic nodetype"> \
@@ -397,7 +405,7 @@ function appendChoice() {
                                             </select> \
                                         </div> \
                                         <div class="col-md-4"> \
-                                            <input type="number" class="form-control goid goid'+ text[count] +'" name="goid[]" placeholder="Activity or Scene ID" min="0"> \
+                                            <input type="number" class="form-control goid goid' + text[count] + '" name="goid[]" placeholder="Activity or Scene ID" min="0"> \
                                         </div> \
                                         <div class="col-md-4"> \
                                             <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice(\'' + text[count] + '\');">Remove</button> \
@@ -453,26 +461,30 @@ function removeChoice(choice) {
 }
 
 function removeActivity(index) {
-    var order = JSON.parse($(".activity_order").html());
-    var actity_id = order[index];
-    var activityData = JSON.parse($(".activity_data").html());
-    if (activityData.hasOwnProperty(actity_id)) {
-        delete activityData[actity_id];
-        $(".activity_data").html(JSON.stringify(activityData));
-    }
-    var activityOrder = JSON.parse($(".activity_order").html());
-    if (activityOrder.indexOf(actity_id) >= 0) {
-        activityOrder.splice(index, 1);
-        alert("Changed" + activityOrder.toString());
-        $(".activity_order").html(JSON.stringify(activityOrder));
-    }
-    var activityNew = JSON.parse($(".activity_newID").html());
-    if (activityNew.indexOf(actity_id) >= 0) {
-        activityNew.splice(activityNew.indexOf(actity_id), 1);
-        $(".activity_newID").html(JSON.stringify(activityNew));
-    }
+    if (confirm("Are you sure to remove this activity.")) {
+        $('#saveActBtn').removeClass("hidden");
+        var order = JSON.parse($(".activity_order").html());
+        var actity_id = order[index];
+        var activityData = JSON.parse($(".activity_data").html());
+        if (activityData.hasOwnProperty(actity_id)) {
+            delete activityData[actity_id];
+            $(".activity_data").html(JSON.stringify(activityData));
+        }
+        var activityOrder = JSON.parse($(".activity_order").html());
+        if (activityOrder.indexOf(actity_id) >= 0) {
+            activityOrder.splice(index, 1);
+            //alert("Changed" + activityOrder.toString());
+            $(".activity_order").html(JSON.stringify(activityOrder));
+        }
+        var activityNew = JSON.parse($(".activity_newID").html());
+        if (activityNew.indexOf(actity_id) >= 0) {
+            activityNew.splice(activityNew.indexOf(actity_id), 1);
+            $(".activity_newID").html(JSON.stringify(activityNew));
+        }
 
-    draw_activityBar();
+        draw_activityBar();
+        previewActivity(index);
+    }
 
 }
 
@@ -510,7 +522,7 @@ function editActivity(index) {
         changeSaveBtnToEdit("ChangeMusic", index);
         editMusic(index);
     }
-    
+
 }
 
 function editDialog(index) {
@@ -532,18 +544,18 @@ function editChoice(index) {
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#choice"]').tab('show');
     var text = ["A", "B", "C", "D"];
-    for(var i=0; i < 4; i++){
+    for (var i = 0; i < 4; i++) {
         removeChoice('A');
     }
-    for(var i=0; i < toEdit.choice.length; i++){
+    for (var i = 0; i < toEdit.choice.length; i++) {
         appendChoice();
     }
     var x = 0;
     $.each(toEdit.choice, function (i, item) {
-        var selector = '.choiceText'+text[x];
+        var selector = '.choiceText' + text[x];
         $(selector).val(item.text);
-        selector = '.goid'+text[x];
-        $(selector).val(parseInt(item.nextnode)+1);
+        selector = '.goid' + text[x];
+        $(selector).val(parseInt(item.nextnode) + 1);
         x = x + 1;
     });
 }
@@ -582,12 +594,12 @@ function editMusic(index) {
     $('#musicurl').val(toEdit.url);
 }
 
-function clearInput(){
+function clearInput() {
     $('.activity-modal, input').val('');
     $('.activity-modal, textarea').val('');
 }
 
-function changeSaveBtnToNew(){
+function changeSaveBtnToNew() {
     $('.btn-newDialog').attr("onclick", "newDialogActivity();");
     $('.btn-newChoice').attr("onclick", "newChoiceActivity();");
     $('.btn-newGoTo').attr("onclick", "newGoToActivity();");
@@ -595,19 +607,20 @@ function changeSaveBtnToNew(){
     $('.btn-newChangeMusic').attr("onclick", "newChangeMusicActivity();");
 }
 
-function changeSaveBtnToEdit(button, idx){
-    $('.btn-new'+button+'').attr("onclick", "edit"+button+"Activity("+idx+");");
+function changeSaveBtnToEdit(button, idx) {
+    $('.btn-new' + button + '').attr("onclick", "edit" + button + "Activity(" + idx + ");");
 }
 
-function editDialogActivity(index){
+function editDialogActivity(index) {
+    $('#saveActBtn').removeClass("hidden");
     var order = JSON.parse($(".activity_order").html());
-    
+
     var titleDialog = $("#titleDialog").val();
     var textDialog = $("#textDialog").val();
     var soundDialog = $("#soundDialog").val();
 
     var data = JSON.parse($(".activity_data").html());
-    data[""+order[index]] = {"type": 1, "title": titleDialog, "text": textDialog, "sound": soundDialog};
+    data["" + order[index]] = {"type": 1, "title": titleDialog, "text": textDialog, "sound": soundDialog};
     $(".activity_data").html(JSON.stringify(data));
 
     $("#titleDialog").val("");
@@ -620,7 +633,8 @@ function editDialogActivity(index){
     previewActivity(index);
 }
 
-function editChoiceActivity(index){
+function editChoiceActivity(index) {
+    $('#saveActBtn').removeClass("hidden");
     var text;
     var action;
     var nextnode;
@@ -640,7 +654,7 @@ function editChoiceActivity(index){
     var order = JSON.parse($(".activity_order").html());
 
     var data = JSON.parse($(".activity_data").html());
-    data[""+order[index]] = {"type": 2, "choice": choices};
+    data["" + order[index]] = {"type": 2, "choice": choices};
     $(".activity_data").html(JSON.stringify(data));
 
     $('.activity-modal').modal('hide');
@@ -650,6 +664,7 @@ function editChoiceActivity(index){
 }
 
 function editGoToActivity(index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "15":{"type":3, "nextnode":"17"},
      "16":{"type":4, "nextnode":"21"}, 
@@ -663,7 +678,7 @@ function editGoToActivity(index) {
         var type = 4;
         nextnode = $("#nextnode").val();
     }
-    
+
     var order = JSON.parse($(".activity_order").html());
 
     var data = JSON.parse($(".activity_data").html());
@@ -680,6 +695,7 @@ function editGoToActivity(index) {
 }
 
 function editChangeBgActivity(index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "17":{"type":5, "url":"http://aaa.com"} 
      */
@@ -702,6 +718,7 @@ function editChangeBgActivity(index) {
 }
 
 function editChangeMusicActivity(actity_id, index) {
+    $('#saveActBtn').removeClass("hidden");
     /*
      "14":{"type":6, "url":"http://aaa.com"}, 
      */
@@ -722,6 +739,16 @@ function editChangeMusicActivity(actity_id, index) {
     var playing = $(".play_index").html();
     previewActivity(parseInt(playing));
 }
-
+function saveActivity(sceneID) {
+    if (confirm("Are you sure?\nYou can't undo anything after save!")) {
+        var data = $('.activity_data').html();
+        var order = $('.activity_order').html();
+        $.post("/fine/author/scene/"+sceneID+"/saveactivity", {data: data, order: order})
+                .done(function (data) {
+                    alert(data);
+                    $('#saveActBtn').addClass("hidden");
+                });
+    }
+}
 //draw_activityBar();
 $("select").selecter();

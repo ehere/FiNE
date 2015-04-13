@@ -112,6 +112,10 @@ public class Route implements Filter {
             request.setAttribute("do", "view");
             request.getRequestDispatcher("/common.profile").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/scene/{id}/saveactivity", url)) {
+            request.setAttribute("do", "saveActivity");
+            request.getRequestDispatcher("/common.authorscene").forward(request, response);
+        }
     }
 
     public Route() {
