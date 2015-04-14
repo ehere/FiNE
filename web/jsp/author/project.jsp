@@ -365,6 +365,8 @@
                         alert(respond);
                         getSceneList(projectID);
                         $('#sceneModal').modal('hide');
+                        //clear player
+                        location.reload();
                     } else {
                         alert(respond);
                         getSceneList(projectID);
@@ -417,7 +419,7 @@
 
         } else {
             $("#scene-list").html("Updating ...");
-            $.post("/fine/author/scene/"+sceneID+"/update", {title: title, description: description})
+            $.post("/fine/author/scene/" + sceneID + "/update", {title: title, description: description})
                     .done(function (data) {
                         if (data == "Update Scene Success.") {
                             alert(data);
