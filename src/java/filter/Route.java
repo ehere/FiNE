@@ -91,11 +91,6 @@ public class Route implements Filter {
             F.urlMapper("/scene/{id}/activity", url, request);
             request.getRequestDispatcher("/common.scene").forward(request, response);
         }
-        else if (F.isUrlMatch("/author/project/{id}", url)) {
-            request.setAttribute("do", "show");
-            F.urlMapper("/author/project/{id}", url, request);
-            request.getRequestDispatcher("/author.authorproject").forward(request, response);
-        }
         else if (F.isUrlMatch("/profile/edit", url)) {
             request.getRequestDispatcher("/jsp/common/profile-edit.jsp").forward(request, response);
         }
@@ -112,9 +107,33 @@ public class Route implements Filter {
             request.setAttribute("do", "view");
             request.getRequestDispatcher("/common.profile").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/project/{id}", url)) {
+            request.setAttribute("do", "show");
+            F.urlMapper("/author/project/{id}", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/project/{id}/allscene", url)) {
+            request.setAttribute("do", "allscene");
+            F.urlMapper("/author/project/{id}/allscene", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
         else if (F.isUrlMatch("/author/scene/{id}/saveactivity", url)) {
             request.setAttribute("do", "saveActivity");
             F.urlMapper("/author/scene/{id}/saveactivity", url, request);
+            request.getRequestDispatcher("/common.authorscene").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/scene/create", url)) {
+            request.setAttribute("do", "create");
+            request.getRequestDispatcher("/common.authorscene").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/scene/{id}/update", url)) {
+            request.setAttribute("do", "update");
+            F.urlMapper("/author/scene/{id}/update", url, request);
+            request.getRequestDispatcher("/common.authorscene").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/scene/{id}/destroy", url)) {
+            request.setAttribute("do", "destroy");
+            F.urlMapper("/author/scene/{id}/destroy", url, request);
             request.getRequestDispatcher("/common.authorscene").forward(request, response);
         }
     }

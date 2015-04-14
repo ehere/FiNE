@@ -1,5 +1,8 @@
 function  draw_activityBar() {
     $(".activity_bar").text('');
+    if($(".activity_data").html().trim() == '{}'){
+        $(".activity_bar").html("This scene doesn't have any activity.<br>You can insert new activity.");
+    }
     $('#newActBtn').removeClass("hidden");
     var data = JSON.parse($(".activity_data").html());
     var order = JSON.parse($(".activity_order").html());
@@ -77,89 +80,6 @@ function  draw_activityBar() {
                 '</div>' +
                 '</div>';
         $(".activity_bar").append(row);
-    }
-}
-function draw_activityBar1() {
-    $(".activity_bar").text('');
-    var data = JSON.parse($(".activity_data").html());
-    var order = JSON.parse($(".activity_order").html());
-    for (var index = 0; index < order.length; index++) {
-        if (data[order[index]].type == 1) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-info" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.' + (data[order[index]].title) + '</div>'
-                    );
-        }
-        else if (data[order[index]].type == 2) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-default" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.Choice</div>'
-                    );
-            var alphabet = 'ABCDEFGHIGKLMNOPQRSTUVWXYZ'
-            for (var c = 0; c < data[order[index]].choice.length; c++) {
-                if (data[order[index]].choice[c].action == 1) {
-                    $("#actity_" + order[index]).append(
-                            '<div class="bs-callout bs-callout-success" id="choice_' + order[index] + '">' +
-                            alphabet[c] + '.' + data[order[index]].choice[c].text + ' => Activity ' + (parseInt(data[order[index]].choice[c].nextnode) + 1) + '</div>'
-                            );
-                }
-                else if (data[order[index]].choice[c].action == 2) {
-                    $("#actity_" + order[index]).append(
-                            '<div class="bs-callout bs-callout-danger" id="choice_' + order[index] + '">' +
-                            alphabet[c] + '.' + data[order[index]].choice[c].text + ' => Scene ' + (data[order[index]].choice[c].nextnode) + '</div>'
-                            );
-                }
-            }
-        }
-        else if (data[order[index]].type == 3) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-success" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.Go to Activity ' + (parseInt(data[order[index]].nextnode) + 1) + '</div>'
-                    );
-        }
-        else if (data[order[index]].type == 4) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-danger" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.Go to Scene ' + (data[order[index]].nextnode) + '</div>'
-                    );
-        }
-        else if (data[order[index]].type == 5) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-warning" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.Change Background</div>'
-                    );
-        }
-        else if (data[order[index]].type == 6) {
-            $(".activity_bar").append(
-                    '<div class="bs-callout bs-callout-warning" id="actity_' + order[index] + '">' +
-                    (index + 1) + '.Change Music</div>'
-                    );
-        }
-
-        //add action button
-        $("#actity_" + order[index]).html(
-                '<div class="btn-group pull-right"> \
-                <button type="button" class="btn btn-sm btn-default btn-moveup" onclick="moveActivityUp(' + order[index] + ',' + index + ');">  \
-                    <span class="glyphicon glyphicon-arrow-up"></span> \
-                </button> \
-                <button type="button" class="btn btn-sm btn-default"  onclick="moveActivityDown(' + order[index] + ',' + index + ');">  \
-                    <span class="glyphicon glyphicon-arrow-down"></span> \
-                </button> \
-                <button type="button" onclick="previewActivity(' + index + ');" class="btn btn-sm btn-default"> \
-                    <span class="glyphicon glyphicon-play"></span> \
-                </button> \
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"> \
-                    <span class="glyphicon glyphicon-cog"></span> <span class="sr-only">Toggle Dropdown</span> \
-                </button> \
-                <ul class="dropdown-menu" role="menu"> \
-                    <li><a href="#">Action</a></li> \
-                    <li><a href="#">Another action</a></li> \
-                    <li><a href="#">Something else here</a></li> \
-                    <li class="divider"></li><li><a href="#">Separated link</a></li> \
-                </ul> \
-            </div>'
-                + $("#actity_" + order[index]).html()
-                );
     }
 }
 
@@ -741,6 +661,7 @@ function editChangeMusicActivity(actity_id, index) {
 }
 function saveActivity(sceneID) {
     if (confirm("Are you sure?\nYou can't undo anything after save!")) {
+        $(".activity_bar").text('Saving...');
         var data = $('.activity_data').html();
         var order = $('.activity_order').html();
         $.post("/fine/author/scene/"+sceneID+"/saveactivity", {data: data, order: order})

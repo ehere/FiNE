@@ -11,7 +11,7 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Scene
                 <span style="position: absolute;right: 0;top: 0;">
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".activity-modal">New</button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#sceneModal" onclick="newScene(${requestScope.project.id});">New</button>
                 </span>
 
             </div>
@@ -27,7 +27,9 @@
     ------------------------------------------------------------------------------------------------------- -->
 
     <div class="col-md-7" style="height: 100%;padding: 0px;margin: 0px;">
-        <div style="width:100%;height: 100%;padding-top: 5%;">
+        <div style="width:100%;height: 100%;">
+            <div style="width: 80%;margin-left: auto;margin-right: auto;"><h4>#${requestScope.project.id}: ${requestScope.project.title}</h4></div>
+
             <div id="player" class="player_wrapper" style="background-image: url(https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE);width:80%;height: 59.8%;margin-left: auto;margin-right: auto;background-size: 100% auto;;overflow:hidden;">
                 <div class="player_show">
                     <div id="player_choice_area" style="display: none; position: absolute; height: 100%; width: 100%;">
@@ -73,7 +75,8 @@
                 Activity
                 <span  style="position: absolute;right: 0;top: 0;">
                     <button id="saveActBtn" type="button" class="btn btn-default hidden" onclick="">Save</button>
-                    <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();changeSaveBtnToNew();">New</button>
+                    <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();
+                            changeSaveBtnToNew();">New</button>
                 </span>
 
             </div>
@@ -83,7 +86,7 @@
         </div>
     </div>
 </div>
-<!-------------------------------Modal Zone ----------------------------------------------------------------------------
+<!-------------------------------Activity Modal Zone ----------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------- -->
 
 <div class="modal fade activity-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -264,7 +267,36 @@
         </div>
     </div>
 </div>
+<!-------------------------------Scene Modal Zone ----------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------- -->
 
+<!-- Modal -->
+<div class="modal fade" id="sceneModal" tabindex="-1" role="dialog" aria-labelledby="sceneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Scene</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Title</span>
+                    <input id="sceneTitle" type="text" class="form-control" placeholder="Scene Title" >
+                </div>
+                <br>
+                <textarea id="sceneDescription"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="removeSceneBtn" type="button" class="btn btn-danger" onclick="">Remove</button>
+                <button id="saveSceneBtn" type="button" class="btn btn-primary" onclick="">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="<%= F.asset("ckeditor/ckeditor.js")%>"></script>
+<script type="text/javascript">CKEDITOR.replace("sceneDescription");</script>
 
 <!-- -------------------- data zone --------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------- -->
@@ -272,9 +304,7 @@
 <div class="hidden activity_order"></div>
 <div class="hidden activity_newID">[]</div>    
 <div class="hidden play_index"></div>
-<div class="hidden allscene-list">
-    ${requestScope.allscene}
-</div>
+<div class="hidden allscene-list"></div>
 <div class="hidden name">MC_NAME</div>
 <div class="hidden mode">edit</div>
 
@@ -287,6 +317,7 @@
 </script>
 <script>
     function drawSceneBar() {
+        $("#scene-list").html("");
         var scenelist = JSON.parse($(".allscene-list").html());
         for (var key in scenelist) {
             var sceneID = key;
@@ -311,13 +342,13 @@
     }
     function getDescription(sceneID, element) {
         $('#collapse' + sceneID).html("Loading...");
-        $.getJSON("<%= F.asset("/scene")%>" + "/" + sceneID)
+        $.getJSON("/fine/scene/" + sceneID)
                 .done(function (respond) {
                     var description = respond[sceneID].description;
                     var body =
                             '<div class="panel-body" style="padding-top: 0px;">' +
                             description + '<br><br>' +
-                            '<button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>' +
+                            '<button type="button" class="btn btn-default" onclick="editScene(' + sceneID + ',' + ${requestScope.project.id} + ')" data-toggle="modal" data-target="#sceneModal"><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>' +
                             '<button type="button" class="btn btn-default" onclick="getScene(' + sceneID + ',0)"><i class="glyphicon glyphicon-blackboard"></i> Edit Activity</button>' +
                             '</div>';
                     $('#collapse' + sceneID).html(body);
@@ -326,7 +357,90 @@
                     alert("Something wrong.Please try again or refresh this page.");
                 });
     }
+    function removeScene(sceneID, projectID) {
+        $("#scene-list").html("Removing ...");
+        $.get("/fine/author/scene/" + sceneID + "/destroy")
+                .done(function (respond) {
+                    if (respond == "Remove Scene Success.") {
+                        alert(respond);
+                        getSceneList(projectID);
+                        $('#sceneModal').modal('hide');
+                    } else {
+                        alert(respond);
+                        getSceneList(projectID);
+                    }
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    alert("Something wrong.Please try again or refresh this page.");
+                    getSceneList(projectID);
+                });
+    }
+    function newScene(projectID) {
+        $('#sceneTitle').val("");
+        CKEDITOR.instances['sceneDescription'].setData("");
+        $('#removeSceneBtn').addClass("hidden");
+        $('#saveSceneBtn').attr("onclick", "saveScene(0," + projectID + ");");
+    }
+    function editScene(sceneID, projectID) {
+        $('#removeSceneBtn').removeClass("hidden");
+        $('#removeSceneBtn').attr("onclick", "removeScene(" + sceneID + "," + projectID + ");");
+        var scenelist = JSON.parse($(".allscene-list").html());
+        $('#saveSceneBtn').attr("onclick", "saveScene(" + sceneID + "," + projectID + ");");
+        var title = scenelist[sceneID].title;
+        $('#sceneTitle').val(title);
+        CKEDITOR.instances['sceneDescription'].setData("Loading Description...");
+        $.getJSON("/fine/scene/" + sceneID)
+                .done(function (respond) {
+                    var description = respond[sceneID].description;
+                    CKEDITOR.instances['sceneDescription'].setData(description);
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    alert("Something wrong.Can't load description!");
+                });
+    }
+    function saveScene(sceneID, projectID) {
+        var title = $('#sceneTitle').val();
+        var description = CKEDITOR.instances['sceneDescription'].getData();
+        if (sceneID == 0) {
+            $("#scene-list").html("Creating ...");
+            $.post("/fine/author/scene/create", {title: title, description: description, project: projectID})
+                    .done(function (data) {
+                        if (data == "Create Scene Success.") {
+                            alert(data);
+                            getSceneList(projectID);
+                            $('#sceneModal').modal('hide');
+                        } else {
+                            alert(data);
+                            getSceneList(projectID);
+                        }
+                    });
 
-    drawSceneBar();
+        } else {
+            $("#scene-list").html("Updating ...");
+            $.post("/fine/author/scene/"+sceneID+"/update", {title: title, description: description})
+                    .done(function (data) {
+                        if (data == "Update Scene Success.") {
+                            alert(data);
+                            getSceneList(projectID);
+                            $('#sceneModal').modal('hide');
+                        } else {
+                            alert(data);
+                            getSceneList(projectID);
+                        }
+                    });
+        }
+    }
+    function getSceneList(projectID) {
+        $.get("/fine/author/project/" + projectID + "/allscene")
+                .done(function (respond) {
+                    $('.allscene-list').html(respond);
+                    drawSceneBar();
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    alert("Something wrong.Can't load scene list!");
+                });
+    }
+    getSceneList(${requestScope.project.id});
+
 </script>
 <jsp:include page="footer.jsp" />

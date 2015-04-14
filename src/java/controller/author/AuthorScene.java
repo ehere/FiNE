@@ -19,6 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,12 +49,105 @@ public class AuthorScene extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("saveActivity")) {
             saveActivity(request, response);
+        } else if (method.equals("create")) {
+            create(request, response);
+        } else if (method.equals("update")) {
+            update(request, response);
+        } else if (method.equals("destroy")) {
+            destroy(request, response);
+        }
+    }
+
+    protected void create(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int projectID = Integer.parseInt(request.getParameter("project"));
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String title = (String) request.getParameter("title");
+        String description = (String) request.getParameter("description");
+        try (PrintWriter out = response.getWriter()) {
+            if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(projectID))) {
+                out.print("You doesn't have permission to create scene in this project !");
+                return;
+            }
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement create_scene = conn.prepareStatement("INSERT INTO `scenario`(`project_id`, `title`, `description`, `created_at`) VALUES (?,?,?,NOW());");
+                create_scene.setInt(1, projectID);
+                create_scene.setString(2, title);
+                create_scene.setString(3, description);
+                int result = create_scene.executeUpdate();
+                if (result == 1) {
+                    out.print("Create Scene Success.");
+                } else {
+                    out.print("Something Wrong! Can't create new scene.");
+                }
+                create_scene.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AuthorScene.class.getName()).log(Level.SEVERE, null, ex);
+                out.print("Something Wrong! Can't create new scene.");
+            }
+        }
+    }
+
+    protected void update(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String sceneID = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String title = (String) request.getParameter("title");
+        String description = (String) request.getParameter("description");
+        try (PrintWriter out = response.getWriter()) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement update_scene = conn.prepareStatement("UPDATE `scenario` SET `title`=?,`description`= ? ,`updated_at`= NOW() WHERE `id` = ? AND `project_id` IN (SELECT `id` FROM project WHERE user_id = ?);");
+                update_scene.setString(1, title);
+                update_scene.setString(2, description);
+                update_scene.setString(3, sceneID);
+                update_scene.setInt(4, user.getId());
+                int result = update_scene.executeUpdate();
+                if (result == 1) {
+                    out.print("Update Scene Success.");
+                } else {
+                    out.print("Something Wrong! Can't update scene.");
+                }
+                update_scene.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AuthorScene.class.getName()).log(Level.SEVERE, null, ex);
+                out.print("Something Wrong! Can't update scene.");
+            }
+        }
+    }
+
+    protected void destroy(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String sceneID = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        try (PrintWriter out = response.getWriter()) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement remove_scene = conn.prepareStatement("DELETE FROM `scenario` WHERE `id` = ? AND `project_id` IN (SELECT `id` FROM project WHERE user_id = ?);");
+                remove_scene.setString(1, sceneID);
+                remove_scene.setInt(2, user.getId());
+                int result = remove_scene.executeUpdate();
+                if (result == 1) {
+                    out.print("Remove Scene Success.");
+                } else {
+                    out.print("Something Wrong! Can't remove scene.");
+                }
+                remove_scene.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AuthorScene.class.getName()).log(Level.SEVERE, null, ex);
+                out.print("Something Wrong! Can't remove scene.");
+            }
         }
     }
 
     protected void saveActivity(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String sceneID = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
         try (PrintWriter out = response.getWriter()) {
             String data = request.getParameter("data");
             String order = request.getParameter("order");
@@ -64,6 +159,20 @@ public class AuthorScene extends HttpServlet {
                 JSONArray activity_order = (JSONArray) obj;
 
                 try (Connection conn = F.getConnection()) {
+                    //check permission
+                    PreparedStatement project_query = conn.prepareStatement("SELECT `project_id` FROM `scenario` WHERE `id` = ?;");
+                    project_query.setString(1, sceneID);
+                    ResultSet project_rs = project_query.executeQuery();
+                    project_rs.next();
+                    int projectID = project_rs.getInt("project_id");
+                    project_rs.close();
+                    project_query.close();
+                    User user = (User) session.getAttribute("user");
+                    if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(projectID))) {
+                        out.print("You doesn't have permission to edit this project !");
+                        conn.close();
+                        return;
+                    }
                     //remove unwant activity
                     String sql = "DELETE FROM activity WHERE scenario_id = ? AND id NOT IN (";
                     for (int i = 0; i < activity_order.size() - 1; i++) {

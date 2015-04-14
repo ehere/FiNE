@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Project;
 import model.User;
 import org.json.simple.JSONObject;
 
@@ -47,6 +48,8 @@ public class AuthorProject extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("show")) {
             show(request, response);
+        } else if (method.equals("allscene")) {
+            allscene(request, response);
         }
     }
 
@@ -56,12 +59,40 @@ public class AuthorProject extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
-            String[] message = {"You doesn't have permission to edit this project !","danger"};
+            String[] message = {"You doesn't have permission to edit this project !", "danger"};
             session.setAttribute("message", message);
             response.sendRedirect(F.asset("/product"));
             return;
         }
         try (Connection conn = F.getConnection()) {
+            PreparedStatement project_query = conn.prepareStatement("SELECT * FROM project WHERE id =?;");
+            project_query.setString(1, id);
+            ResultSet project_rs = project_query.executeQuery();
+            project_rs.next();
+            Project project = new Project(project_rs);
+            request.setAttribute("project", project);
+            project_rs.close();
+            project_query.close();
+
+            conn.close();
+            request.getRequestDispatcher("/jsp/author/project.jsp").forward(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void allscene(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
+            String[] message = {"You doesn't have permission to edit this project !", "danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/product"));
+            return;
+        }
+        try (PrintWriter out = response.getWriter(); Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM scenario WHERE project_id =?;");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
@@ -71,13 +102,12 @@ public class AuthorProject extends HttpServlet {
                 scene.put("title", result.getString("title"));
                 allscene.put(result.getString("id"), scene);
             }
-            request.setAttribute("allscene", allscene.toJSONString());
+            out.print(allscene.toJSONString());
             result.close();
             psmt.close();
             conn.close();
-            request.getRequestDispatcher("/jsp/author/project.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
