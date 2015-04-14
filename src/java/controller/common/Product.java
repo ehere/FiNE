@@ -100,7 +100,7 @@ public class Product extends HttpServlet {
             cr.close();
             csmt.close();
 
-            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project`  LIMIT 8 OFFSET ?;");
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE visible = 1  LIMIT 8 OFFSET ?;");
             psmt.setInt(1, (page - 1) * 8);
             ResultSet result = psmt.executeQuery();
             ArrayList<Project> list = new ArrayList();
