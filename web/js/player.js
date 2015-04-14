@@ -184,12 +184,14 @@ function getScene(sceneID, index) {
                                 });
                     });
                 }
-                if (data.data.indexOf("{") !== -1) {
+                if (data.data.indexOf("{") !== -1 ) {
                     $('.activity_data').html(data.data);
                     $('.activity_order').html(data.order);
                     $("#typed").typed('reset');
                     $("#player_title_text").html('');
-                    previewActivity(index);
+                    if($.trim(data.data) != '{}'){
+                        previewActivity(index);
+                    }
                 }
                 else {
                     //no next scene
