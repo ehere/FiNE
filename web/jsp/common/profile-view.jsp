@@ -27,12 +27,12 @@
             <% }%>
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 toppad" >
+                    <div>
 
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Profile
+                                <h3 class="panel-title">Profile</h3>
                                     <span class="pull-right">
                                         <c:if test="${canEdit}">
                                             <a href="<%= F.asset("/profile/edit") %>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
@@ -87,18 +87,18 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 toppad" >
+                    <div>
 
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">12 Latest Visual Novels by this user</h3>
+                                <h3 class="panel-title">Visual Novels create by this user</h3>
                             </div>
                             <div class="panel-body">
                                 <c:if test="${profile.latestOwnProjectID.size() == 0}">
                                     <h5 style="text-align: center;">ไม่มี Visual Novel ที่เป็นของผู้ใช้คนนี้</h5>
                                 </c:if>
-                                <c:forEach var="product" items="${profile.latestOwnProject}">
+                                <c:forEach var="product" items="${profile.ownProject}">
                                     <div class="col-md-3 col-lg-3 " align="center">
                                         <a href="<%= F.asset("/product")%>/${product.id}/view" style='text-decoration: none;'>
                                             <img src="${product.cover}" style="height: 100px; width: 100px;" class="img-circle" alt="${product.title}">

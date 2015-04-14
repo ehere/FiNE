@@ -65,7 +65,6 @@ public class Profile extends HttpServlet {
         Connection conn = F.getConnection();
         HttpSession session = request.getSession();
         String id = (String) request.getAttribute("id");
-        System.out.println("ID : " + id);
         User user = (User) session.getAttribute("user");
         if (id == null) {
             //send user to profile
