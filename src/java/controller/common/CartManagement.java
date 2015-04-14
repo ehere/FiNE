@@ -58,7 +58,7 @@ public class CartManagement extends HttpServlet {
             pathInfo = "";
         }
         if (pathInfo.contains("add")) {
-            if (addCart(request, pathInfo)) {
+            if (addCart(request, response, pathInfo)) {
                 //redir to project info pg.
                 response.sendRedirect(F.asset("/product/" + pathInfo.split("/")[0] + "/view"));
             } else {
@@ -78,7 +78,7 @@ public class CartManagement extends HttpServlet {
         }
     }
 
-    protected boolean addCart(HttpServletRequest request, String pathInfo) throws UnsupportedEncodingException {
+    protected boolean addCart(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws UnsupportedEncodingException {
         Connection conn = F.getConnection();
         //int id = Integer.parseInt(pathInfo.split("/")[0]);
         boolean toReturn = false;
@@ -93,12 +93,13 @@ public class CartManagement extends HttpServlet {
 
         //Check if this item already exist in the cart
         if (cart.isExist(id)) {
-            session.setAttribute("message_type", "warning");
-            session.setAttribute("message", "คุณได้เคยเลือกสินค้านี้ใส่ตระกร้าไปแล้ว!");
+            String[] message = {"คุณได้เคยเลือกสินค้านี้ใส่ตะกร้าไปแล้ว!", "warning"};
+            session.setAttribute("message", message);
             return true;
         }
 
-        int userId = ((User) session.getAttribute("user")).getId();
+        model.User user = (User) session.getAttribute("user");
+        int userId = user.getId();
 
         PreparedStatement psmt, buyPstmt;
         try {
@@ -107,6 +108,15 @@ public class CartManagement extends HttpServlet {
             ResultSet result = psmt.executeQuery();
             if (result.next()) {
                 //Check if user already buy it.
+                model.Project project = new model.Project(result);
+                if (project.getRate() > user.getAge()) {
+                    result.close();
+                    psmt.close();
+                    conn.close();
+                    String[] message = {"คุณไม่สามารถซื้อนิยายเรื่องนี้ได้ เนื่องจากคุณมีอายุไม่ถึงเกณฑ์ที่กำหนด", "danger"};
+                    session.setAttribute("message", message);
+                    return false;
+                }
                 buyPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = " + userId + " AND project_id = ?");
                 buyPstmt.setString(1, id);
                 ResultSet res2 = buyPstmt.executeQuery();
@@ -114,11 +124,11 @@ public class CartManagement extends HttpServlet {
                     //OK! add it to cart.
                     cart.addItem(id);
                     session.setAttribute("cart", cart);
-                    session.setAttribute("message_type", "success");
-                    session.setAttribute("message", "เลือกสินค้าใส่ตระกร้าเรียบร้อยแล้ว!");
+                    String[] message = {"เลือกสินค้าใส่ตะกร้าเรียบร้อยแล้ว!", "success"};
+                    session.setAttribute("message", message);
                 } else {
-                    session.setAttribute("message_type", "danger");
-                    session.setAttribute("message", "คุณได้เคยซื้อนิยายเรื่องนี้ไปแล้ว!");
+                    String[] message = {"คุณได้เคยซื้อนิยายเรื่องนี้ไปแล้ว!", "danger"};
+                    session.setAttribute("message", message);
                 }
                 buyPstmt.close();
                 res2.close();
@@ -159,8 +169,8 @@ public class CartManagement extends HttpServlet {
         HttpSession session = request.getSession();
         model.Cart cart = (model.Cart) session.getAttribute("cart");
         if (cart.getItems().size() < 1) {
-            session.setAttribute("message_type", "warning");
-            session.setAttribute("message", "คุณไม่มีสินค้าใดๆ ในตระกร้า!");
+            String[] message = {"คุณไม่มีสินค้าใดๆ ในตะกร้า!", "warning"};
+            session.setAttribute("message", message);
             return true;
         }
         Connection conn = F.getConnection();
@@ -188,8 +198,8 @@ public class CartManagement extends HttpServlet {
                     res.close();
                     pstmt.close();
                     conn.close();
-                    session.setAttribute("message_type", "danger");
-                    session.setAttribute("message", "นิยายบางเรื่องได้ยกเลิกการขายแล้ว!");
+                    String[] message = {"นิยายบางเรื่องได้ยกเลิกการขายแล้ว!", "danger"};
+                    session.setAttribute("message", message);
                     return false;
                 }
                 res.close();
@@ -208,8 +218,8 @@ public class CartManagement extends HttpServlet {
                     //return false / purchase fail
                     creditPstmt.close();
                     res.close();
-                    session.setAttribute("message_type", "danger");
-                    session.setAttribute("message", "คุณมีเครดิตไม่พอที่จะซื้อ!");
+                    String[] message = {"คุณมีเครดิตไม่พอที่จะซื้อ!", "danger"};
+                    session.setAttribute("message", message);
                     return false;
                 }
                 res.close();
@@ -238,8 +248,8 @@ public class CartManagement extends HttpServlet {
                 conn.close();
                 purPstmt.close();
                 session.setAttribute("cart", new model.Cart());
-                session.setAttribute("message_type", "success");
-                session.setAttribute("message", "การสั่งซื้อสำเร็จเรียบร้อย!");
+                String[] message = {"การสั่งซื้อสำเร็จเรียบร้อย!", "success"};
+                session.setAttribute("message", message);
                 return true;
             }
             creditPstmt.close();

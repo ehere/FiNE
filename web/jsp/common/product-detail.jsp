@@ -37,29 +37,60 @@
             <div class="col-sm-6 product-details">
                 <h4>${product.title}</h4>
                 <div class="price">
-                    ${product.price} ฿
+                    <i class="glyphicon glyphicon-bitcoin icon-white" style="font-size: 0.8em;"></i>${product.price}
                 </div>
+                <hr />
                 <table class="shop-item-selections">
                     <!-- Color Selector -->
                     <tr>
-                        <td><b>Rate:</b></td>
-                        <td>${product.rate}+</td>
+                        <td><b>นิยายเหมาะสำหรับ:</b></td>
+                        <td> 
+                            <c:choose>
+                                <c:when test="${product.rate > 0}">
+                                    ผู้ทีมีอายุ <strong>${product.rate} ปีขึ้นไป</strong>
+                                </c:when>
+                                <c:otherwise>
+                                    ทุกเพศทุกวัย
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><b>สร้างโดย:</b></td>
+                        <td><a href="<%= F.asset("/profile")%>/${product.user_id}">${product.creator.fullname}</td>
                     </tr>
 
                     <tr>
                         <td>&nbsp;</td>
                         <td>
-                            <c:choose>
-                                <c:when test="${product.is_bought==true}">
-                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
-                                </c:when>
+                            <c:if test="${user.age >= product.rate}">
+                                <c:choose>
+                                    <c:when test="${product.is_bought==true}">
+                                        <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                    </c:when>
 
-                                <c:otherwise>
-                                    <a href='<%= F.asset("/cartmgnt")%>/${product.id}/add' class="btn btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add to Cart</a>
-                                </c:otherwise>
-                            </c:choose>
+                                    <c:otherwise>
+                                        <a href='<%= F.asset("/cartmgnt")%>/${product.id}/add' class="btn btn"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add to Cart</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
                     </tr>
                 </table>
+                <c:if test="${empty user}">
+                    <div class="alert alert-warning" role="alert">
+                        <p style="text-align: center;">
+                            กรุณา <a href="<%= F.asset("/register") %>">สมัครสมาชิก</a> หรือ <a href="<%= F.asset("/login") %>">เข้าสู่ระบบ</a> เพื่อซื้อ และเข้าชม
+                        </p>
+                    </div> 
+                </c:if>
+                <c:if test="${user.age < product.rate}">
+                    <div class="alert alert-danger" role="alert">
+                        <p style="text-align: center;">
+                            คุณไม่สามารถซื้อนิยายเรื่องนี้ได้ เนื่องจากคุณมีอายุไม่ถึงเกณฑ์
+                        </p>
+                    </div>
+                </c:if>
             </div>
             <!-- End Product Summary & Options -->
 

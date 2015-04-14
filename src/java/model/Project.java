@@ -37,6 +37,7 @@ public class Project implements Serializable {
         id = result.getInt("id");
         title = result.getString("title");
         description = result.getString("description");
+        user_id = result.getInt("user_id");
         visible = result.getInt("visible");
         rate = result.getInt("rate");
         cover = result.getString("cover");
@@ -151,5 +152,24 @@ public class Project implements Serializable {
 
     public void setUpdated_at(String update_at) {
         this.updated_at = update_at;
+    }
+    
+    public User getCreator() {
+        User creator = null;
+        
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?");
+            psmt.setInt(1, user_id);
+            ResultSet result = psmt.executeQuery();
+            if (result.next()) {
+                creator = new User(result);
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return creator;
     }
 }

@@ -31,18 +31,23 @@
                         </div>
                         <div class="actions">
                             <c:choose>
-                                <c:when test="${product.is_bought==true}">
-                                    <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
-                                    or
-                                    <a href="<%= F.asset("/product")%>/${product.id}/view" >View</a>
-                                </c:when>
+                                <c:when test="${user.age >= product.rate}">
+                                    <c:choose>
+                                        <c:when test="${product.is_bought==true}">
+                                            <a href='<%= F.asset("/project")%>/${product.id}/play' class="btn btn-grey"><i class="glyphicon glyphicon-play icon-white"></i> Play</a>
+                                        </c:when>
 
+                                        <c:otherwise>
+                                            <a href='<%= F.asset("/cartmgnt")%>/${product.id}/add' class="btn btn-small"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add</a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
                                 <c:otherwise>
-                                    <a href='<%= F.asset("/cartmgnt")%>/${product.id}/add' class="btn btn-small"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add</a>
-                                    or
-                                    <a href="<%= F.asset("/product")%>/${product.id}/view" >View</a>
+                                    <a href='#' class="btn btn-grey disabled"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add</a>
                                 </c:otherwise>
                             </c:choose>
+                            or 
+                            <a href="<%= F.asset("/product")%>/${product.id}/view" >View</a>
                         </div>
                     </div>
                 </div>

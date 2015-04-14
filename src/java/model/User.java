@@ -35,6 +35,7 @@ public class User implements Serializable{
     private String image;
     private String created_at;
     private String updated_at;
+    private int age;
 
     public User(ResultSet result) throws SQLException{
         id = result.getInt("id");
@@ -48,7 +49,7 @@ public class User implements Serializable{
         image = result.getString("image");
         created_at = F.convertDate(result.getString("created_at"), "dd MMMMM yyyy");
         updated_at = F.convertDate(result.getString("updated_at"), "dd MMMMM yyyy");
-
+        age = initAge();
     }
     
     public String getFullname(){
@@ -161,6 +162,12 @@ public class User implements Serializable{
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
+
+    public int getAge() {
+        return age;
+    }
+    
+    
     
     public ArrayList<Project> getPurchaseProject(){
         ArrayList<Project> list = new ArrayList();
@@ -269,5 +276,23 @@ public class User implements Serializable{
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
         }   
         return list;
+    }
+    
+    public int initAge(){
+        int age = 0;
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT TIMESTAMPDIFF(YEAR, `birthday`, CURDATE()) AS AGE FROM `user` WHERE `id` = ?;");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            if(result.next()){
+                age = result.getInt("AGE");
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return age;
     }
 }
