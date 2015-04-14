@@ -8,12 +8,10 @@ package controller.author;
 import help.F;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -64,13 +62,6 @@ public class AuthorScene extends HttpServlet {
                 JSONObject activity = (JSONObject) obj;
                 obj = parser.parse(order);
                 JSONArray activity_order = (JSONArray) obj;
-                /*
-                 for (Object i : activity_order.toArray()) {
-                 if (activity.containsKey(i + "")) {
-                 System.out.println(activity.get(i + ""));
-                 }
-                 }
-                 */
 
                 try (Connection conn = F.getConnection()) {
                     //remove unwant activity
@@ -94,6 +85,7 @@ public class AuthorScene extends HttpServlet {
                             if (activity.containsKey(activityID + "")) {
                                 JSONObject activity_data = (JSONObject) activity.get(activityID + "");
                                 Long type = (Long) activity_data.get("type");
+                                //update type and order
                                 PreparedStatement update_act_type = conn.prepareStatement("UPDATE `activity` SET `type`= ? ,`order` = ? , `updated_at`= NOW() WHERE `id` = ?;");
                                 update_act_type.setLong(1, type);
                                 update_act_type.setLong(2, i + 1);
@@ -126,7 +118,7 @@ public class AuthorScene extends HttpServlet {
                                         JSONObject activity_choice = (JSONObject) activity_choices.get(c);
                                         PreparedStatement update_choice = conn.prepareStatement("INSERT INTO `activity_choice`(`activity_id`, `order`, `text`, `target_id`) VALUES (?,?,?,?);");
                                         update_choice.setLong(1, activityID);
-                                        update_choice.setInt(2, c+1);
+                                        update_choice.setInt(2, c + 1);
                                         update_choice.setString(3, (String) activity_choice.get("text"));
                                         update_choice.setString(4, activity_choice.get("nextnode") + "");
                                         update_choice.executeUpdate();
@@ -155,13 +147,76 @@ public class AuthorScene extends HttpServlet {
                             }
                         } else {
                             //new activity
+                            if (activity.containsKey(activityID + "")) {
+                                JSONObject activity_data = (JSONObject) activity.get(activityID + "");
+                                Long type = (Long) activity_data.get("type");
+                                //update type and order
+                                Long newActivityID = new Long(0);
+                                PreparedStatement new_act = conn.prepareStatement("INSERT INTO `activity`(`scenario_id`,`order`, `type`, `created_at`) VALUES (?,?,?,NOW());", PreparedStatement.RETURN_GENERATED_KEYS);
+                                new_act.setString(1, sceneID);
+                                new_act.setLong(2, i + 1);
+                                new_act.setLong(3, type);
+                                new_act.executeUpdate();
+                                ResultSet rs = new_act.getGeneratedKeys();
+                                if (rs != null && rs.next()) {
+                                    newActivityID = rs.getLong(1);
+                                }
+                                rs.close();
+                                new_act.close();
+                                if (type == 1) {
+                                    PreparedStatement new_dialog = conn.prepareStatement("INSERT INTO `activity_dialog`(`activity_id`, `title`, `dialog`, `music`) VALUES (?,?,?,?);");
+                                    String title = (String) activity_data.get("title");
+                                    String text = (String) activity_data.get("text");
+                                    String sound = (String) activity_data.get("sound");
+                                    if (!sound.contains("http://") && !sound.contains("https://")) {
+                                        sound = sound.replaceFirst(F.asset("/sound/voice/"), "");
+                                        sound = sound.replaceAll("^/+", "");
+                                    }
+                                    new_dialog.setLong(1, newActivityID);
+                                    new_dialog.setString(2, title);
+                                    new_dialog.setString(3, text);
+                                    new_dialog.setString(4, sound);
+                                    new_dialog.executeUpdate();
+                                    new_dialog.close();
+                                } else if (type == 2) {
+                                    JSONArray activity_choices = (JSONArray) activity_data.get("choice");
+                                    for (int c = 0; c < activity_choices.size(); c++) {
+                                        JSONObject activity_choice = (JSONObject) activity_choices.get(c);
+                                        PreparedStatement update_choice = conn.prepareStatement("INSERT INTO `activity_choice`(`activity_id`, `order`, `text`, `target_id`) VALUES (?,?,?,?);");
+                                        update_choice.setLong(1, newActivityID);
+                                        update_choice.setInt(2, c + 1);
+                                        update_choice.setString(3, (String) activity_choice.get("text"));
+                                        update_choice.setString(4, activity_choice.get("nextnode") + "");
+                                        update_choice.executeUpdate();
+                                        update_choice.close();
+                                    }
+                                } else if (type == 3 || type == 4) {
+                                    PreparedStatement update_goto = conn.prepareStatement("INSERT INTO `activity_goto`(`activity_id`, `target_id`) VALUES (?,?);");
+                                    String nextnode = activity_data.get("nextnode") + "";
+                                    update_goto.setLong(1, newActivityID);
+                                    update_goto.setString(2, nextnode);
+                                    update_goto.executeUpdate();
+                                    update_goto.close();
+                                } else if (type == 5 || type == 6) {
+                                    PreparedStatement update_media = conn.prepareStatement("INSERT INTO `activity_media`(`activity_id`, `media`) VALUES (?,?);");
+                                    String url = (String) activity_data.get("url");
+                                    if (!url.contains("http://") && !url.contains("https://")) {
+                                        url = url.replaceFirst(F.asset("/img/bg"), "");
+                                        url = url.replaceAll("^/+", "");
+                                    }
+                                    update_media.setLong(1, newActivityID);
+                                    update_media.setString(2, url);
+                                    update_media.executeUpdate();
+                                    update_media.close();
+                                }
+                            }
                         }
                     }
                     out.print("Save Success.");
 
                     conn.close();
                 } catch (SQLException ex) {
-                    out.print("Can't save this scene.");
+                    out.print("Something Wrong. we can't save this scene!");
                     Logger.getLogger(AuthorScene.class.getName()).log(Level.SEVERE, null, ex);
                 }
 

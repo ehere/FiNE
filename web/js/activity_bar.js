@@ -746,7 +746,10 @@ function saveActivity(sceneID) {
         $.post("/fine/author/scene/"+sceneID+"/saveactivity", {data: data, order: order})
                 .done(function (data) {
                     alert(data);
-                    $('#saveActBtn').addClass("hidden");
+                    if(data == "Save Success.")
+                    {
+                        getScene(sceneID,0);
+                    }
                 });
     }
 }

@@ -114,6 +114,7 @@ public class Route implements Filter {
         }
         else if (F.isUrlMatch("/author/scene/{id}/saveactivity", url)) {
             request.setAttribute("do", "saveActivity");
+            F.urlMapper("/author/scene/{id}/saveactivity", url, request);
             request.getRequestDispatcher("/common.authorscene").forward(request, response);
         }
     }
