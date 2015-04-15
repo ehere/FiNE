@@ -136,6 +136,10 @@ public class Route implements Filter {
             F.urlMapper("/author/scene/{id}/destroy", url, request);
             request.getRequestDispatcher("/common.authorscene").forward(request, response);
         }
+        else if (F.isUrlMatch("/admin/user/changecredit", url)) {
+            request.setAttribute("do", "changecredit");
+            request.getRequestDispatcher("/admin.user").forward(request, response);
+        }
         else if (F.isUrlMatch("/admin/user", url)) {
             request.setAttribute("do", "index");
             request.getRequestDispatcher("/admin.user").forward(request, response);

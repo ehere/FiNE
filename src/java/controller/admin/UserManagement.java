@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.User;
 
 /**
@@ -45,10 +46,11 @@ public class UserManagement extends HttpServlet {
         request.setCharacterEncoding("utf-8");
 
         String method = (String) request.getAttribute("do");
-        if (method.equals("view")) {
-            //do
-        } else if (method.equals("index")) {
+        if (method.equals("index")) {
             index(request, response);
+        }
+        else if (method.equals("changecredit")) {
+            changeCredit(request, response);
         }
     }
 
@@ -68,14 +70,45 @@ public class UserManagement extends HttpServlet {
             }
             result.close();
             pstmt.close();
-        conn.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(UserManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         request.setAttribute("userList", userList);
         request.getRequestDispatcher("/jsp/admin/user.jsp").forward(request, response);
 
+    }
+
+    protected void changeCredit(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
+
+        Connection conn = F.getConnection();
+        PreparedStatement pstmt;
+        HttpSession session = request.getSession();
+        try {
+            pstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ? WHERE `id` = ?;");
+            pstmt.setString(1, request.getParameter("credits"));
+            pstmt.setString(2, request.getParameter("userid"));
+            int result = pstmt.executeUpdate();
+            if (result != 0) {
+                //success
+                String[] message = {"เปลี่ยนเครดิตเรียบร้อยแล้ว!", "success"};
+                session.setAttribute("message", message);
+            }
+            else{
+                //failed
+                String[] message = {"มีข้อผิดพลาดเกิดขึ้น กรุณาลองอีกครั้ง!", "danger"};
+                session.setAttribute("message", message);
+            }
+            pstmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        response.sendRedirect(F.asset("/admin/user"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
