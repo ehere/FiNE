@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Shopping Cart</h1>
+                <h1>รายชื่อสมาชิก</h1>
             </div>
         </div>
     </div>
