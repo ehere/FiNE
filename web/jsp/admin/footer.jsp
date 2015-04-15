@@ -62,6 +62,7 @@
         <script src="<%= F.asset("js/main-menu.js") %>"></script>
         <script src="<%= F.asset("js/template.js") %>"></script>
         <script src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+        <script src="<%= F.asset("js/bootstrap-switch.min.js") %>"></script>
 
     </body>
 </html>

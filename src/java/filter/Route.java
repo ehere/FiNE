@@ -144,6 +144,10 @@ public class Route implements Filter {
             request.setAttribute("do", "index");
             request.getRequestDispatcher("/admin.user").forward(request, response);
         }
+        else if (F.isUrlMatch("/admin/product", url)) {
+            request.setAttribute("do", "index");
+            request.getRequestDispatcher("/admin.project").forward(request, response);
+        }
     }
 
     public Route() {
