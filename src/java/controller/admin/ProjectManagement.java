@@ -29,7 +29,7 @@ import model.User;
  *
  * @author iMEIDA
  */
-@WebServlet(name = "UserManagement", urlPatterns = {"/admin.project"})
+@WebServlet(name = "ProjectManagement", urlPatterns = {"/admin.project"})
 public class ProjectManagement extends HttpServlet {
 
     /**
@@ -104,7 +104,7 @@ public class ProjectManagement extends HttpServlet {
             pstmt.close();
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(UserManagement.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProjectManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         response.sendRedirect(F.asset("/admin/product"));
