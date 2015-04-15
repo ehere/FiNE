@@ -61,13 +61,10 @@
                             <a href="<%= F.asset("/") %>">Home</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/product") %>">FiNE Store</a>
+                            <a href="<%= F.asset("/admin/user") %>">User Management</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/items") %>">Your Items</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/about") %>">About Us</a>
+                            <a href="<%= F.asset("/admin/product") %>">Product Management</a>
                         </li>
                     </ul>
                 </nav>
