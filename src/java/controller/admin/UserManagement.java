@@ -88,11 +88,11 @@ public class UserManagement extends HttpServlet {
         PreparedStatement pstmt;
         HttpSession session = request.getSession();
         try {
-            pstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ? WHERE `id` = ?;");
+            pstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ?, `updated_at` = NOW() WHERE `id` = ?;");
             pstmt.setString(1, request.getParameter("credits"));
             pstmt.setString(2, request.getParameter("userid"));
             int result = pstmt.executeUpdate();
-            if (result != 0) {
+            if (result > 0) {
                 //success
                 String[] message = {"เปลี่ยนเครดิตเรียบร้อยแล้ว!", "success"};
                 session.setAttribute("message", message);

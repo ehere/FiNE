@@ -65,13 +65,13 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">ชื่อ</label>
                         <div class="col-sm-10 control-label" style="text-align: left;">
-                            <p id="name">ธนกฤต จุลวานิช</p>
+                            <p id="name"></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-sm-2 control-label">อีเมล</label>
                         <div class="col-sm-10 control-label" style="text-align: left;">
-                            <p id="email">xxx@google.com</p>
+                            <p id="email"></p>
                         </div>
                     </div>
                     <div class="form-group">
