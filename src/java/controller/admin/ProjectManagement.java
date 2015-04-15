@@ -49,6 +49,8 @@ public class ProjectManagement extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("index")) {
             index(request, response);
+        } else if (method.equals("changepermission")) {
+            changePermission(request, response);
         }
     }
 
@@ -78,6 +80,35 @@ public class ProjectManagement extends HttpServlet {
 
     }
 
+    protected void changePermission(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
+
+        Connection conn = F.getConnection();
+        PreparedStatement pstmt;
+        HttpSession session = request.getSession();
+        try {
+            pstmt = conn.prepareStatement("UPDATE `project` SET `visible` = ?, `updated_at` = NOW() WHERE `id` = ?;");
+            pstmt.setString(1, request.getParameter("publish"));
+            pstmt.setString(2, request.getParameter("projectid"));
+            int result = pstmt.executeUpdate();
+            if (result > 0) {
+                //success
+                String[] message = {"เปลี่ยนสิทธิ์การเข้าชมเรียบร้อยแล้ว!", "success"};
+                session.setAttribute("message", message);
+            } else {
+                //failed
+                String[] message = {"มีข้อผิดพลาดเกิดขึ้น กรุณาลองอีกครั้ง!", "danger"};
+                session.setAttribute("message", message);
+            }
+            pstmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        response.sendRedirect(F.asset("/admin/product"));
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
