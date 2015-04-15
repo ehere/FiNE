@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import model.Purchased;
+import model.User;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -158,6 +159,15 @@ public class F implements Serializable {
     public static boolean hasMessage(HttpSession session){
         if(session.getAttribute("message") != null){
             return true;
+        }
+        return false;
+    }
+    
+    public static boolean isAdmin(HttpSession session){
+        if(isLoggedIn(session)){
+            if(((User) session.getAttribute("user")).getRole() >= 70){
+                return true;
+            }
         }
         return false;
     }

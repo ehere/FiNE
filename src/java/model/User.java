@@ -31,7 +31,7 @@ public class User implements Serializable{
     private String email;
     private String password;
     private String birthday;
-    private String role;
+    private int role;
     private String image;
     private String created_at;
     private String updated_at;
@@ -45,7 +45,7 @@ public class User implements Serializable{
         email = result.getString("email");
         password = result.getString("password");
         birthday = F.convertDate(result.getString("birthday"), "dd MMMMM yyyy");
-        role = result.getString("role");
+        role = result.getInt("role");
         image = result.getString("image");
         created_at = F.convertDate(result.getString("created_at"), "dd MMMMM yyyy");
         updated_at = F.convertDate(result.getString("updated_at"), "dd MMMMM yyyy");
@@ -131,11 +131,11 @@ public class User implements Serializable{
     }
 
 
-    public String getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(int role) {
         this.role = role;
     }
 
