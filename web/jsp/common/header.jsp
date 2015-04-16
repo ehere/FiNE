@@ -1,6 +1,7 @@
 <%@page import="model.User"%>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -13,21 +14,21 @@
         <title>FiNE - Fine is Novel Engine</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-        
-        <link rel="stylesheet" href="<%= F.asset("css/bootstrap.min.css") %>">
-        <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css") %>">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'> -->
-        <link rel="stylesheet" href="<%= F.asset("css/jquery-ui.css") %>">
 
-        <link rel="stylesheet" href="<%= F.asset("css/leaflet.css") %>" />
+        <link rel="stylesheet" href="<%= F.asset("css/bootstrap.min.css")%>">
+        <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css")%>">
+        <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'> -->
+        <link rel="stylesheet" href="<%= F.asset("css/jquery-ui.css")%>">
+
+        <link rel="stylesheet" href="<%= F.asset("css/leaflet.css")%>" />
         <!--[if lte IE 8]>
-            <link rel="stylesheet" href="<%= F.asset("css/leaflet.ie.css") %>" />
+            <link rel="stylesheet" href="<%= F.asset("css/leaflet.ie.css")%>" />
         <![endif]-->
-        
-        <link rel="stylesheet" href="<%= F.asset("css/main.css") %>">
-        <link rel="stylesheet" href="<%= F.asset("css/search.css") %>">
-        <script src="<%= F.asset("js/modernizr-2.6.2-respond-1.1.0.min.js") %>"></script>
-        <script src="<%= F.asset("js/jquery-2.1.3.min.js") %>">"></script>
+
+        <link rel="stylesheet" href="<%= F.asset("css/main.css")%>">
+        <link rel="stylesheet" href="<%= F.asset("css/search.css")%>">
+        <script src="<%= F.asset("js/modernizr-2.6.2-respond-1.1.0.min.js")%>"></script>
+        <script src="<%= F.asset("js/jquery-2.1.3.min.js")%>">"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -41,41 +42,44 @@
                 <div class="menuextras">
                     <div class="extras">
                         <ul>
-                            <% if (session.getAttribute("user") == null) { %>
-                            <li><a href="<%= F.asset("/register") %>"><i class="glyphicon glyphicon-pencil icon-white"></i> สมัครสมาชิก</a></li>
-                            <li><a href="<%= F.asset("/login") %>"><i class="glyphicon glyphicon-log-in icon-white"></i> เข้าสู่ระบบ</a></li>
-                            <% } else { %>
-                            <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart") %>"><b><%= ((model.Cart) session.getAttribute("cart")).getItemsSize() %> รายการ</b></a></li>
-                            <li>สวัสดี! <%= ((User) session.getAttribute("user")).getFullname() %></li>
-                            <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> <%= ((User) session.getAttribute("user")).getCredit()%> เครดิต</li>
-                            <% if(F.isAdmin(session)){ %>
-                            <li><a href="<%= F.asset("/admin") %>"><i class="glyphicon glyphicon-cog icon-white"></i> เข้าสู่ระบบจัดการ</a></li>
-                            <% } %>
-                            <li><a href="<%= F.asset("/login.do?action=logout") %>"><i class="glyphicon glyphicon-log-out icon-white"></i> ออกจากกระบบ</a></li>
-                            <% } %>
+                            <c:choose>
+                                <c:when test="${sessionScope.user == null}">
+                                    <li><a href="<%= F.asset("/register")%>"><i class="glyphicon glyphicon-pencil icon-white"></i> สมัครสมาชิก</a></li>
+                                    <li><a href="<%= F.asset("/login")%>"><i class="glyphicon glyphicon-log-in icon-white"></i> เข้าสู่ระบบ</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                    <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart")%>"><b>${sessionScope.cart.getItemsSize()} รายการ</b></a></li>
+                                    <li>สวัสดี! ${sessionScope.user.fullname}</li>
+                                    <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> ${sessionScope.user.credit} เครดิต</li>
+                                        <c:if test="${sessionScope.user.isAdmin()}">
+                                        <li><a href="<%= F.asset("/admin")%>"><i class="glyphicon glyphicon-cog icon-white"></i> เข้าสู่ระบบจัดการ</a></li>
+                                        </c:if>
+                                    <li><a href="<%= F.asset("/login.do?action=logout")%>"><i class="glyphicon glyphicon-log-out icon-white"></i> ออกจากกระบบ</a></li>
+                                    </c:otherwise>
+                                </c:choose>
                         </ul>
                     </div>
                 </div>
                 <nav id="mainmenu" class="mainmenu">
                     <ul>
-                        <li class="logo-wrapper"><a href="index.html"><img src="<%= F.asset("img/fine-logo.png") %>" alt="Multipurpose Twitter Bootstrap Template"></a></li>
+                        <li class="logo-wrapper"><a href="index.html"><img src="<%= F.asset("img/fine-logo.png")%>" alt="Multipurpose Twitter Bootstrap Template"></a></li>
                         <li class="active">
-                            <a href="<%= F.asset("/") %>">Home</a>
+                            <a href="<%= F.asset("/")%>">Home</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/product") %>">FiNE Store</a>
+                            <a href="<%= F.asset("/product")%>">FiNE Store</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/inventory") %>">Your Inventory</a>
+                            <a href="<%= F.asset("/inventory")%>">Your Inventory</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/profile") %>">Your Profile</a>
+                            <a href="<%= F.asset("/profile")%>">Your Profile</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/about") %>">About Us</a>
+                            <a href="<%= F.asset("/about")%>">About Us</a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
-                            <%= F.getMessage(session) %>
+        <%= F.getMessage(session)%>
