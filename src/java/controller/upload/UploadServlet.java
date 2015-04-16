@@ -35,7 +35,7 @@ import org.json.simple.JSONObject;
 @MultipartConfig
 public class UploadServlet extends HttpServlet {
 
-    private List<String> allow_type = Arrays.asList("gif", "png", "jpg", "bmp", "svg","tif","webp","mp3","wav","ogg");
+    private List<String> allow_type = Arrays.asList("gif", "png", "jpg", "bmp", "svg", "tif", "webp", "mp3", "wav", "ogg");
     private final static Logger LOGGER
             = Logger.getLogger(UploadServlet.class.getCanonicalName());
 
@@ -69,12 +69,14 @@ public class UploadServlet extends HttpServlet {
         final PrintWriter writer = response.getWriter();
 
         try {
-            //System.out.println(getFileType(fileName));
+
             if (filePart.getSize() == 0) {
-                respond.put("message", "Please select file before upload");
+                respond.put("message", "Please select file before upload.");
                 writer.println(respond.toJSONString());
-            }
-            else if (filePart.getSize() > 300 * 1024) {
+            } else if (!allow_type.contains(getFileType(fileName))) {
+                respond.put("message", "File type not allow.");
+                writer.println(respond.toJSONString());
+            } else if (filePart.getSize() > 300 * 1024) {
                 respond.put("message", "File too Big.");
                 writer.println(respond.toJSONString());
             } else {
@@ -117,10 +119,12 @@ public class UploadServlet extends HttpServlet {
         }
 
     }
+
     private String getFileType(String filename) {
-        String[] name = filename.split(".");
-        return name[name.length-1];
+        String[] name = filename.split("\\.");
+        return name[name.length - 1];
     }
+
     private String getFileName(final Part part) {
         final String partHeader = part.getHeader("content-disposition");
         LOGGER.log(Level.INFO, "Part Header = {0}", partHeader);
