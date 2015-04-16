@@ -8,6 +8,15 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <div class="pull-right">
+                    <form action="" class="search-form">
+                        <div class="form-group has-feedback" style="margin-bottom: 0px;">
+                            <label for="search" class="sr-only">ค้นหา</label>
+                            <input type="text" class="form-control" name="search" id="search" placeholder="ค้นหา">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </form>
+                </div>
                 <h1>FiNE Store</h1>
             </div>
         </div>
@@ -16,6 +25,12 @@
 
 <div class="eshop-section section">
     <div class="container">
+        <c:if test="${searchKey != null}">
+            <h2>ผลการค้นหาสำหรับ ${searchKey} <small>ค้นหาโดยชื่อ Visual Novel ชื่อ-นามสกุล และอีเมล์ของผู้แต่ง</small></h2>
+        </c:if>
+        <c:if test="${searchMsg != null}">
+            <h3 class="text-center">${searchMsg}</h3>
+        </c:if>
         <div class="row">
             <c:forEach var="product" items="${list}">
                 <div class="col-md-3 col-sm-6">
@@ -65,12 +80,14 @@
                             <li class="active"><a href="#">${i}</a></li>
                             </c:when>
                             <c:otherwise>
-                            <li><a href="<%= F.asset("/product?page=")%>${i}">${i}</a></li>
+                            <li><a href="<%= F.asset("/product?page=")%>${i}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">${i}</a></li>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
                     <c:if test="${requestScope.currentpage != requestScope.totalpage}">
-                    <li><a href="<%= F.asset("/product?page=")%>${requestScope.currentpage+1}">Next</a></li>
+                        <c:if test="${requestScope.totalpage != 0}">
+                        <li><a href="<%= F.asset("/product?page=")%>${requestScope.currentpage+1}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">Next</a></li>
+                        </c:if>
                     </c:if>
             </ul>
         </div>

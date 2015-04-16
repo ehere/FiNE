@@ -44,7 +44,12 @@ public class Product extends HttpServlet {
         if (method.equals("view")) {
             view(request, response);
         } else if (method.equals("index")) {
-            index(request, response);
+            if(request.getParameter("search") != null){
+                search(request, response);
+            }
+            else{
+                index(request, response);
+            }
         }
     }
 
@@ -148,7 +153,60 @@ public class Product extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    }
+    
+    protected void search(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            Connection conn = F.getConnection();
+            String searchKey = request.getParameter("search");
+            String searchSQL = "%"+searchKey+"%";
+            int page = 1;
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
+            }
+            String sql = "SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM project LEFT OUTER JOIN user ON (project.user_id = user.id) WHERE visible = 1 AND (title LIKE ? or firstname LIKE ? or lastname LIKE ? or email LIKE ?);";
+            PreparedStatement csmt = conn.prepareStatement(sql);
+            csmt.setString(1, searchSQL);
+            csmt.setString(2, searchSQL);
+            csmt.setString(3, searchSQL);
+            csmt.setString(4, searchSQL);
+            ResultSet cr = csmt.executeQuery();
+            cr.next();
+            int totalpage = cr.getInt("totalpage");
+            cr.close();
+            csmt.close();
+
+            sql = "SELECT * FROM project LEFT OUTER JOIN user ON (project.user_id = user.id) WHERE visible = 1 AND (title LIKE ? or firstname LIKE ? or lastname LIKE ? or email LIKE ?) LIMIT 8 OFFSET ?;";
+            PreparedStatement psmt = conn.prepareStatement(sql);
+            psmt.setString(1, searchSQL);
+            psmt.setString(2, searchSQL);
+            psmt.setString(3, searchSQL);
+            psmt.setString(4, searchSQL);
+            psmt.setInt(5, (page - 1) * 8);
+            ResultSet result = psmt.executeQuery();
+            ArrayList<Project> list = new ArrayList();
+            while (result.next()) {
+                Project product = new Project(result);
+                list.add(product);
+            }
+            
+            if(totalpage == 0){
+                request.setAttribute("searchMsg", "ไม่พบผลลัพธ์สำหรับการค้นหานี้");
+            }
+            request.setAttribute("searchKey", searchKey);
+            request.setAttribute("list", list);
+            request.setAttribute("totalpage", totalpage);
+            request.setAttribute("currentpage", page);
+            result.close();
+            psmt.close();
+            conn.close();
+            request.getRequestDispatcher("/jsp/common/product-list.jsp").forward(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.

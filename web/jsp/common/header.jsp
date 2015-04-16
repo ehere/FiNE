@@ -25,6 +25,7 @@
         <![endif]-->
         
         <link rel="stylesheet" href="<%= F.asset("css/main.css") %>">
+        <link rel="stylesheet" href="<%= F.asset("css/search.css") %>">
         <script src="<%= F.asset("js/modernizr-2.6.2-respond-1.1.0.min.js") %>"></script>
         <script src="<%= F.asset("js/jquery-2.1.3.min.js") %>">"></script>
     </head>
