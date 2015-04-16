@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package model;
 
 import help.F;
@@ -23,7 +22,8 @@ import java.util.logging.Logger;
  *
  * @author Administrator
  */
-public class User implements Serializable{
+public class User implements Serializable {
+
     private int id;
     private String prefix;
     private String firstname;
@@ -37,7 +37,7 @@ public class User implements Serializable{
     private String updated_at;
     private int age;
 
-    public User(ResultSet result) throws SQLException{
+    public User(ResultSet result) throws SQLException {
         id = result.getInt("id");
         prefix = result.getString("prefix");
         firstname = result.getString("firstname");
@@ -51,10 +51,11 @@ public class User implements Serializable{
         updated_at = F.convertDate(result.getString("updated_at"), "dd MMMMM yyyy");
         age = initAge();
     }
-    
-    public String getFullname(){
+
+    public String getFullname() {
         return firstname + " " + lastname;
     }
+
     public int getId() {
         return id;
     }
@@ -113,7 +114,7 @@ public class User implements Serializable{
 
     public String getCredit() {
         String credit = "0.00";
-        
+
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT credit FROM user WHERE id = ?");
             psmt.setInt(1, id);
@@ -129,7 +130,6 @@ public class User implements Serializable{
         }
         return credit;
     }
-
 
     public int getRole() {
         return role;
@@ -166,10 +166,8 @@ public class User implements Serializable{
     public int getAge() {
         return age;
     }
-    
-    
-    
-    public ArrayList<Project> getPurchaseProject(){
+
+    public ArrayList<Project> getPurchaseProject() {
         ArrayList<Project> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id IN (SELECT project_id FROM purchase WHERE user_id = ?);");
@@ -184,10 +182,11 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
     }
-    public ArrayList<Integer> getPurchaseProjectID(){
+
+    public ArrayList<Integer> getPurchaseProjectID() {
         ArrayList<Integer> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT project_id FROM purchase WHERE user_id = ?;");
@@ -201,11 +200,11 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
-    }    
-    
-    public ArrayList<Project> getOwnProject(){
+    }
+
+    public ArrayList<Project> getOwnProject() {
         ArrayList<Project> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE user_id = ?;");
@@ -220,10 +219,11 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
     }
-    public ArrayList<Integer> getOwnProjectID(){
+
+    public ArrayList<Integer> getOwnProjectID() {
         ArrayList<Integer> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT id FROM project WHERE user_id = ?;");
@@ -237,11 +237,11 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
     }
-    
-    public ArrayList<Project> getLatestOwnProject(){
+
+    public ArrayList<Project> getLatestOwnProject() {
         ArrayList<Project> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE `user_id` = ? ORDER BY `created_at` DESC LIMIT 0, 12;");
@@ -256,11 +256,11 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
     }
-    
-    public ArrayList<Integer> getLatestOwnProjectID(){
+
+    public ArrayList<Integer> getLatestOwnProjectID() {
         ArrayList<Integer> list = new ArrayList();
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT id FROM `project` WHERE `user_id` = ? ORDER BY `created_at` DESC LIMIT 0, 12;");
@@ -274,17 +274,17 @@ public class User implements Serializable{
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return list;
     }
-    
-    public int initAge(){
+
+    public int initAge() {
         int age = 0;
         try (Connection conn = F.getConnection()) {
             PreparedStatement psmt = conn.prepareStatement("SELECT TIMESTAMPDIFF(YEAR, `birthday`, CURDATE()) AS AGE FROM `user` WHERE `id` = ?;");
             psmt.setInt(1, id);
             ResultSet result = psmt.executeQuery();
-            if(result.next()){
+            if (result.next()) {
                 age = result.getInt("AGE");
             }
             result.close();
@@ -294,5 +294,12 @@ public class User implements Serializable{
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
         }
         return age;
+    }
+
+    public boolean isAdmin() {
+        if (this.role >= 70) {
+            return true;
+        }
+        return false;
     }
 }
