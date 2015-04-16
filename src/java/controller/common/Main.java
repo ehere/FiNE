@@ -7,6 +7,7 @@ package controller.common;
 
 import help.F;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,15 +20,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.User;
 
 /**
  *
- * @author Administrator
+ * @author iMEIDA
  */
-@WebServlet(name = "Inventory", urlPatterns = {"/common.inventory"})
-public class Inventory extends HttpServlet {
+@WebServlet(name = "Main", urlPatterns = {"/common.main"})
+public class Main extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,51 +46,34 @@ public class Inventory extends HttpServlet {
             index(request, response);
         }
     }
-
-    protected void index(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    
+    protected void index (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        if (!F.isLoggedIn(request.getSession())) {
-            response.sendRedirect(F.asset("/login"));
-            return;
-        }
+        Connection conn = F.getConnection();
+        String sql = "SELECT project.id, COUNT(purchase.id) FROM `project` LEFT OUTER JOIN purchase ON (project.id = purchase.project_id) GROUP BY project.id ORDER BY COUNT(purchase.id) DESC LIMIT 8;";
+        ArrayList<model.Project> projectList = new ArrayList();
         try {
-            Connection conn = F.getConnection();
-            int page = 1;
-            if (request.getParameter("page") != null) {
-                page = Integer.parseInt(request.getParameter("page"));
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet result = pstmt.executeQuery();
+            PreparedStatement pPstmt = conn.prepareStatement("SELECT * FROM `project` WHERE id = ?;");
+            while(result.next()){
+                pPstmt.setInt(1, result.getInt(1));
+                ResultSet result2 = pPstmt.executeQuery();
+                result2.next();
+                model.Project project = new model.Project(result2);
+                projectList.add(project);
+                result2.close();
             }
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("user");
-            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 9 ) AS totalpage FROM `purchase` WHERE `user_id` = ?;");
-            csmt.setInt(1, user.getId());
-            ResultSet cr = csmt.executeQuery();
-            cr.next();
-            int totalpage = cr.getInt("totalpage");
-            cr.close();
-            csmt.close();
-
-            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `purchase` WHERE `user_id` = ? LIMIT 9 OFFSET ?;");
-            psmt.setInt(1, user.getId());
-            psmt.setInt(2, (page - 1) * 9);
-            ResultSet result = psmt.executeQuery();
-            ArrayList<model.Purchased> list = new ArrayList();
-            while (result.next()) {
-                model.Purchased purchased = new model.Purchased(result);
-                list.add(purchased);
-            }
-
-            request.setAttribute("list", list);
-            request.setAttribute("totalpage", totalpage);
-            request.setAttribute("currentpage", page);
             result.close();
-            psmt.close();
+            pPstmt.close();
+            pstmt.close();
             conn.close();
-            request.getRequestDispatcher("/jsp/common/item-list.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        request.setAttribute("projectList", projectList);
+        request.getRequestDispatcher("/jsp/common/home.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

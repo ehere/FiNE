@@ -50,12 +50,10 @@ public class F implements Serializable {
         F.datasource = datasource;
     }
 
-
     public static String asset(String url) {
-        if(url == null || url.trim().equals("")){
+        if (url == null || url.trim().equals("")) {
             return "";
-        }
-        else if (!url.contains("http://") && !url.contains("https://")) {
+        } else if (!url.contains("http://") && !url.contains("https://")) {
             return projectPath + "/" + url.replaceAll("^/+", "").replaceAll("/+$", "");
         } else {
             return url;
@@ -90,45 +88,47 @@ public class F implements Serializable {
         BASE64Encoder endecoder = new BASE64Encoder();
         return endecoder.encode(data);
     }
-    
-    public static boolean isLoggedIn(HttpSession session){
+
+    public static boolean isLoggedIn(HttpSession session) {
         return session.getAttribute("user") != null;
     }
 
-    public static boolean isUrlMatch(String pattern, String url){
-        if(url.contains("?")){
+    public static boolean isUrlMatch(String pattern, String url) {
+        if (url.contains("?")) {
             int pos = url.indexOf("?");
             url = url.substring(0, pos);
         }
         String[] sPattern = pattern.split("/+");
         String[] sUrl = url.split("/+");
-        if(sPattern.length != sUrl.length){
+        if (sPattern.length != sUrl.length) {
             return false;
         }
-        for(int i = 0; i < sPattern.length; i++){
-            if(!sPattern[i].contains("{")){
-                if(!sPattern[i].equals(sUrl[i])){
+        for (int i = 0; i < sPattern.length; i++) {
+            if (!sPattern[i].contains("{")) {
+                if (!sPattern[i].equals(sUrl[i])) {
                     return false;
                 }
             }
         }
         return true;
     }
-    
-    public static String urlMapper(String pattern, String url, HttpServletRequest request){
+
+    public static String urlMapper(String pattern, String url, HttpServletRequest request) {
         String[] sPattern = pattern.split("/+");
         String[] sUrl = url.split("/+");
-        for(int i = 0; i < sPattern.length; i++){
-            if(sPattern[i].contains("{")){
-                String key = sPattern[i].substring(1, sPattern[i].length()-1);
-                request.setAttribute(key, sUrl[i]);
+        for (int i = 0; i < sPattern.length; i++) {
+            if (sPattern[i].contains("{")) {
+                if (i < sUrl.length) {
+                    String key = sPattern[i].substring(1, sPattern[i].length() - 1);
+                    request.setAttribute(key, sUrl[i]);
+                }
             }
         }
         return "";
     }
-    
-    public static String convertDate(String toConvert, String newFormat){
-        if(toConvert == null){
+
+    public static String convertDate(String toConvert, String newFormat) {
+        if (toConvert == null) {
             return null;
         }
         try {
@@ -141,31 +141,31 @@ public class F implements Serializable {
         }
         return null;
     }
-    
-    public static String getMessage(HttpSession session){
-        if(session.getAttribute("message") != null){
+
+    public static String getMessage(HttpSession session) {
+        if (session.getAttribute("message") != null) {
             String[] message = (String[]) session.getAttribute("message");
-            String text = 
-                     "<div class=\"alert alert-"+message[1]+" alert-dismissible fade in\" role=\"alert\" style=\"margin-bottom: 0px;text-align: center;\">"
-                    +    "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>"
-                    +    "<strong>"+message[0] +"</strong>"
-                    +"</div>";
-            session.setAttribute("message",null);
+            String text
+                    = "<div class=\"alert alert-" + message[1] + " alert-dismissible fade in\" role=\"alert\" style=\"margin-bottom: 0px;text-align: center;\">"
+                    + "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>"
+                    + "<strong>" + message[0] + "</strong>"
+                    + "</div>";
+            session.setAttribute("message", null);
             return text;
         }
         return "";
     }
-    
-    public static boolean hasMessage(HttpSession session){
-        if(session.getAttribute("message") != null){
+
+    public static boolean hasMessage(HttpSession session) {
+        if (session.getAttribute("message") != null) {
             return true;
         }
         return false;
     }
-    
-    public static boolean isAdmin(HttpSession session){
-        if(isLoggedIn(session)){
-            if(((User) session.getAttribute("user")).getRole() >= 70){
+
+    public static boolean isAdmin(HttpSession session) {
+        if (isLoggedIn(session)) {
+            if (((User) session.getAttribute("user")).getRole() >= 70) {
                 return true;
             }
         }

@@ -1,5 +1,6 @@
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <jsp:include page="header.jsp" />
 <!-- Homepage Slider -->
@@ -8,13 +9,13 @@
         <ul class="sequence-canvas">
             <!-- Slide 1 -->
             <li class="bg3">
-                <h2 class="title">Fine Store</h2>
+                <h2 class="title">FiNE Store</h2>
                 <h3 class="subtitle">ค้นหา Visual Novel ที่น่าสนใจจากรายการที่สมาชิกช่วยกันสร้าง</h3>
                 <img class="slide-img" src="<%= F.asset("img/homepage-slider/slide2.png")%>" alt="Slide 2" />
             </li>
             <li class="bg1">
-                <h2 class="title">Your own create</h2>
-                <h3 class="subtitle">สร้าง Visual Novel เองได้ง่ายๆและที่สำคัญ ฟรี!</h3>
+                <h2 class="title">DIY</h2>
+                <h3 class="subtitle">สร้าง Visual Novel เองได้ง่ายๆ และที่สำคัญ ฟรี!</h3>
                 <img class="slide-img" src="<%= F.asset("img/homepage-slider/slide3.png")%>" alt="Slide 3" />
             </li>
             <li class="bg4">
@@ -34,163 +35,7 @@
 </div>
 <!-- End Homepage Slider -->
 
-<div class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <a href="#" class="btn btn-green pull-right">More Visual Novel</a>
-                <br>
-                <br>
-                <div class="products-slider">
-                    <!-- Products Slider Item -->
-                    <div class="shop-item">
-                        <div class="ribbon-wrapper">
-                            <div class="price-ribbon ribbon-green"> New </div>
-                        </div>
-                        <!-- Product Image -->
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product1.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <!-- Product Title -->
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <!-- Product Price -->
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <!-- Buy Button -->
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <!-- End Products Slider Item -->
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product2.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product3.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product4.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product5.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product6.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product7.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                    <div class="shop-item">
-                        <div class="image">
-                            <a href="page-product-details.html"><img src="<%= F.asset("img/product8.jpg")%>" alt="Item Name"></a>
-                        </div>
-                        <div class="title">
-                            <h3><a href="page-product-details.html">Lorem ipsum dolor</a></h3>
-                        </div>
-                        <div class="price">
-                            $999.99
-                        </div>
-                        <div class="actions">
-                            <a href="page-product-details.html" class="btn btn-small"><i class="icon-shopping-cart icon-white"></i> Buy</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Press Coverage 
-<div class="section">
-<div class="container">
-                <div class="row">
-                        <div class="col-md-4 col-sm-6">
-                                <div class="in-press press-wired">
-                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
-                                </div>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                                <div class="in-press press-mashable">
-                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
-                                </div>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                                <div class="in-press press-techcrunch">
-                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
-                                </div>
-                        </div>
-                </div>
-        </div>
-</div>
-<!-- Press Coverage -->
+
 
 <!-- Services -->
 <div class="section">
@@ -226,6 +71,7 @@
 </div>
 <!-- End Services -->
 
+
 <!-- Call to Action Bar -->
 <div class="section section-white">
     <div class="container">
@@ -240,6 +86,70 @@
 </div>
 <!-- End Call to Action Bar -->
 
+
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" class="btn btn-green pull-right">ดูเพิ่มเติมที่ FiNE Store <i class="glyphicon glyphicon-chevron-right"></i></a>
+                <h2>Visual Novel แนะนำ</h2>
+                <br>
+                <br>
+                <div class="products-slider">
+                    <!-- Products Slider Item -->
+                    <c:forEach var="product" items="${projectList}">
+                    <div class="shop-item">
+                        <%-- <div class="ribbon-wrapper">
+                            <div class="price-ribbon ribbon-green"> New </div>
+                        </div> --%>
+                        <!-- Product Image -->
+                        <div class="image">
+                            <a href="<%= F.asset("/product")%>/${product.id}/view"><img src="${product.cover}" alt="${product.title}" style="width: 256px; height: 159px;"></a>
+                        </div>
+                        <!-- Product Title -->
+                        <div class="title">
+                            <h3><a href="<%= F.asset("/product")%>/${product.id}/view">${product.title}</a></h3>
+                        </div>
+                        <!-- Product Price -->
+                        <div class="price">
+                            <i class="glyphicon glyphicon-bitcoin" style="font-size: 0.8em;"></i>${product.price}
+                        </div>
+                        <!-- Buy Button -->
+                        <div class="actions">
+                            <a href="<%= F.asset("/product")%>/${product.id}/view" class="btn btn-small">View</a>
+                        </div>
+                    </div>
+                    </c:forEach>
+                    <!-- End Products Slider Item -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Press Coverage 
+<div class="section">
+<div class="container">
+                <div class="row">
+                        <div class="col-md-4 col-sm-6">
+                                <div class="in-press press-wired">
+                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
+                                </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                                <div class="in-press press-mashable">
+                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
+                                </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                                <div class="in-press press-techcrunch">
+                                        <a href="#">Morbi eleifend congue elit nec sagittis. Praesent aliquam lobortis tellus, nec consequat vitae</a>
+                                </div>
+                        </div>
+                </div>
+        </div>
+</div>
+<!-- Press Coverage -->
 
 
 <!-- Our Clients -->
