@@ -58,14 +58,29 @@
                     </div>
                 </div>
             </div>
-            <audio id="dubsound">
-                <source type="audio/mp4">
-                Your browser does not support the audio element.
-            </audio>
-            <audio id="player_music">
-                <source type="audio/mp4">
-                Your browser does not support the audio element.
-            </audio>
+            <br>
+            <div style="width: 80%;margin-left: auto;margin-right: auto;">
+                <table>
+                    <tr>
+                        <td><b>Dialog Sound:</b></td>
+                        <td>
+                            <audio id="dubsound" controls>
+                                <source type="audio/mp4">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Background Music:&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                        <td>
+                            <audio id="player_music" controls>
+                                <source type="audio/mp4">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <!-- ----------------------------------------------------------------------------------------------------
@@ -209,20 +224,20 @@
                                 <br>
                                 <br>
                                 <br>
-                                <!-- <div class="input-group">
-                                    <input class="form-control" type="file">
-                                    <div class="input-group-btn">
-                                        <button type="submit" name="submit" class="btn btn-primary" tabindex="-1">Upload Background</button>
-                                    </div>
-                                </div>
-                                <br>
-                                OR
-                                <br>
-                                <br> -->
-                                <div class="input-group">
-                                    <span class="input-group-addon">Background URL</span>
-                                    <input class="form-control" name="bgurl" id="bgurl">
-                                </div>
+                                <form method="POST" enctype="multipart/form-data" id="form-upload-bg">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">Background</span>
+                                        <input id="projectBgInput" type="file" name="file" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-danger" type="button" id="uploadBgBtn">Upload</button>
+                                        </span>
+                                    </div><br>
+                                </form>
+                                <input class="form-control" name="bgurl" id="bgurl" type="hidden">
+                                <strong>Preview Image:</strong><br>
+                                <progress id="progress-bg-upload" class="hidden"></progress>
+                                <img class="thumbnail" id="bgImg" src ="" style="max-height: 350px;max-width: 350px;">
+                                <img class="thumbnail hidden" id="loading-uploade-bg" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -235,20 +250,20 @@
                                 <br>
                                 <br>
                                 <br>
-                                <!-- <div class="input-group">
-                                    <input class="form-control" type="file">
-                                    <div class="input-group-btn">
-                                        <button type="submit" name="submit" class="btn btn-primary" tabindex="-1">Upload Music</button>
-                                    </div>
-                                </div>
-                                <br>
-                                OR
-                                <br>
-                                <br> -->
-                                <div class="input-group">
-                                    <span class="input-group-addon">Music URL</span>
-                                    <input class="form-control" name="musicurl" id="musicurl">
-                                </div>
+                                <form method="POST" enctype="multipart/form-data" id="form-upload-music">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">Music</span>
+                                        <input id="projectMusicInput" type="file" name="file" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-danger" type="button" id="uploadMusicBtn">Upload</button>
+                                        </span>
+                                    </div><br>
+                                </form>
+                                <input class="form-control" name="musicurl" id="musicurl" type="hidden">
+                                <audio id="pre_player_music" controls>
+                                    <source type="audio/mp4">
+                                    Your browser does not support the audio element.
+                                </audio>
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -329,7 +344,7 @@
                         <br>
                     </div>
                 </div>
-                <form method="POST" enctype="multipart/form-data" >
+                <form method="POST" enctype="multipart/form-data" id="form-upload-cover">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Cover</span>
                         <input id="projectCoverInput" type="file" name="file" class="form-control">
@@ -368,8 +383,6 @@
 <script src="<%= F.asset("/js/activity_bar.js")%>"></script>
 <script src="<%= F.asset("/js/scene_bar.js")%>"></script>
 <script type="text/javascript" src="<%= F.asset("ckeditor/ckeditor.js")%>"></script>
-<script type="text/javascript"></script>
-<script type="text/javascript"></script>
 
 <script>
                     CKEDITOR.replace("sceneDescription");
@@ -439,7 +452,7 @@
     }
 
     $('#uploadCoverBtn').click(function () {
-        var formData = new FormData($('form')[0]);
+        var formData = new FormData($('#form-upload-cover')[0]);
         $('#loading-uploade-cover').removeClass("hidden");
         $('#coverImg').addClass("hidden");
         $('#progress-cover-upload').attr({value: 0, max: 1});
@@ -450,7 +463,7 @@
             xhr: function () {  // Custom XMLHttpRequest
                 var myXhr = $.ajaxSettings.xhr();
                 if (myXhr.upload) { // Check if upload property exists
-                    myXhr.upload.addEventListener('progress', progressHandlingFunction, true); // For handling the progress of the upload
+                    myXhr.upload.addEventListener('progress', progressCoverHandling, true); // For handling the progress of the upload
                 }
                 return myXhr;
             },
@@ -494,9 +507,138 @@
             processData: false
         });
     });
-    function progressHandlingFunction(e) {
+
+    $('#uploadBgBtn').click(function () {
+        var formData = new FormData($('#form-upload-bg')[0]);
+        $('#loading-uploade-bg').removeClass("hidden");
+        $('#bgImg').addClass("hidden");
+        $('#progress-bg-upload').attr({value: 0, max: 1});
+        $('#progress-bg-upload').removeClass("hidden");
+        $.ajax({
+            url: '/fine/UploadServlet?action=bg', //Server script to process data
+            type: 'POST',
+            xhr: function () {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) { // Check if upload property exists
+                    myXhr.upload.addEventListener('progress', progressBgHandling, true); // For handling the progress of the upload
+                }
+                return myXhr;
+            },
+            //Ajax events
+            //beforeSend: beforeSendHandler,
+            success: function (respond) {
+                var data = $.parseJSON(respond);
+                if (data.status == 1) {
+                    $('#bgImg').attr("src", "/fine/img/bg/" + data.filename);
+                    $('#bgurl').val("/fine/img/bg/" + data.filename);
+                } else {
+                    alert(data.message);
+                }
+                $('#progress-bg-upload').addClass("hidden");
+                $('#loading-uploade-bg').addClass("hidden");
+                $('#bgImg').removeClass("hidden");
+            },
+            error: function (x, e) {
+                $('#progress-bg-upload').addClass("hidden");
+                $('#loading-uploade-bg').addClass("hidden");
+                $('#bgImg').removeClass("hidden");
+                if (x.status == 0) {
+                    alert('Connection Abort.');
+                } else if (x.status == 404) {
+                    alert('Requested URL not found.');
+                } else if (x.status == 500) {
+                    alert('Internel Server Error.');
+                } else if (e == 'parsererror') {
+                    alert('Error.\nParsing JSON Request failed.');
+                } else if (e == 'timeout') {
+                    alert('Request Time out.');
+                } else {
+                    alert('Unknow Error.\n' + x.responseText);
+                }
+            },
+            // Form data
+            data: formData,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+    $('#uploadMusicBtn').click(function () {
+        var formData = new FormData($('#form-upload-music')[0]);
+        $('#loading-uploade-music').removeClass("hidden");
+        $('#pre_player_music').addClass("hidden");
+        $('#progress-music-upload').attr({value: 0, max: 1});
+        $('#progress-music-upload').removeClass("hidden");
+        $.ajax({
+            url: '/fine/UploadServlet?action=music', //Server script to process data
+            type: 'POST',
+            xhr: function () {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) { // Check if upload property exists
+                    myXhr.upload.addEventListener('progress', progressBgHandling, true); // For handling the progress of the upload
+                }
+                return myXhr;
+            },
+            //Ajax events
+            //beforeSend: beforeSendHandler,
+            success: function (respond) {
+                var data = $.parseJSON(respond);
+                if (data.status == 1) {
+                    $('#pre_player_music').attr("src", "/fine/sound/bgm/" + data.filename);
+                    $('#musicurl').val("/fine/sound/bgm/" + data.filename);
+                } else {
+                    alert(data.message);
+                }
+                $('#progress-music-upload').addClass("hidden");
+                $('#loading-uploade-music').addClass("hidden");
+                $('#pre_player_music').removeClass("hidden");
+            },
+            error: function (x, e) {
+                $('#progress-music-upload').addClass("hidden");
+                $('#loading-uploade-music').addClass("hidden");
+                $('#pre_player_music').removeClass("hidden");
+                if (x.status == 0) {
+                    alert('Connection Abort.');
+                } else if (x.status == 404) {
+                    alert('Requested URL not found.');
+                } else if (x.status == 500) {
+                    alert('Internel Server Error.');
+                } else if (e == 'parsererror') {
+                    alert('Error.\nParsing JSON Request failed.');
+                } else if (e == 'timeout') {
+                    alert('Request Time out.');
+                } else {
+                    alert('Unknow Error.\n' + x.responseText);
+                }
+            },
+            // Form data
+            data: formData,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+
+    function progressBgHandling(e) {
+        if (e.lengthComputable) {
+            $('#progress-bg-upload').attr({value: e.loaded, max: e.total});
+        }
+    }
+    function progressCoverHandling(e) {
         if (e.lengthComputable) {
             $('#progress-cover-upload').attr({value: e.loaded, max: e.total});
+        }
+    }
+    function progressMusicHandling(e) {
+        if (e.lengthComputable) {
+            $('#progress-music-upload').attr({value: e.loaded, max: e.total});
+        }
+    }
+    function progressVoiceHandling(e) {
+        if (e.lengthComputable) {
+            $('#progress-voice-upload').attr({value: e.loaded, max: e.total});
         }
     }
     getSceneList(${requestScope.project.id});

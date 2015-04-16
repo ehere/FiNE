@@ -50,7 +50,21 @@ public class UploadServlet extends HttpServlet {
         Date date = new Date();
         String datetime = dateFormat.format(date);
         // Create path components to save the file
-        final String path = "/img/cover";
+        String path = "";
+        long max_size = 0;
+        if (request.getParameter("action").equals("cover")) {
+            path = "/img/cover";
+            max_size = 300*1024;
+        } else if (request.getParameter("action").equals("bg")) {
+            path = "/img/bg";
+            max_size = 1*1024*1024;
+        } else if (request.getParameter("action").equals("music")) {
+            path = "/sound/bgm";
+            max_size = 5*1024*1024;
+        } else if (request.getParameter("action").equals("voice")) {
+            path = "/sound/voice";
+            max_size = 1*1024*1024;
+        }
         final Part filePart = request.getPart("file");
         String fileName = getFileName(filePart);
         String relativeWebPath = path;
@@ -76,7 +90,7 @@ public class UploadServlet extends HttpServlet {
             } else if (!allow_type.contains(getFileType(fileName))) {
                 respond.put("message", "File type not allow.");
                 writer.println(respond.toJSONString());
-            } else if (filePart.getSize() > 300 * 1024) {
+            } else if (filePart.getSize() > max_size) {
                 respond.put("message", "File too Big.");
                 writer.println(respond.toJSONString());
             } else {

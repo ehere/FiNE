@@ -505,6 +505,7 @@ function editBackground(index) {
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#background"]').tab('show');
     $('#bgurl').val(toEdit.url);
+    $('#bgImg').attr("src",toEdit.url);
 }
 
 function editMusic(index) {
@@ -514,6 +515,7 @@ function editMusic(index) {
     $('.activity-modal').modal('show');
     $('#activityTab a[href="#music"]').tab('show');
     $('#musicurl').val(toEdit.url);
+    $('#pre_player_music').attr("src", toEdit.url);
 }
 
 function clearInput() {
@@ -635,11 +637,10 @@ function editChangeBgActivity(index) {
     $('.activity-modal').modal('hide');
 
     draw_activityBar();
-    var playing = $(".play_index").html();
     previewActivity(index);
 }
 
-function editChangeMusicActivity(actity_id, index) {
+function editChangeMusicActivity(index) {
     $('#saveActBtn').removeClass("hidden");
     /*
      "14":{"type":6, "url":"http://aaa.com"}, 
@@ -658,8 +659,7 @@ function editChangeMusicActivity(actity_id, index) {
     $('.activity-modal').modal('hide');
 
     draw_activityBar();
-    var playing = $(".play_index").html();
-    previewActivity(parseInt(playing));
+    previewActivity(index);
 }
 function saveActivity(sceneID) {
     if (confirm("Are you sure?\nYou can't undo anything after save!")) {

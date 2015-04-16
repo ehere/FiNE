@@ -244,8 +244,8 @@ public class AuthorScene extends HttpServlet {
                                     PreparedStatement update_media = conn.prepareStatement("UPDATE `activity_media` SET `media`= ? WHERE `activity_id` = ?;");
                                     String url = (String) activity_data.get("url");
                                     if (!url.contains("http://") && !url.contains("https://")) {
-                                        url = url.replaceFirst(F.asset("/img/bg"), "");
-                                        url = url.replaceAll("^/+", "");
+                                        String[] temp = url.split("/");
+                                        url = temp[temp.length-1];
                                     }
                                     update_media.setString(1, url);
                                     update_media.setLong(2, activityID);
