@@ -420,12 +420,11 @@
         $.get("/fine/author/project/" + projectID + "/togglevisible")
                 .done(function (respond) {
                     $('#loading-project-status').addClass("hidden");
-                    if (respond == "toggle visible success.") {
-                        if ($(element).html().indexOf("Publish Now") != -1) {
-                            $(element).html('<i class="glyphicon glyphicon-ok"></i> Published');
-                        } else {
-                            $(element).html('<i class="glyphicon glyphicon-share"></i> Publish Now');
-                        }
+                    if (respond == "visible") {
+
+                        $(element).html('<i class="glyphicon glyphicon-ok"></i> Published');
+                    } else if(respond == "hidden") {
+                        $(element).html('<i class="glyphicon glyphicon-share"></i> Publish Now');
                     } else {
                         alert(respond);
                     }
@@ -620,7 +619,7 @@
             processData: false
         });
     });
-    
+
     $('#uploadVoiceBtn').click(function () {
         var formData = new FormData($('#form-upload-voice')[0]);
         $('#pre_dubsound').addClass("hidden");

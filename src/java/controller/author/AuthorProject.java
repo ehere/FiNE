@@ -132,11 +132,18 @@ public class AuthorProject extends HttpServlet {
                 toggleVisible.setInt(1, user.getId());
                 toggleVisible.setString(2, id);
                 int status = toggleVisible.executeUpdate();
-                if (status == 1) {
-                    out.print("toggle visible success.");
-                } else {
-                    out.print("Fail to toggle project visible!");
+                PreparedStatement visible_query = conn.prepareStatement("SELECT * FROM project WHERE `user_id` = ? AND `id` = ?;");
+                visible_query.setInt(1, user.getId());
+                visible_query.setString(2, id);
+                ResultSet result = visible_query.executeQuery();
+                result.next();
+                if (result.getInt("visible") == 1 ) {
+                    out.print("visible");
+                } else{
+                    out.print("hidden");
                 }
+                result.close();
+                visible_query.close();
                 conn.close();
             } catch (SQLException ex) {
                 out.print("Fail to toggle project visible!");
