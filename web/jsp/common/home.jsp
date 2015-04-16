@@ -46,7 +46,7 @@
                     <img src="<%= F.asset("img/service-icon/box.png")%>" alt="Service 1">
                     <h3>หาอะไรสนุกๆเล่น</h3>
                     <p>Fine มี Visua Novel น่าสนใจที่สมาชิกช่วยกันสร้างขึ้นมาด้วยใจรัก เลือกดูใน Fine Storeได้เลย</p>
-                    <a href="#" class="btn">ไปยัง Fine Store</a>
+                    <a href="<%= F.asset("/product")%>" class="btn">ไปยัง Fine Store</a>
                 </div>
             </div>
             <div class="col-md-4 col-sm-6">
@@ -78,7 +78,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="calltoaction-wrapper">
-                    <h3>เราสำเร็จ เมื่อคุณสำเร็จ สร้าง Visual Novel ได้ฟรีไม่เสียค่าใช้จ่าย* </h3> <a href="http://www.dragdropsite.com" class="btn btn-orange">สร้างเลย</a>
+                    <h3>เราสำเร็จ เมื่อคุณสำเร็จ สร้าง Visual Novel ได้ฟรีไม่เสียค่าใช้จ่าย* </h3> <a href="<%= F.asset("/register")%>" class="btn btn-orange">สมัครสมาชิกกับเรา</a>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <a href="#" class="btn btn-green pull-right">ดูเพิ่มเติมที่ FiNE Store <i class="glyphicon glyphicon-chevron-right"></i></a>
+                <a href="<%= F.asset("/product")%>" class="btn btn-green pull-right">ดูเพิ่มเติมที่ FiNE Store <i class="glyphicon glyphicon-chevron-right"></i></a>
                 <h2>Visual Novel แนะนำ</h2>
                 <br>
                 <br>
