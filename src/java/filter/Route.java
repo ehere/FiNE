@@ -112,9 +112,19 @@ public class Route implements Filter {
             F.urlMapper("/author/project/{id}", url, request);
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/project/{id}/update", url)) {
+            request.setAttribute("do", "update");
+            F.urlMapper("/author/project/{id}/update", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
         else if (F.isUrlMatch("/author/project/{id}/allscene", url)) {
             request.setAttribute("do", "allscene");
             F.urlMapper("/author/project/{id}/allscene", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/project/{id}/togglevisible", url)) {
+            request.setAttribute("do", "toggleVisble");
+            F.urlMapper("/author/project/{id}/togglevisible", url, request);
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
         else if (F.isUrlMatch("/author/scene/{id}/saveactivity", url)) {

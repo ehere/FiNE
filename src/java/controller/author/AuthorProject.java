@@ -48,8 +48,12 @@ public class AuthorProject extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("show")) {
             show(request, response);
+        } else if (method.equals("update")) {
+            update(request, response);
         } else if (method.equals("allscene")) {
             allscene(request, response);
+        } else if (method.equals("toggleVisble")) {
+            toggleVisble(request, response);
         }
     }
 
@@ -108,6 +112,79 @@ public class AuthorProject extends HttpServlet {
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void toggleVisble(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
+            String[] message = {"You doesn't have permission to edit this project !", "danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/product"));
+            return;
+        }
+        try (PrintWriter out = response.getWriter()) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement toggleVisible = conn.prepareStatement("UPDATE `project` SET`visible`= ABS(`visible`-1),`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ?;");
+                toggleVisible.setInt(1, user.getId());
+                toggleVisible.setString(2, id);
+                int status = toggleVisible.executeUpdate();
+                if (status == 1) {
+                    out.print("toggle visible success.");
+                } else {
+                    out.print("Fail to toggle project visible!");
+                }
+                conn.close();
+            } catch (SQLException ex) {
+                out.print("Fail to toggle project visible!");
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    protected void update(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        System.out.println(id);
+        if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
+            String[] message = {"You doesn't have permission to edit this project !", "danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/product"));
+            return;
+        }
+        try (PrintWriter out = response.getWriter()) {
+            String title = request.getParameter("title");
+            String description = request.getParameter("description");
+            Double price = Double.parseDouble(request.getParameter("price"));
+            int rate = Integer.parseInt(request.getParameter("rate"));
+            String cover = request.getParameter("cover");
+            int firstscene = Integer.parseInt(request.getParameter("firstscene"));
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement update_query = conn.prepareStatement("UPDATE `project` SET `title`= ? ,`description`= ?,`price`=?,`rate`=?,`cover`=?,`first_scene_id`=?,`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ?;");
+                update_query.setString(1, title);
+                update_query.setString(2, description);
+                update_query.setDouble(3, price);
+                update_query.setInt(4, rate);
+                update_query.setString(5, cover);
+                update_query.setInt(6, firstscene);
+                update_query.setInt(7, user.getId());
+                update_query.setString(8, id);
+                int status = update_query.executeUpdate();
+                if (status == 1) {
+                    out.print("Update project success.");
+                } else {
+                    out.print("Fail to update project!");
+                }
+                conn.close();
+            } catch (SQLException ex) {
+                out.print("Fail to update project!");
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

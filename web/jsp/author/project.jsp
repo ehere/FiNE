@@ -2,7 +2,9 @@
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="header-project-edit.jsp" >
+    <jsp:param name="projectTitle" value="${requestScope.project.title}" />
+</jsp:include>
 
 
 <div class="row menu-panel" style="padding: 0px;margin: 0px;width: 100%;">
@@ -11,7 +13,7 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Scene
                 <span style="position: absolute;right: 0;top: 0;">
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#sceneModal" onclick="newScene(${requestScope.project.id});">New</button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#sceneModal" onclick="newScene(${requestScope.project.id});">New Scene</button>
                 </span>
 
             </div>
@@ -28,8 +30,7 @@
 
     <div class="col-md-7" style="height: 100%;padding: 0px;margin: 0px;">
         <div style="width:100%;height: 100%;">
-            <div style="width: 80%;margin-left: auto;margin-right: auto;"><h4>#${requestScope.project.id}: ${requestScope.project.title}</h4></div>
-
+            <br><br>
             <div id="player" class="player_wrapper" style="background-image: url(https://placehold.it/1280x720/E3E3E3/ffffff&text=FiNE);width:80%;height: 59.8%;margin-left: auto;margin-right: auto;background-size: 100% auto;;overflow:hidden;">
                 <div class="player_show">
                     <div id="player_choice_area" style="display: none; position: absolute; height: 100%; width: 100%;">
@@ -74,9 +75,9 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Activity
                 <span  style="position: absolute;right: 0;top: 0;">
-                    <button id="saveActBtn" type="button" class="btn btn-default hidden" onclick="">Save</button>
+                    <button id="saveActBtn" type="button" class="btn btn-default hidden" onclick="">Save Change</button>
                     <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();
-                            changeSaveBtnToNew();">New</button>
+                            changeSaveBtnToNew();">New Activity</button>
                 </span>
 
             </div>
@@ -267,10 +268,9 @@
         </div>
     </div>
 </div>
+
 <!-------------------------------Scene Modal Zone ----------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------- -->
-
-<!-- Modal -->
 <div class="modal fade" id="sceneModal" tabindex="-1" role="dialog" aria-labelledby="sceneModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -295,8 +295,66 @@
     </div>
 </div>
 
-<script type="text/javascript" src="<%= F.asset("ckeditor/ckeditor.js")%>"></script>
-<script type="text/javascript">CKEDITOR.replace("sceneDescription");</script>
+<!-------------------------------Project Modal Zone ----------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------- -->
+<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Project</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Title</span>
+                    <input id="projectTitleInput" type="text" class="form-control" placeholder="Project Title" value="${requestScope.project.title}">
+                </div><br>
+                <textarea id="projectDescription"></textarea><br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">Price</span>
+                            <input id="projectPrice" type="text" class="form-control" placeholder="Project Price" value="${requestScope.project.price}">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">Rate</span>
+                            <input id="projectRate" type="text" class="form-control" placeholder="Project Rate" value="${requestScope.project.rate}">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">First Scene</span>
+                            <input id="projectFirstScene" type="text" class="form-control" placeholder="Project First Scene" value="${requestScope.project.first_scene_id}">
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <form method="POST" enctype="multipart/form-data" >
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Cover</span>
+                        <input id="projectCoverInput" type="file" name="file" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger" type="button" id="uploadCoverBtn">Upload</button>
+                        </span>
+                    </div><br>
+                </form>
+                <input id="projectCover" type="hidden" value="${requestScope.project.getCoverName()}">
+                <strong>Preview Image:</strong><br>
+                <progress id="progress-cover-upload" class="hidden"></progress>
+                <img class="thumbnail" id="coverImg" src ="${requestScope.project.cover}" style="max-height: 350px;max-width: 350px;">
+                <img class="thumbnail hidden" id="loading-uploade-cover" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateProject(${requestScope.project.id});">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- -------------------- data zone --------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------- -->
@@ -305,40 +363,65 @@
 <div class="hidden activity_newID">[]</div>    
 <div class="hidden play_index"></div>
 <div class="hidden allscene-list"></div>
+<div class="hidden project-description">${requestScope.project.description}</div>
 <div class="hidden name">MC_NAME</div>
 <div class="hidden mode">edit</div>
 
 <script src="<%= F.asset("/js/typed.js")%>"></script>
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script src="<%= F.asset("/js/activity_bar.js")%>"></script>
+<script src="<%= F.asset("/js/scene_bar.js")%>"></script>
+<script type="text/javascript" src="<%= F.asset("ckeditor/ckeditor.js")%>"></script>
+<script type="text/javascript"></script>
+<script type="text/javascript"></script>
+
 <script>
-                                        $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
-                                        $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
+                    CKEDITOR.replace("sceneDescription");
+                    CKEDITOR.replace("projectDescription");
+                    CKEDITOR.instances['projectDescription'].setData($('.project-description').html());
+                    $('.menu-panel').outerHeight($('html').outerHeight() - $('.mainmenu-wrapper').outerHeight());
+                    $('.menu-panel-list').outerHeight($('.menu-panel').outerHeight() - $('.menu-panel-list-heading').outerHeight());
 </script>
 <script>
-    function drawSceneBar() {
-        $("#scene-list").html("");
-        var scenelist = JSON.parse($(".allscene-list").html());
-        for (var key in scenelist) {
-            var sceneID = key;
-            var title = scenelist[key].title;
-            var row =
-                    '<div class="panel panel-default bs-callout bs-callout-default scene-row" style="padding-bottom: 0px">' +
-                    '<div class="" role="tab" id="heading' + sceneID + '">' +
-                    '<h4 class="panel-title">' +
-                    '<a class="truncate" onclick="getDescription(' + sceneID + ',this)" data-toggle="collapse" data-parent="#scene-list" href="#collapse' + sceneID + '" aria-expanded="true" aria-controls="collapse' + sceneID + '">' +
-                    sceneID + ': ' + title +
-                    '</a>' +
-                    '</h4>' +
-                    '</div>' +
-                    '<div id="collapse' + sceneID + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading' + sceneID + '">' +
-                    '<div class="panel-body" style="padding-top: 0px;"></div>' +
-                    '</div>' +
-                    '</div>';
-            $("#scene-list").append(row);
-
-        }
-
+    function updateProject(projectID) {
+        var title = $('#projectTitleInput').val();
+        var description = CKEDITOR.instances['projectDescription'].getData();
+        var price = $('#projectPrice').val();
+        var price = $('#projectPrice').val();
+        var rate = $('#projectRate').val();
+        var cover = $('#projectCover').val();
+        var firstscene = $('#projectFirstScene').val();
+        $.post("/fine/author/project/" + projectID + "/update", {title: title, description: description, price: price, rate: rate, cover: cover, firstscene: firstscene})
+                .done(function (respond) {
+                    if(respond == "Update project success."){
+                        $('#projectTitle').html(title);
+                        $('#projectModal').modal("hide");
+                    }
+                    alert(respond);
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    alert("Something wrong.Please try again or refresh this page.");
+                });
+    }
+    function toggleProjectVisible(element, projectID) {
+        $('#loading-project-status').removeClass("hidden");
+        $.get("/fine/author/project/" + projectID + "/togglevisible")
+                .done(function (respond) {
+                    $('#loading-project-status').addClass("hidden");
+                    if (respond == "toggle visible success.") {
+                        if ($(element).html().indexOf("Publish Now") != -1) {
+                            $(element).html('<i class="glyphicon glyphicon-ok"></i> Published');
+                        } else {
+                            $(element).html('<i class="glyphicon glyphicon-share"></i> Publish Now');
+                        }
+                    } else {
+                        alert(respond);
+                    }
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    $('#loading-project-status').addClass("hidden");
+                    alert("Something wrong.Please try again or refresh this page.");
+                });
     }
     function getDescription(sceneID, element) {
         $('#collapse' + sceneID).html("Loading...");
@@ -348,7 +431,8 @@
                     var body =
                             '<div class="panel-body" style="padding-top: 0px;">' +
                             description + '<br><br>' +
-                            '<button type="button" class="btn btn-default" onclick="editScene(' + sceneID + ',' + ${requestScope.project.id} + ')" data-toggle="modal" data-target="#sceneModal"><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>' +
+                            '<button type="button" class="btn btn-default" onclick="editScene(' + sceneID + ',' + ${requestScope.project.id}
+                    + ')" data-toggle="modal" data-target="#sceneModal"><i class="glyphicon glyphicon-pencil"></i> Edit Scene</button>' +
                             '<button type="button" class="btn btn-default" onclick="getScene(' + sceneID + ',0)"><i class="glyphicon glyphicon-blackboard"></i> Edit Activity</button>' +
                             '</div>';
                     $('#collapse' + sceneID).html(body);
@@ -357,92 +441,68 @@
                     alert("Something wrong.Please try again or refresh this page.");
                 });
     }
-    function removeScene(sceneID, projectID) {
-        $("#scene-list").html("Removing ...");
-        $.get("/fine/author/scene/" + sceneID + "/destroy")
-                .done(function (respond) {
-                    if (respond == "Remove Scene Success.") {
-                        alert(respond);
-                        getSceneList(projectID);
-                        $('#sceneModal').modal('hide');
-                        //clear player
-                        location.reload();
-                    } else {
-                        alert(respond);
-                        getSceneList(projectID);
-                    }
-                })
-                .fail(function (jqxhr, textStatus, error) {
-                    alert("Something wrong.Please try again or refresh this page.");
-                    getSceneList(projectID);
-                });
-    }
-    function newScene(projectID) {
-        $('#sceneTitle').val("");
-        CKEDITOR.instances['sceneDescription'].setData("");
-        $('#removeSceneBtn').addClass("hidden");
-        $('#saveSceneBtn').attr("onclick", "saveScene(0," + projectID + ");");
-    }
-    function editScene(sceneID, projectID) {
-        $('#removeSceneBtn').removeClass("hidden");
-        $('#removeSceneBtn').attr("onclick", "removeScene(" + sceneID + "," + projectID + ");");
-        var scenelist = JSON.parse($(".allscene-list").html());
-        $('#saveSceneBtn').attr("onclick", "saveScene(" + sceneID + "," + projectID + ");");
-        var title = scenelist[sceneID].title;
-        $('#sceneTitle').val(title);
-        CKEDITOR.instances['sceneDescription'].setData("Loading Description...");
-        $.getJSON("/fine/scene/" + sceneID)
-                .done(function (respond) {
-                    var description = respond[sceneID].description;
-                    CKEDITOR.instances['sceneDescription'].setData(description);
-                })
-                .fail(function (jqxhr, textStatus, error) {
-                    alert("Something wrong.Can't load description!");
-                });
-    }
-    function saveScene(sceneID, projectID) {
-        var title = $('#sceneTitle').val();
-        var description = CKEDITOR.instances['sceneDescription'].getData();
-        if (sceneID == 0) {
-            $("#scene-list").html("Creating ...");
-            $.post("/fine/author/scene/create", {title: title, description: description, project: projectID})
-                    .done(function (data) {
-                        if (data == "Create Scene Success.") {
-                            alert(data);
-                            getSceneList(projectID);
-                            $('#sceneModal').modal('hide');
-                        } else {
-                            alert(data);
-                            getSceneList(projectID);
-                        }
-                    });
 
-        } else {
-            $("#scene-list").html("Updating ...");
-            $.post("/fine/author/scene/" + sceneID + "/update", {title: title, description: description})
-                    .done(function (data) {
-                        if (data == "Update Scene Success.") {
-                            alert(data);
-                            getSceneList(projectID);
-                            $('#sceneModal').modal('hide');
-                        } else {
-                            alert(data);
-                            getSceneList(projectID);
-                        }
-                    });
+    $('#uploadCoverBtn').click(function () {
+        var formData = new FormData($('form')[0]);
+        $('#loading-uploade-cover').removeClass("hidden");
+        $('#coverImg').addClass("hidden");
+        $('#progress-cover-upload').attr({value: 0, max: 1});
+        $('#progress-cover-upload').removeClass("hidden");
+        $.ajax({
+            url: '/fine/UploadServlet?action=cover', //Server script to process data
+            type: 'POST',
+            xhr: function () {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) { // Check if upload property exists
+                    myXhr.upload.addEventListener('progress', progressHandlingFunction, true); // For handling the progress of the upload
+                }
+                return myXhr;
+            },
+            //Ajax events
+            //beforeSend: beforeSendHandler,
+            success: function (respond) {
+                var data = $.parseJSON(respond);
+                if (data.status == 1) {
+                    $('#coverImg').attr("src","/fine/img/cover/"+data.filename);
+                    $('#projectCover').val(data.filename);
+                } else {
+                    alert(data.message);
+                }
+                $('#progress-cover-upload').addClass("hidden");
+                $('#loading-uploade-cover').addClass("hidden");
+                $('#coverImg').removeClass("hidden");
+            },
+            error: function (x, e) {
+                $('#progress-cover-upload').addClass("hidden");
+                $('#loading-uploade-cover').addClass("hidden");
+                $('#coverImg').removeClass("hidden");
+                if (x.status == 0) {
+                    alert('Connection Abort.');
+                } else if (x.status == 404) {
+                    alert('Requested URL not found.');
+                } else if (x.status == 500) {
+                    alert('Internel Server Error.');
+                } else if (e == 'parsererror') {
+                    alert('Error.\nParsing JSON Request failed.');
+                } else if (e == 'timeout') {
+                    alert('Request Time out.');
+                } else {
+                    alert('Unknow Error.\n' + x.responseText);
+                }
+            },
+            // Form data
+            data: formData,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+    function progressHandlingFunction(e) {
+        if (e.lengthComputable) {
+            $('#progress-cover-upload').attr({value: e.loaded, max: e.total});
         }
     }
-    function getSceneList(projectID) {
-        $.get("/fine/author/project/" + projectID + "/allscene")
-                .done(function (respond) {
-                    $('.allscene-list').html(respond);
-                    drawSceneBar();
-                })
-                .fail(function (jqxhr, textStatus, error) {
-                    alert("Something wrong.Can't load scene list!");
-                });
-    }
     getSceneList(${requestScope.project.id});
-
 </script>
 <jsp:include page="footer.jsp" />

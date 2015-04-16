@@ -114,8 +114,11 @@ public class Project implements Serializable {
         return price;
     }
 
-    public int getVisible() {
-        return visible;
+    public boolean isVisible() {
+        if(visible > 0){
+            return true;
+        }
+        return false;
     }
 
     public void setVisible(int visible) {
@@ -133,7 +136,9 @@ public class Project implements Serializable {
     public String getCover() {
         return F.asset("img/cover/" + cover);
     }
-
+    public String getCoverName() {
+        return  cover;
+    }
     public void setCover(String cover) {
         this.cover = cover;
     }

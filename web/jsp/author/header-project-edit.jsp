@@ -1,6 +1,7 @@
 <%@page import="model.User"%>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" style="height:100%;overflow:hidden;"> <![endif]-->
@@ -18,7 +19,7 @@
         <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css")%>">
         <link rel="stylesheet" href="<%= F.asset("css/bootflat.min.css")%>">
         <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'> -->
-        <link rel="stylesheet" href="<%= F.asset("css/jquery-ui.css") %>">
+        <link rel="stylesheet" href="<%= F.asset("css/jquery-ui.css")%>">
 
         <link rel="stylesheet" href="<%= F.asset("css/leaflet.css")%>" />
         <!--[if lte IE 8]>
@@ -37,24 +38,36 @@
 
         <!-- Navigation & Logo-->
         <div class="mainmenu-wrapper">
-            <div class="container">
-                <nav id="mainmenu" class="mainmenu">
-                    <ul>
-                        <li class="logo-wrapper"><a href="index.html"><img src="<%= F.asset("img/fine-logo.png")%>" alt="Multipurpose Twitter Bootstrap Template"></a></li>
-                        <li class="active">
-                            <a href="<%= F.asset("/")%>">Home</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/product")%>">FiNE Store</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/items")%>">Your Items</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/about")%>">About Us</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+            <nav class="mainmenu">
+                <ul>
+                    <li class="logo-wrapper">
+                        <a href="index.html">
+                            &nbsp;&nbsp;&nbsp;<img src="<%= F.asset("img/fine-logo.png")%>"/>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a id="projectTitle">${param.projectTitle}</a>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#projectModal">
+                            <i class="glyphicon glyphicon-pencil"></i> Setting
+                        </button>
+                    </li>
+                    <li class="pull-right">
+                        <img id="loading-project-status" src="<%= F.asset("/img/loading.gif")%>" style="max-height: 30px;" class="hidden"/>
+                        <a href="javascript:;" onclick="toggleProjectVisible(this,${requestScope.project.id});">
+                            <c:choose>
+                                <c:when test="${project.isVisible()}">  
+                                    <i class="glyphicon glyphicon-ok"></i> Published
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="glyphicon glyphicon-share"></i> Publish Now
+                                </c:otherwise>
+                            </c:choose>
+                        </a>
+                    </li>
+                    <li class="pull-right">
+                        <a href="#"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-                        <%= F.getMessage(session) %>
+        <%= F.getMessage(session)%>
