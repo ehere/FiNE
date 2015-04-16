@@ -169,6 +169,9 @@ function blinking(elm) {
     }
 }
 function getScene(sceneID, index) {
+    if ($('.mode').html() == 'edit') {
+        $('.activity_bar').html("Loading...");
+    }
     $.getJSON("/fine/scene/" + sceneID + "/activity")
             .done(function (data) {
                 if ($('.mode').html() == 'edit') {

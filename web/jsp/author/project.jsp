@@ -161,19 +161,15 @@
                                         <div class="input-group">
                                             <span class="input-group-addon choice">A.</span>
                                             <input class="form-control choiceText" name="choiceText[]">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <select name="nodetype[]" class="selecter_basic nodetype">
-                                                        <option value="1">Go to Activity</option>
-                                                        <option value="2">Go to Scene</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0">
-                                                </div>
-                                                <div class="col-md-4">
+                                            <div class="input-group" style="width: 100%;">
+                                                <select name="nodetype[]" class="selecter_basic nodetype hidden">
+                                                    <option value="1">Go to Activity</option>
+                                                </select>
+                                                <span class="input-group-addon">Goto activity</span>
+                                                <input type="number" class="form-control goid" name="goid[]" placeholder="Activity or Scene ID" min="0">
+                                                <span class="input-group-btn">
                                                     <button type="button" class="btn btn-danger pull-right removebtn" tabindex="-1" onclick="removeChoice('A');">Remove</button>
-                                                </div>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -366,7 +362,7 @@
 <div class="hidden project-description">${requestScope.project.description}</div>
 <div class="hidden name">MC_NAME</div>
 <div class="hidden mode">edit</div>
-
+<script src="<%= F.asset("/js/jquery.fs.selecter.min.js")%>"></script>
 <script src="<%= F.asset("/js/typed.js")%>"></script>
 <script src="<%= F.asset("/js/player.js")%>"></script> 
 <script src="<%= F.asset("/js/activity_bar.js")%>"></script>
@@ -393,7 +389,7 @@
         var firstscene = $('#projectFirstScene').val();
         $.post("/fine/author/project/" + projectID + "/update", {title: title, description: description, price: price, rate: rate, cover: cover, firstscene: firstscene})
                 .done(function (respond) {
-                    if(respond == "Update project success."){
+                    if (respond == "Update project success.") {
                         $('#projectTitle').html(title);
                         $('#projectModal').modal("hide");
                     }
@@ -463,7 +459,7 @@
             success: function (respond) {
                 var data = $.parseJSON(respond);
                 if (data.status == 1) {
-                    $('#coverImg').attr("src","/fine/img/cover/"+data.filename);
+                    $('#coverImg').attr("src", "/fine/img/cover/" + data.filename);
                     $('#projectCover').val(data.filename);
                 } else {
                     alert(data.message);
