@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Project;
 import model.User;
 
@@ -50,12 +51,18 @@ public class Product extends HttpServlet {
     protected void view(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
             Connection conn = F.getConnection();
             String id = (String) request.getAttribute("id");
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
-            result.next();
+            if (!result.next()) {
+                String[] message = {"ขออภัย ไม่พบนิยายดังกล่าว", "danger"};
+                session.setAttribute("message", message);
+                response.sendRedirect(F.asset("/product"));
+                return;
+            }
             Project product = new Project(result);
 
             PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = ? AND project_id = ?");
@@ -74,7 +81,13 @@ public class Product extends HttpServlet {
                 }
             }
             boughtPstmt.close();
-
+            
+            if(!product.isVisible() && !product.isIs_bought()){
+                String[] message = {"ขออภัย ไม่พบนิยายดังกล่าว", "danger"};
+                session.setAttribute("message", message);
+                response.sendRedirect(F.asset("/product"));
+                return;
+            }
             request.setAttribute("product", product);
             result.close();
             psmt.close();
@@ -93,7 +106,7 @@ public class Product extends HttpServlet {
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
             }
-            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` ;");
+            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` WHERE visible = 1;");
             ResultSet cr = csmt.executeQuery();
             cr.next();
             int totalpage = cr.getInt("totalpage");
