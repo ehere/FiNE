@@ -13,7 +13,7 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Scene
                 <span style="position: absolute;right: 0;top: 0;">
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#sceneModal" onclick="newScene(${requestScope.project.id});">New Scene</button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#sceneModal" style="height: 41px; border-radius: 0px;" onclick="newScene(${requestScope.project.id});"><i class="glyphicon glyphicon-plus"></i></button>
                 </span>
 
             </div>
@@ -90,9 +90,11 @@
             <div class="panel-heading menu-panel-list-heading" style="border-radius: 0px;">
                 Activity
                 <span  style="position: absolute;right: 0;top: 0;">
-                    <button id="saveActBtn" type="button" class="btn btn-default hidden" onclick="">Save Change</button>
-                    <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" onclick="clearInput();
-                            changeSaveBtnToNew();">New Activity</button>
+                    <div class="btn-group" role="group" aria-label="...">
+                    <button id="saveActBtn" type="button" class="btn btn-success hidden" style="height: 41px; border-radius: 0px;" onclick=""><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+                    <button id="newActBtn" type="button" class="btn btn-warning hidden" data-toggle="modal" data-target=".activity-modal" style="height: 41px; border-radius: 0px;" onclick="clearInput();
+                        changeSaveBtnToNew();"><i class="glyphicon glyphicon-plus"></i></button>
+                    </div>
                 </span>
 
             </div>
