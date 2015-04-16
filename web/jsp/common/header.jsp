@@ -62,21 +62,59 @@
                 </div>
                 <nav id="mainmenu" class="mainmenu">
                     <ul>
-                        <li class="logo-wrapper"><a href="index.html"><img src="<%= F.asset("img/fine-logo.png")%>" alt="Multipurpose Twitter Bootstrap Template"></a></li>
+                        <li class="logo-wrapper">
+                            <a href="<%= F.asset("/")%>"><img src="<%= F.asset("img/fine-logo.png")%>" alt="Multipurpose Twitter Bootstrap Template"></a>
+                        </li>
                         <li class="active">
                             <a href="<%= F.asset("/")%>">Home</a>
                         </li>
                         <li>
                             <a href="<%= F.asset("/product")%>">FiNE Store</a>
                         </li>
-                        <li>
-                            <a href="<%= F.asset("/inventory")%>">Your Inventory</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/profile")%>">Your Profile</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/about")%>">About Us</a>
+                        <li class="has-submenu">
+                            <a href="#">Pages +</a>
+                            <div class="mainmenu-submenu">
+                                <div class="mainmenu-submenu-inner"> 
+                                    <div>
+                                        <h4>Homepage</h4>
+                                        <ul>
+                                            <li><a href="<%= F.asset("/")%>">Homepage</a></li>
+                                        </ul>
+                                        <h4>Store</h4>
+                                        <ul>
+                                            <li><a href="<%= F.asset("/product")%>">FiNE Store</a></li>
+                                            <li><a href="<%= F.asset("/cart")%>">Cart</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>My Data</h4>
+                                        <ul>
+                                            <li><a href="<%= F.asset("/profile")%>">My Profile</a></li>
+                                            <li><a href="<%= F.asset("/inventory")%>">My Inventory</a></li>
+                                        </ul>
+                                        <h4>Author Panel</h4>
+                                        <ul>
+                                            <li><a href="<%= F.asset("/author/project")%>">Your Projects</a></li>
+                                            <li><a href="<%= F.asset("/author/create")%>">Create New Project</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <c:if test="${sessionScope.user.isAdmin()}">
+                                            <h4>Admin Panel</h4>
+                                            <ul>
+                                                <li><a href="<%= F.asset("/admin")%>">Dashboard</a></li>
+                                                <li><a href="<%= F.asset("/admin/user")%>">User Management</a></li>
+                                                <li><a href="<%= F.asset("/admin/product")%>">User Management</a></li>
+                                            </ul>
+                                        </c:if>
+                                        <h4>Team &amp; Open Vacancies</h4>
+                                        <ul>
+                                            <li><a href="page-team.html">Our Team</a></li>
+                                            <li><a href="page-vacancies.html">About US</a></li>
+                                        </ul>
+                                    </div>
+                                </div><!-- /mainmenu-submenu-inner -->
+                            </div><!-- /mainmenu-submenu -->
                         </li>
                     </ul>
                 </nav>
