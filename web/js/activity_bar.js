@@ -397,7 +397,8 @@ function removeActivity(index) {
             activityNew.splice(activityNew.indexOf(actity_id), 1);
             $(".activity_newID").html(JSON.stringify(activityNew));
         }
-
+        $('#dubsound').attr("src","");
+        $('#player_music').attr("src","");
         draw_activityBar();
         previewActivity(index);
     }
@@ -529,6 +530,9 @@ function changeSaveBtnToNew() {
     $('.btn-newGoTo').attr("onclick", "newGoToActivity();");
     $('.btn-newChangeBg').attr("onclick", "newChangeBgActivity();");
     $('.btn-newChangeMusic').attr("onclick", "newChangeMusicActivity();");
+    $('#bgImg').attr("src","");
+    $('#pre_player_music').attr("src","");
+    $('#pre_dubsound').attr("src","");
 }
 
 function changeSaveBtnToEdit(button, idx) {

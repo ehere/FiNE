@@ -143,19 +143,21 @@
                                     <textarea class="form-control" rows="5" style="resize: none;" id="textDialog"></textarea>
                                 </div>
                                 <br>
-                                <div class="input-group">
-                                    <input class="form-control" type="file">
-                                    <div class="input-group-btn">
-                                        <button type="submit" name="submit" class="btn btn-primary" tabindex="-1">Upload Dubsound</button>
-                                    </div>
-                                </div>
-                                <br> OR
-                                <br>
-                                <br>
-                                <div class="input-group">
-                                    <span class="input-group-addon">Sound URL</span>
-                                    <input class="form-control" id="soundDialog">
-                                </div>
+                                <form method="POST" enctype="multipart/form-data" id="form-upload-voice">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">Dub Sound</span>
+                                        <input id="projectVoiceInput" type="file" name="file" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-danger" type="button" id="uploadVoiceBtn">Upload</button>
+                                        </span>
+                                    </div><br>
+                                </form>
+                                <input class="form-control" name="soundDialog" id="soundDialog" type="hidden">
+                                <progress id="progress-voice-upload" class="hidden"></progress>
+                                <audio id="pre_dubsound" controls>
+                                    <source type="audio/mp4">
+                                    Your browser does not support the audio element.
+                                </audio>
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -237,7 +239,7 @@
                                 <strong>Preview Image:</strong><br>
                                 <progress id="progress-bg-upload" class="hidden"></progress>
                                 <img class="thumbnail" id="bgImg" src ="" style="max-height: 350px;max-width: 350px;">
-                                <img class="thumbnail hidden" id="loading-uploade-bg" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
+                                <img class="thumbnail hidden" id="loading-upload-bg" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
                                 <br>
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -260,6 +262,7 @@
                                     </div><br>
                                 </form>
                                 <input class="form-control" name="musicurl" id="musicurl" type="hidden">
+                                <progress id="progress-music-upload" class="hidden"></progress>
                                 <audio id="pre_player_music" controls>
                                     <source type="audio/mp4">
                                     Your browser does not support the audio element.
@@ -357,7 +360,7 @@
                 <strong>Preview Image:</strong><br>
                 <progress id="progress-cover-upload" class="hidden"></progress>
                 <img class="thumbnail" id="coverImg" src ="${requestScope.project.cover}" style="max-height: 350px;max-width: 350px;">
-                <img class="thumbnail hidden" id="loading-uploade-cover" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
+                <img class="thumbnail hidden" id="loading-upload-cover" src ="<%= F.asset("/img/loading.gif")%>" style="max-height: 350px;max-width: 350px;">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -453,7 +456,7 @@
 
     $('#uploadCoverBtn').click(function () {
         var formData = new FormData($('#form-upload-cover')[0]);
-        $('#loading-uploade-cover').removeClass("hidden");
+        $('#loading-upload-cover').removeClass("hidden");
         $('#coverImg').addClass("hidden");
         $('#progress-cover-upload').attr({value: 0, max: 1});
         $('#progress-cover-upload').removeClass("hidden");
@@ -478,12 +481,12 @@
                     alert(data.message);
                 }
                 $('#progress-cover-upload').addClass("hidden");
-                $('#loading-uploade-cover').addClass("hidden");
+                $('#loading-upload-cover').addClass("hidden");
                 $('#coverImg').removeClass("hidden");
             },
             error: function (x, e) {
                 $('#progress-cover-upload').addClass("hidden");
-                $('#loading-uploade-cover').addClass("hidden");
+                $('#loading-upload-cover').addClass("hidden");
                 $('#coverImg').removeClass("hidden");
                 if (x.status == 0) {
                     alert('Connection Abort.');
@@ -510,7 +513,7 @@
 
     $('#uploadBgBtn').click(function () {
         var formData = new FormData($('#form-upload-bg')[0]);
-        $('#loading-uploade-bg').removeClass("hidden");
+        $('#loading-upload-bg').removeClass("hidden");
         $('#bgImg').addClass("hidden");
         $('#progress-bg-upload').attr({value: 0, max: 1});
         $('#progress-bg-upload').removeClass("hidden");
@@ -535,12 +538,12 @@
                     alert(data.message);
                 }
                 $('#progress-bg-upload').addClass("hidden");
-                $('#loading-uploade-bg').addClass("hidden");
+                $('#loading-upload-bg').addClass("hidden");
                 $('#bgImg').removeClass("hidden");
             },
             error: function (x, e) {
                 $('#progress-bg-upload').addClass("hidden");
-                $('#loading-uploade-bg').addClass("hidden");
+                $('#loading-upload-bg').addClass("hidden");
                 $('#bgImg').removeClass("hidden");
                 if (x.status == 0) {
                     alert('Connection Abort.');
@@ -566,7 +569,6 @@
     });
     $('#uploadMusicBtn').click(function () {
         var formData = new FormData($('#form-upload-music')[0]);
-        $('#loading-uploade-music').removeClass("hidden");
         $('#pre_player_music').addClass("hidden");
         $('#progress-music-upload').attr({value: 0, max: 1});
         $('#progress-music-upload').removeClass("hidden");
@@ -591,12 +593,10 @@
                     alert(data.message);
                 }
                 $('#progress-music-upload').addClass("hidden");
-                $('#loading-uploade-music').addClass("hidden");
                 $('#pre_player_music').removeClass("hidden");
             },
             error: function (x, e) {
                 $('#progress-music-upload').addClass("hidden");
-                $('#loading-uploade-music').addClass("hidden");
                 $('#pre_player_music').removeClass("hidden");
                 if (x.status == 0) {
                     alert('Connection Abort.');
@@ -620,7 +620,60 @@
             processData: false
         });
     });
-
+    
+    $('#uploadVoiceBtn').click(function () {
+        var formData = new FormData($('#form-upload-voice')[0]);
+        $('#pre_dubsound').addClass("hidden");
+        $('#progress-voice-upload').attr({value: 0, max: 1});
+        $('#progress-voice-upload').removeClass("hidden");
+        $.ajax({
+            url: '/fine/UploadServlet?action=voice', //Server script to process data
+            type: 'POST',
+            xhr: function () {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) { // Check if upload property exists
+                    myXhr.upload.addEventListener('progress', progressVoiceHandling, true); // For handling the progress of the upload
+                }
+                return myXhr;
+            },
+            //Ajax events
+            //beforeSend: beforeSendHandler,
+            success: function (respond) {
+                var data = $.parseJSON(respond);
+                if (data.status == 1) {
+                    $('#pre_dubsound').attr("src", "/fine/sound/voice/" + data.filename);
+                    $('#soundDialog').val("/fine/sound/voice/" + data.filename);
+                } else {
+                    alert(data.message);
+                }
+                $('#progress-voice-upload').addClass("hidden");
+                $('#pre_dubsound').removeClass("hidden");
+            },
+            error: function (x, e) {
+                $('#progress-voice-upload').addClass("hidden");
+                $('#pre_dubsound').removeClass("hidden");
+                if (x.status == 0) {
+                    alert('Connection Abort.');
+                } else if (x.status == 404) {
+                    alert('Requested URL not found.');
+                } else if (x.status == 500) {
+                    alert('Internel Server Error.');
+                } else if (e == 'parsererror') {
+                    alert('Error.\nParsing JSON Request failed.');
+                } else if (e == 'timeout') {
+                    alert('Request Time out.');
+                } else {
+                    alert('Unknow Error.\n' + x.responseText);
+                }
+            },
+            // Form data
+            data: formData,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
     function progressBgHandling(e) {
         if (e.lengthComputable) {
             $('#progress-bg-upload').attr({value: e.loaded, max: e.total});
