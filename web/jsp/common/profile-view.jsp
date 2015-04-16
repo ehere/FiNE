@@ -32,12 +32,13 @@
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Profile</h3>
-                                    <span class="pull-right">
-                                        <c:if test="${canEdit}">
-                                            <a href="<%= F.asset("/profile/edit") %>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
-                                        </c:if>
-                                    </span>
+                                <span class="pull-right">
+                                    <c:if test="${canEdit}">
+                                        <a href="<%= F.asset("/profile/edit")%>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
+                                    </c:if>
+                                </span>
+                                <h3 class="panel-title">ข้อมูลส่วนตัว</h3>
+
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -92,7 +93,7 @@
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Visual Novels create by this user</h3>
+                                <h3 class="panel-title">Visual Novels ที่สร้างโดยผู้ใช้คนนี้</h3>
                             </div>
                             <div class="panel-body">
                                 <c:if test="${profile.latestOwnProjectID.size() == 0}">
