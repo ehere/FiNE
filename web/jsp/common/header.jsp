@@ -48,6 +48,9 @@
                             <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart") %>"><b><%= ((model.Cart) session.getAttribute("cart")).getItemsSize() %> รายการ</b></a></li>
                             <li>สวัสดี! <%= ((User) session.getAttribute("user")).getFullname() %></li>
                             <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> <%= ((User) session.getAttribute("user")).getCredit()%> เครดิต</li>
+                            <% if(F.isAdmin(session)){ %>
+                            <li><a href="<%= F.asset("/admin") %>"><i class="glyphicon glyphicon-cog icon-white"></i> เข้าสู่ระบบจัดการ</a></li>
+                            <% } %>
                             <li><a href="<%= F.asset("/login.do?action=logout") %>"><i class="glyphicon glyphicon-log-out icon-white"></i> ออกจากกระบบ</a></li>
                             <% } %>
                         </ul>

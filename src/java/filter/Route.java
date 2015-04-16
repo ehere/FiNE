@@ -163,6 +163,9 @@ public class Route implements Filter {
                 request.setAttribute("do", "index");
                 request.getRequestDispatcher("/admin.project").forward(request, response);
             }
+            else if (F.isUrlMatch("/admin", url)) {
+                request.getRequestDispatcher("/jsp/admin/header.jsp").forward(request, response);
+            }
         }
         
     }
