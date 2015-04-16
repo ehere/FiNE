@@ -54,28 +54,27 @@
 
         </div>
 
-        <div class="row">
-            <div class="pagination-wrapper ">
-                <ul class="pagination pagination-lg">
-                    <c:if test="${requestScope.currentpage != 1}">
-                        <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage-1}">Previous</a></li>
-                        </c:if>
-                        <c:forEach begin="1" end="${requestScope.totalpage}" step="1" var="i">
-                            <c:choose>
-                                <c:when test="${requestScope.currentpage == i}">
-                                <li class="active"><a href="#">${i}</a></li>
-                                </c:when>
-                                <c:otherwise>
-                                <li><a href="<%= F.asset("/inventory?page=")%>${i}">${i}</a></li>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                        <c:if test="${requestScope.currentpage != requestScope.totalpage}">
-                        <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage+1}">Next</a></li>
-                        </c:if>
-                </ul>
-            </div>
-        </div>
+        <div class="pagination-wrapper ">
+            <ul class="pagination pagination-lg">
+                <c:if test="${requestScope.currentpage > 1}">
+                    <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage-1}">Previous</a></li>
+                </c:if>
+                <c:forEach begin="1" end="${requestScope.totalpage}" step="1" var="i">
+                    <c:choose>
+                        <c:when test="${requestScope.currentpage == i}">
+                        <li class="active"><a href="#">${i}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                        <li><a href="<%= F.asset("/inventory?page=")%>${i}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">${i}</a></li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+                <c:if test="${requestScope.currentpage < requestScope.totalpage}">
+                    <c:if test="${requestScope.totalpage != 0}">
+                    <li><a href="<%= F.asset("/inventory?page=")%>${requestScope.currentpage+1}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">Next</a></li>
+                    </c:if>
+                </c:if>
+            </ul>
     </div>
 </div>
 
