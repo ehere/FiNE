@@ -33,7 +33,7 @@
                         <tr>
                             <td>
                                 <c:choose>
-                                    <c:when test="${project.visible == 1}">
+                                    <c:when test="${project.visible}">
                                         <span class="label label-success"><i class="glyphicon glyphicon glyphicon-eye-open"></i> Public</span>
                                     </c:when>
                                     <c:otherwise>
