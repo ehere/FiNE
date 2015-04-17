@@ -11,12 +11,12 @@
             <li class="bg3">
                 <h2 class="title">FiNE Store</h2>
                 <h3 class="subtitle">ค้นหา Visual Novel ที่น่าสนใจจากรายการที่สมาชิกช่วยกันสร้าง</h3>
-                <img class="slide-img" src="<%= F.asset("img/homepage-slider/slide2.png")%>" alt="Slide 2" />
+                <img class="slide-img" src="<%= F.asset("img/slide2-x.png")%>" alt="Slide 2" />
             </li>
             <li class="bg1">
                 <h2 class="title">DIY</h2>
                 <h3 class="subtitle">สร้าง Visual Novel เองได้ง่ายๆ และที่สำคัญ ฟรี!</h3>
-                <img class="slide-img" src="<%= F.asset("img/homepage-slider/slide3.png")%>" alt="Slide 3" />
+                <img class="slide-img" src="<%= F.asset("img/slide3-x.png")%>" alt="Slide 3" />
             </li>
         </ul>
         <div class="sequence-pagination-wrapper">

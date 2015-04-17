@@ -104,6 +104,10 @@ public class Route implements Filter {
             request.setAttribute("do", "view");
             request.getRequestDispatcher("/common.profile").forward(request, response);
         }
+        else if (F.isUrlMatch("/about", url)) {
+            request.setAttribute("do", "view");
+            request.getRequestDispatcher("/jsp/common/about.jsp").forward(request, response);
+        }
         
         //Author section
         else if (F.isUrlMatch("/author/project", url)) {
