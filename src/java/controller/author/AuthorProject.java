@@ -218,23 +218,38 @@ public class AuthorProject extends HttpServlet {
             return;
         }
         try (PrintWriter out = response.getWriter()) {
+
             try (Connection conn = F.getConnection()) {
-                PreparedStatement toggleVisible = conn.prepareStatement("UPDATE `project` SET`visible`= ABS(`visible`-1),`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ?;");
-                toggleVisible.setInt(1, user.getId());
-                toggleVisible.setString(2, id);
-                int status = toggleVisible.executeUpdate();
-                PreparedStatement visible_query = conn.prepareStatement("SELECT * FROM project WHERE `user_id` = ? AND `id` = ?;");
-                visible_query.setInt(1, user.getId());
-                visible_query.setString(2, id);
-                ResultSet result = visible_query.executeQuery();
-                result.next();
-                if (result.getInt("visible") == 1) {
-                    out.print("visible");
-                } else {
-                    out.print("hidden");
+                //check firstscene before set visible
+                PreparedStatement project_query = conn.prepareStatement("SELECT * FROM project WHERE id =?;");
+                project_query.setString(1, id);
+                ResultSet project_rs = project_query.executeQuery();
+                project_rs.next();
+                Project project = new Project(project_rs);
+                project_rs.close();
+                project_query.close();
+
+                if (validateScene(Integer.parseInt(id), project.getFirst_scene_id())) {
+                    PreparedStatement toggleVisible = conn.prepareStatement("UPDATE `project` SET`visible`= ABS(`visible`-1),`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ?;");
+                    toggleVisible.setInt(1, user.getId());
+                    toggleVisible.setString(2, id);
+                    int status = toggleVisible.executeUpdate();
+                    PreparedStatement visible_query = conn.prepareStatement("SELECT * FROM project WHERE `user_id` = ? AND `id` = ?;");
+                    visible_query.setInt(1, user.getId());
+                    visible_query.setString(2, id);
+                    ResultSet result = visible_query.executeQuery();
+                    result.next();
+                    if (result.getInt("visible") == 1) {
+                        out.print("visible");
+                    } else {
+                        out.print("hidden");
+                    }
+                    result.close();
+                    visible_query.close();
+                }else{
+                    out.print("Please set project first scene in setting!");
                 }
-                result.close();
-                visible_query.close();
+
                 conn.close();
             } catch (SQLException ex) {
                 out.print("Fail to toggle project visible!");
@@ -320,6 +335,29 @@ public class AuthorProject extends HttpServlet {
                 Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    protected boolean validateScene(Integer projectID, Integer sceneID) {
+        if (projectID != null && sceneID != null) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement psmt = conn.prepareStatement("SELECT `project_id` FROM `scenario` WHERE `id` = ? AND`project_id` = ?;");
+                psmt.setInt(1, sceneID);
+                psmt.setInt(2, projectID);
+                ResultSet result = psmt.executeQuery();
+                boolean status = false;
+                if (result.next()) {
+                    status = true;
+                }
+                result.close();
+                psmt.close();
+                conn.close();
+                return status;
+            } catch (SQLException ex) {
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        }
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
