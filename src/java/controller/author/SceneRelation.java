@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Project;
 import model.User;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -101,15 +102,19 @@ public class SceneRelation extends HttpServlet {
                 project_rs.close();
                 project_query.close();
 
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `activity` INNER JOIN activity_goto ON activity.id = activity_goto.activity_id JOIN scenario ON activity.scenario_id = scenario.id WHERE target_id IS NOT NULL AND type = 4 AND scenario_id IN (SELECT scenario_id FROM scenario WHERE project_id =?);");
+                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `activity` INNER JOIN activity_goto ON activity.id = activity_goto.activity_id JOIN scenario ON activity.scenario_id = scenario.id WHERE  type = 4 AND scenario_id IN (SELECT scenario_id FROM scenario WHERE project_id =?);");
                 psmt.setString(1, projectID);
                 ResultSet result = psmt.executeQuery();
-                JSONObject list = new JSONObject();
+                JSONArray list = new JSONArray();
                 while (result.next()) {
                     JSONObject data = new JSONObject();
+                    data.put("node", result.getInt("scenario_id"));
                     data.put("title", result.getString("title"));
                     data.put("nextnode", result.getString("target_id"));
-                    list.put(result.getInt("scenario_id"), data);
+                    if(result.getInt("scenario_id") == project.getFirst_scene_id()){
+                        data.put("first", true);
+                    }
+                    list.add(data);
                 }
                 out.print(list.toJSONString());
                 result.close();

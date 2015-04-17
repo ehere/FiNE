@@ -36,15 +36,43 @@
                     var edges = [];
 
                     //var relationship = $.parseJSON($('#relationship').html());
-                    $.each(relationship, function (scene, value) {
-                        nodes.push({
-                            id: parseInt(scene),
-                            label: value.title
-                        });
-                        edges.push({
-                            from: parseInt(scene),
-                            to: parseInt(value.nextnode)
-                        });
+                    var ids = []
+                    var nullid = -1;
+                    $.each(relationship, function (index, value) {
+
+                        if (ids.indexOf(parseInt(value.node)) == -1) {
+                            ids[ids.length] = parseInt(value.node);
+                            if (value.first) {
+                                nodes.push({
+                                    id: parseInt(value.node),
+                                    label: value.title,
+                                    shape: 'star',
+                                    color: 'orange'
+                                });
+                            } else {
+                                nodes.push({
+                                    id: parseInt(value.node),
+                                    label: value.title
+                                });
+                            }
+                        }
+                        if (value.nextnode == null) {
+                            nodes.push({
+                                id: nullid,
+                                label: "Null Scene",
+                                color: 'red'
+                            });
+                            edges.push({
+                                from: parseInt(value.node),
+                                to: nullid
+                            });
+                            nullid = nullid - 1
+                        } else {
+                            edges.push({
+                                from: parseInt(value.node),
+                                to: parseInt(value.nextnode)
+                            });
+                        }
                     });
 
                     // create a network
@@ -74,9 +102,9 @@
                 });
 
     }
-        $(document).ready(function () {
-            draw();
-        });
+    $(document).ready(function () {
+        draw();
+    });
 </script>
 <div class="section section-breadcrumbs">
     <div class="container">
@@ -86,6 +114,10 @@
             </div>
         </div>
     </div>
+</div>
+<div class="container">
+    <img src="<%= F.asset("/img/star.png") %>" style="width: 3em;"/><span style="font-size: 1.5em;">&nbsp;First Scene&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="<%= F.asset("/img/eclipse.png") %>" style="width: 3em;"/><span style="font-size: 1.5em;">&nbsp;Null Scene</span>
 </div>
 <div id="mynetwork"></div>
 
