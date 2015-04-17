@@ -98,14 +98,29 @@
                     </div>
                 </div>
             </div>
-            <audio id="dubsound" src="">
-                <source type="audio/mp4">
-                Your browser does not support the audio element.
-            </audio>
-            <audio id="player_music" src="">
-                <source type="audio/mp4">
-                Your browser does not support the audio element.
-            </audio>
+        </div>
+        <br>
+        <div style="margin-left: auto;margin-right: auto;">
+            <table>
+                <tr>
+                    <td><b>Dialog Sound:</b></td>
+                    <td>
+                        <audio id="dubsound" controls>
+                            <source type="audio/mp4">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Background Music:&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td>
+                        <audio id="player_music" controls>
+                            <source type="audio/mp4">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>
