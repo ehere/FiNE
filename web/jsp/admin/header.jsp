@@ -57,7 +57,7 @@
                 </div>
                 <nav id="mainmenu" class="mainmenu">
                     <ul>
-                        <li class="logo-wrapper"><a href="index.html"><img src="<%= F.asset("img/fine-logo.png") %>" alt="Multipurpose Twitter Bootstrap Template"></a></li>
+                        <li class="logo-wrapper"><a href="<%= F.asset("/") %>"><img src="<%= F.asset("img/fine-logo.png") %>"></a></li>
                         <li class="active">
                             <a href="<%= F.asset("/") %>">Home</a>
                         </li>

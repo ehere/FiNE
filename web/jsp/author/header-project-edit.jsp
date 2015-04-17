@@ -41,7 +41,7 @@
             <nav class="mainmenu">
                 <ul>
                     <li class="logo-wrapper">
-                        <a href="index.html">
+                        <a href="<%= F.asset("/") %>">
                             &nbsp;&nbsp;&nbsp;<img src="<%= F.asset("img/fine-logo.png")%>"/>
                         </a>
                     </li>
