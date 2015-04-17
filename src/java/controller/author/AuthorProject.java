@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -46,14 +47,64 @@ public class AuthorProject extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
         String method = (String) request.getAttribute("do");
-        if (method.equals("show")) {
+        if (method.equals("index")) {
+            index(request, response);
+        } else if (method.equals("show")) {
             show(request, response);
+        } else if (method.equals("create")) {
+            create(request, response);
         } else if (method.equals("update")) {
             update(request, response);
+        } else if (method.equals("destroy")) {
+            destroy(request, response);
         } else if (method.equals("allscene")) {
             allscene(request, response);
         } else if (method.equals("toggleVisble")) {
             toggleVisble(request, response);
+        }
+    }
+
+    protected void index(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (!F.isLoggedIn(session)) {
+            String[] message = {"Please login before enter author zone.", "danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/product"));
+            return;
+        }
+        try (Connection conn = F.getConnection()) {
+            int page = 1;
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
+            }
+            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` WHERE user_id = ?;");
+            csmt.setInt(1, user.getId());
+            ResultSet cr = csmt.executeQuery();
+            cr.next();
+            int totalpage = cr.getInt("totalpage");
+            cr.close();
+            csmt.close();
+
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE user_id = ?  LIMIT 8 OFFSET ?;");
+            psmt.setInt(1, user.getId());
+            psmt.setInt(2, (page - 1) * 8);
+            ResultSet result = psmt.executeQuery();
+            ArrayList<Project> list = new ArrayList();
+            while (result.next()) {
+                Project project = new Project(result);
+                list.add(project);
+            }
+            request.setAttribute("list", list);
+            request.setAttribute("totalpage", totalpage);
+            request.setAttribute("currentpage", page);
+            result.close();
+            psmt.close();
+            conn.close();
+            request.getRequestDispatcher("/jsp/author/project-list.jsp").forward(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -82,6 +133,46 @@ public class AuthorProject extends HttpServlet {
             request.getRequestDispatcher("/jsp/author/project.jsp").forward(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void create(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        try (PrintWriter out = response.getWriter()) {
+            if (!F.isLoggedIn(session)) {
+                out.print("Please login before enter author zone");
+                return;
+            }
+            String title = request.getParameter("title");
+            String description = request.getParameter("description");
+            Double price = Double.parseDouble(request.getParameter("price"));
+            int rate = Integer.parseInt(request.getParameter("rate"));
+            String cover = request.getParameter("cover");
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement create_query = conn.prepareStatement("INSERT INTO `project`(`title`, `description`, `user_id`, `price`, `rate`, `cover`, `created_at`) VALUES (?,?,?,?,?,?,NOW());", PreparedStatement.RETURN_GENERATED_KEYS);
+                create_query.setString(1, title);
+                create_query.setString(2, description);
+                create_query.setInt(3, user.getId());
+                create_query.setDouble(4, price);
+                create_query.setInt(5, rate);
+                create_query.setString(6, cover);
+                int status = create_query.executeUpdate();
+                if (status == 1) {
+                    ResultSet rs = create_query.getGeneratedKeys();
+                    if (rs != null && rs.next()) {
+                        out.print("Create project success.|" + rs.getLong(1));
+                    }
+                } else {
+                    out.print("Fail to create project!");
+                }
+                conn.close();
+            } catch (SQLException ex) {
+                out.print("Fail to create project!");
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -137,9 +228,9 @@ public class AuthorProject extends HttpServlet {
                 visible_query.setString(2, id);
                 ResultSet result = visible_query.executeQuery();
                 result.next();
-                if (result.getInt("visible") == 1 ) {
+                if (result.getInt("visible") == 1) {
                     out.print("visible");
-                } else{
+                } else {
                     out.print("hidden");
                 }
                 result.close();
@@ -157,7 +248,7 @@ public class AuthorProject extends HttpServlet {
         String id = (String) request.getAttribute("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        System.out.println(id);
+
         if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
             String[] message = {"You doesn't have permission to edit this project !", "danger"};
             session.setAttribute("message", message);
@@ -190,6 +281,42 @@ public class AuthorProject extends HttpServlet {
                 conn.close();
             } catch (SQLException ex) {
                 out.print("Fail to update project!");
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    protected void destroy(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (!F.isLoggedIn(session) || !(user.getOwnProjectID().contains(Integer.parseInt(id)))) {
+            String[] message = {"You doesn't have permission to remove this project !", "danger"};
+            session.setAttribute("message", message);
+            response.sendRedirect(F.asset("/author/project"));
+            return;
+        }
+        try (PrintWriter out = response.getWriter()) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement remove_query = conn.prepareStatement("DELETE  FROM `project` WHERE `user_id` = ? AND `id` = ?;");
+                remove_query.setInt(1, user.getId());
+                remove_query.setString(2, id);
+                int status = remove_query.executeUpdate();
+                if (status == 1) {
+                    String[] message = {"Remove project success!", "success"};
+                    session.setAttribute("message", message);
+                } else {
+                    String[] message = {"You doesn't have permission to remove this project !", "danger"};
+                    session.setAttribute("message", message);
+                }
+                conn.close();
+                response.sendRedirect(F.asset("/author/project"));
+            } catch (SQLException ex) {
+                String[] message = {"Fail to remove project!", "success"};
+                session.setAttribute("message", message);
+                response.sendRedirect(F.asset("/author/project"));
                 Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

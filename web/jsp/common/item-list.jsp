@@ -16,6 +16,13 @@
 
 <div class="section">
     <div class="container">
+        <c:if test="${requestScope.totalpage == 0}">
+            <h2>Oh oh! Look like you don't have any purchased project.</h2>
+            <br>
+            <h4>Why not try something fun?</h4>
+            <br>
+            <a href="<%= F.asset("/product")%>" class="btn btn-orange"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Fine Store</a>
+        </c:if>
         <div class="row">
             <% if (request.getSession().getAttribute("message") != null) { %>
             <div class="alert alert-${message_type}" role="alert">

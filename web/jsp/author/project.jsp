@@ -325,6 +325,7 @@
                     <span class="input-group-addon" id="basic-addon1">Title</span>
                     <input id="projectTitleInput" type="text" class="form-control" placeholder="Project Title" value="${requestScope.project.title}">
                 </div><br>
+                <b>Description:</b>
                 <textarea id="projectDescription"></textarea><br>
                 <div class="row">
                     <div class="col-md-6">
@@ -401,21 +402,24 @@
         var title = $('#projectTitleInput').val();
         var description = CKEDITOR.instances['projectDescription'].getData();
         var price = $('#projectPrice').val();
-        var price = $('#projectPrice').val();
         var rate = $('#projectRate').val();
         var cover = $('#projectCover').val();
         var firstscene = $('#projectFirstScene').val();
-        $.post("/fine/author/project/" + projectID + "/update", {title: title, description: description, price: price, rate: rate, cover: cover, firstscene: firstscene})
-                .done(function (respond) {
-                    if (respond == "Update project success.") {
-                        $('#projectTitle').html(title);
-                        $('#projectModal').modal("hide");
-                    }
-                    alert(respond);
-                })
-                .fail(function (jqxhr, textStatus, error) {
-                    alert("Something wrong.Please try again or refresh this page.");
-                });
+        if(firstscene != 0){
+            $.post("/fine/author/project/" + projectID + "/update", {title: title, description: description, price: price, rate: rate, cover: cover, firstscene: firstscene})
+                    .done(function (respond) {
+                        if (respond == "Update project success.") {
+                            $('#projectTitle').html(title);
+                            $('#projectModal').modal("hide");
+                        }
+                        alert(respond);
+                    })
+                    .fail(function (jqxhr, textStatus, error) {
+                        alert("Something wrong.Please try again or refresh this page.");
+                    });
+        }else{
+            alert('Please set this project first scene before update.')
+        }
     }
     function toggleProjectVisible(element, projectID) {
         $('#loading-project-status').removeClass("hidden");

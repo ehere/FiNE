@@ -110,6 +110,10 @@ public class Route implements Filter {
             request.setAttribute("do", "index");
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/project/create", url)) {
+            request.setAttribute("do", "create");
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
         else if (F.isUrlMatch("/author/project/{id}", url)) {
             request.setAttribute("do", "show");
             F.urlMapper("/author/project/{id}", url, request);
@@ -118,6 +122,11 @@ public class Route implements Filter {
         else if (F.isUrlMatch("/author/project/{id}/update", url)) {
             request.setAttribute("do", "update");
             F.urlMapper("/author/project/{id}/update", url, request);
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
+        }
+        else if (F.isUrlMatch("/author/project/{id}/destroy", url)) {
+            request.setAttribute("do", "destroy");
+            F.urlMapper("/author/project/{id}/destroy", url, request);
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
         else if (F.isUrlMatch("/author/project/{id}/allscene", url)) {
