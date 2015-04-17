@@ -48,7 +48,16 @@
                                     <li><a href="<%= F.asset("/login")%>"><i class="glyphicon glyphicon-log-in icon-white"></i> เข้าสู่ระบบ</a></li>
                                     </c:when>
                                     <c:otherwise>
-                                    <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart")%>"><b>${sessionScope.cart.getItemsSize()} รายการ</b></a></li>
+                                    <li class="shopping-cart-items" 
+                                        <c:if test="${sessionScope.cart.getItemsSize() > 0}">
+                                            data-container="body" 
+                                            data-toggle="popover" 
+                                            data-placement="bottom" 
+                                            data-title=' มีสินค้าอยู่ในตะกร้า'
+                                            data-content="คุณมีสินค้าอยู่ในตระกร้า กดปุ่มด้านบนเพื่อซื้อสินค้าในตะกร้าของท่าน"
+                                            data-template='<div class="popover" role="tooltip"><div class="arrow"></div><h1 class="popover-title glyphicon glyphicon-shopping-cart" style="width:100%;"></h1><div class="popover-content"></div></div>'
+                                        </c:if>
+                                        ><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart")%>"><b>${sessionScope.cart.getItemsSize()} รายการ</b></a></li>
                                     <li>สวัสดี! ${sessionScope.user.fullname}</li>
                                     <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> ${sessionScope.user.credit} เครดิต</li>
                                         <c:if test="${sessionScope.user.isAdmin()}">
@@ -69,12 +78,14 @@
                         <li>
                             <a href="<%= F.asset("/product")%>">FiNE Store</a>
                         </li>
-                        <li>
-                            <a href="<%= F.asset("/inventory")%>">My Inventory</a>
-                        </li>
-                        <li>
-                            <a href="<%= F.asset("/author/project")%>">Author Zone</a>
-                        </li>
+                        <c:if test="${sessionScope.user != null}">
+                            <li>
+                                <a href="<%= F.asset("/inventory")%>">My Inventory</a>
+                            </li>
+                            <li>
+                                <a href="<%= F.asset("/author/project")%>">Author Zone</a>
+                            </li>
+                        </c:if>
                         <li>
                             <a href="<%= F.asset("/about")%>">About Us</a>
                         </li>
