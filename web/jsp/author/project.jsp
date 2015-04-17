@@ -427,9 +427,10 @@
                 .done(function (respond) {
                     $('#loading-project-status').addClass("hidden");
                     if (respond == "visible") {
-
+                        $('#share').removeClass("hidden")
                         $(element).html('<i class="glyphicon glyphicon-ok"></i> Published');
                     } else if(respond == "hidden") {
+                        $('#share').addClass("hidden")
                         $(element).html('<i class="glyphicon glyphicon-share"></i> Publish Now');
                     } else {
                         alert(respond);
