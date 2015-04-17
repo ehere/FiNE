@@ -41,7 +41,7 @@
             <nav class="mainmenu">
                 <ul>
                     <li class="logo-wrapper">
-                        <a href="<%= F.asset("/") %>">
+                        <a href="<%= F.asset("/")%>">
                             &nbsp;&nbsp;&nbsp;<img src="<%= F.asset("img/fine-logo.png")%>"/>
                         </a>
                     </li>
@@ -63,6 +63,8 @@
                                 </c:otherwise>
                             </c:choose>
                         </a>
+                    </li>
+                    <li class="pull-right">
                     </li>
                     <li class="pull-right">
                         <a href="#"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
