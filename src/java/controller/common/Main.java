@@ -68,6 +68,17 @@ public class Main extends HttpServlet {
             result.close();
             pPstmt.close();
             pstmt.close();
+            
+            ArrayList<model.Project> randomList = new ArrayList();
+            PreparedStatement ran_query = conn.prepareStatement("SELECT * FROM `project` ORDER BY RAND() LIMIT 8");
+            result = ran_query.executeQuery();
+            while(result.next()){
+                model.Project project = new model.Project(result);
+                randomList.add(project);
+            }
+            request.setAttribute("randomList", randomList);
+            result.close();
+            ran_query.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,25 +5,17 @@
 <div class="footer">
     <div class="container">
         <div class="row">
-            <div class="col-footer col-md-3 col-xs-6">
-                <h3>ผลงานแนะนำล่าสุด</h3>
-                <div class="portfolio-item">
-                    <div class="portfolio-image">
-                        <a href="page-portfolio-item.html"><img src="<%= F.asset("img/portfolio6.jpg")%>" alt="Project Name"></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-footer col-md-3 col-xs-6">
+            <div class="col-footer col-md-4 col-xs-6">
                 <h3>การนำทาง</h3>
                 <ul class="no-list-style footer-navigate-section">
                     <li><a href="<%= F.asset("/")%>">Home</a></li>
                     <li><a href="<%= F.asset("/product")%>">FiNE Store</a></li>
-                    <li><a href="<%= F.asset("/items")%>">Your Items</a></li>
+                    <li><a href="<%= F.asset("/inventory")%>">Your Items</a></li>
                     <li><a href="<%= F.asset("/about")%>">About Us</a></li>
                 </ul>
             </div>
 
-            <div class="col-footer col-md-4 col-xs-6">
+            <div class="col-footer col-md-5 col-xs-6">
                 <h3>ข้อมูลการติดต่อ</h3>
                 <p class="contact-us-details">
                     <b>ที่อยู่:</b> บริษัท International Multimedia Group ประเทศไทย จำกัด แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร<br/>
@@ -32,7 +24,7 @@
                     <b>อีเมล:</b> <a href="mailto:contract@fine.com">contact@fine.com</a>
                 </p>
             </div>
-            <div class="col-footer col-md-2 col-xs-6">
+            <div class="col-footer col-md-3 col-xs-6">
                 <h3>ติดตาม FiNE ได้ที่...</h3>
                 <ul class="footer-stay-connected no-list-style">
                     <li><a href="#" class="facebook"></a></li>
