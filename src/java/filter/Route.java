@@ -36,9 +36,12 @@ public class Route implements Filter {
     private void routing(HttpServletRequest request, HttpServletResponse response, String url) throws IOException, ServletException {
         HttpSession session = request.getSession();
         //Register route here
-        if (F.isUrlMatch("/product", url)) {
+        if (F.isUrlMatch("/", url)) {
             request.setAttribute("do", "index");
-            F.urlMapper("/product", url, request);
+            request.getRequestDispatcher("/common.main").forward(request, response);
+        }
+        else if (F.isUrlMatch("/product", url)) {
+            request.setAttribute("do", "index");
             request.getRequestDispatcher("/common.product").forward(request, response);
         } 
         else if (F.isUrlMatch("/product/{id}/view", url)) {
@@ -53,32 +56,26 @@ public class Route implements Filter {
         }
         else if (F.isUrlMatch("/register", url)) {
             request.setAttribute("do", "index");
-            F.urlMapper("/register", url, request);
             request.getRequestDispatcher("/common.register").forward(request, response);
         }
         else if (F.isUrlMatch("/register/add", url)) {
             request.setAttribute("do", "add");
-            F.urlMapper("/register", url, request);
             request.getRequestDispatcher("/common.register").forward(request, response);
         }
         else if (F.isUrlMatch("/login", url)) {
             request.setAttribute("do", "index");
-            F.urlMapper("/login", url, request);
             request.getRequestDispatcher("/common.login").forward(request, response);
         }
         else if (F.isUrlMatch("/login.do", url)) {
             request.setAttribute("do", "authen");
-            F.urlMapper("/login", url, request);
             request.getRequestDispatcher("/common.login").forward(request, response);
         }
         else if (F.isUrlMatch("/inventory", url)) {
             request.setAttribute("do", "index");
-            F.urlMapper("/inventory", url, request);
             request.getRequestDispatcher("/common.inventory").forward(request, response);
         }        
         else if (F.isUrlMatch("/save", url)) {
             request.setAttribute("do", "index");
-            F.urlMapper("/save", url, request);
             request.getRequestDispatcher("/common.save").forward(request, response);
         }
         else if (F.isUrlMatch("/scene/{id}", url)) {
@@ -106,6 +103,12 @@ public class Route implements Filter {
         else if (F.isUrlMatch("/profile", url)) {
             request.setAttribute("do", "view");
             request.getRequestDispatcher("/common.profile").forward(request, response);
+        }
+        
+        //Author section
+        else if (F.isUrlMatch("/author/project", url)) {
+            request.setAttribute("do", "index");
+            request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
         else if (F.isUrlMatch("/author/project/{id}", url)) {
             request.setAttribute("do", "show");
@@ -146,11 +149,8 @@ public class Route implements Filter {
             F.urlMapper("/author/scene/{id}/destroy", url, request);
             request.getRequestDispatcher("/common.authorscene").forward(request, response);
         }
-        else if (F.isUrlMatch("/", url)) {
-            request.setAttribute("do", "index");
-            F.urlMapper("/author/scene/{id}/destroy", url, request);
-            request.getRequestDispatcher("/common.main").forward(request, response);
-        }
+        
+        //Admin section
         else if (F.isAdmin(session)){
             if (F.isUrlMatch("/admin/user/changecredit", url)) {
                 request.setAttribute("do", "changecredit");
