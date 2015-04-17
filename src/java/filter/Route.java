@@ -139,6 +139,16 @@ public class Route implements Filter {
             F.urlMapper("/author/project/{id}/togglevisible", url, request);
             request.getRequestDispatcher("/author.authorproject").forward(request, response);
         }
+        else if (F.isUrlMatch("/author/project/{id}/relation", url)) {
+            request.setAttribute("do", "sceneRelation");
+            F.urlMapper("/author/project/{id}/relation", url, request);
+            request.getRequestDispatcher("/author.scenerelation").forward(request, response);
+        }        
+        else if (F.isUrlMatch("/author/project/{id}/viewrelation", url)) {
+            request.setAttribute("do", "viewRelation");
+            F.urlMapper("/author/project/{id}/viewrelation", url, request);
+            request.getRequestDispatcher("/author.scenerelation").forward(request, response);
+        }
         else if (F.isUrlMatch("/author/scene/{id}/saveactivity", url)) {
             request.setAttribute("do", "saveActivity");
             F.urlMapper("/author/scene/{id}/saveactivity", url, request);

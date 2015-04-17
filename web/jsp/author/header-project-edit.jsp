@@ -68,7 +68,7 @@
                         <a href="<%= F.asset("/project")%>/${project.id}/play" target="_blank"><i class="glyphicon glyphicon-play"></i> Preview</a>
                     </li>
                     <li class="pull-right">
-                        <a href="#"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
+                        <a href="<%= F.asset("/author/project")%>/${project.id}/viewrelation" target="_blank"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
                     </li>
                 </ul>
             </nav>
