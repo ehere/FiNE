@@ -673,9 +673,11 @@ function saveActivity(sceneID) {
         $.post("/fine/author/scene/"+sceneID+"/saveactivity", {data: data, order: order})
                 .done(function (data) {
                     alert(data);
-                    if(data == "Save Success.")
+                    if(data.indexOf("Save Success.") != -1)
                     {
                         getScene(sceneID,0);
+                    }else{
+                        draw_activityBar();
                     }
                 });
     }

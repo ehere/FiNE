@@ -233,10 +233,23 @@ public class AuthorScene extends HttpServlet {
                                         update_choice.executeUpdate();
                                         update_choice.close();
                                     }
-                                } else if (type == 3 || type == 4) {
+                                } else if (type == 3) {
                                     PreparedStatement update_goto = conn.prepareStatement("UPDATE `activity_goto` SET `target_id` = ? WHERE `activity_id` = ?;");
                                     String nextnode = activity_data.get("nextnode") + "";
                                     update_goto.setString(1, nextnode);
+                                    update_goto.setLong(2, activityID);
+                                    update_goto.executeUpdate();
+                                    update_goto.close();
+                                } else if (type == 4) {
+                                    PreparedStatement update_goto = conn.prepareStatement("UPDATE `activity_goto` SET `target_id` = ? WHERE `activity_id` = ?;");
+                                    String nextnode = activity_data.get("nextnode") + "";
+                                    if (!validateScene(projectID, Integer.parseInt(nextnode))) {
+                                        update_goto.setNull(1, java.sql.Types.INTEGER);
+                                        out.println("You don't have scene "+nextnode+". Change to 0");
+                                        out.println("Please fix go to scene 0 in activity.");
+                                    }else{
+                                        update_goto.setString(1, nextnode);
+                                    }
                                     update_goto.setLong(2, activityID);
                                     update_goto.executeUpdate();
                                     update_goto.close();
@@ -245,7 +258,7 @@ public class AuthorScene extends HttpServlet {
                                     String url = (String) activity_data.get("url");
                                     if (!url.contains("http://") && !url.contains("https://")) {
                                         String[] temp = url.split("/");
-                                        url = temp[temp.length-1];
+                                        url = temp[temp.length - 1];
                                     }
                                     update_media.setString(1, url);
                                     update_media.setLong(2, activityID);
@@ -299,11 +312,24 @@ public class AuthorScene extends HttpServlet {
                                         update_choice.executeUpdate();
                                         update_choice.close();
                                     }
-                                } else if (type == 3 || type == 4) {
+                                } else if (type == 3) {
                                     PreparedStatement update_goto = conn.prepareStatement("INSERT INTO `activity_goto`(`activity_id`, `target_id`) VALUES (?,?);");
                                     String nextnode = activity_data.get("nextnode") + "";
                                     update_goto.setLong(1, newActivityID);
                                     update_goto.setString(2, nextnode);
+                                    update_goto.executeUpdate();
+                                    update_goto.close();
+                                } else if (type == 4) {
+                                    PreparedStatement update_goto = conn.prepareStatement("INSERT INTO `activity_goto`(`activity_id`, `target_id`) VALUES (?,?);");
+                                    String nextnode = activity_data.get("nextnode") + "";
+                                    update_goto.setLong(1, newActivityID);
+                                    if (!validateScene(projectID, Integer.parseInt(nextnode))) {
+                                        update_goto.setNull(2, java.sql.Types.INTEGER);
+                                        out.println("You don't have scene "+nextnode+". Change to 0");
+                                        out.println("Please fix go to scene 0 in activity.");
+                                    }else{
+                                        update_goto.setString(2, nextnode);
+                                    }
                                     update_goto.executeUpdate();
                                     update_goto.close();
                                 } else if (type == 5 || type == 6) {
@@ -334,6 +360,29 @@ public class AuthorScene extends HttpServlet {
             }
 
         }
+    }
+
+    protected boolean validateScene(Integer projectID, Integer sceneID) {
+        if (projectID != null && sceneID != null) {
+            try (Connection conn = F.getConnection()) {
+                PreparedStatement psmt = conn.prepareStatement("SELECT `project_id` FROM `scenario` WHERE `id` = ? AND`project_id` = ?;");
+                psmt.setInt(1, sceneID);
+                psmt.setInt(2, projectID);
+                ResultSet result = psmt.executeQuery();
+                boolean status = false;
+                if (result.next()) {
+                    status = true;
+                }
+                result.close();
+                psmt.close();
+                conn.close();
+                return status;
+            } catch (SQLException ex) {
+                Logger.getLogger(AuthorProject.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        }
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
