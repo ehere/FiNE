@@ -13,6 +13,7 @@
         <title>FiNE - Fine is Novel Engine</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="<%= F.asset("/img//favicon.ico")%>" type="image/x-icon">
         <link rel="stylesheet" href="<%= F.asset("css/bootstrap.min.css") %>">
         <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css") %>">
         <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'> -->

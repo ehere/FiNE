@@ -14,6 +14,7 @@
         <title>FiNE - Fine is Novel Engine</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="<%= F.asset("/img//favicon.ico")%>" type="image/x-icon">
         <link rel="stylesheet" href="<%= F.asset("css/main.css")%>">
         <link rel="stylesheet" href="<%= F.asset("css/bootstrap.min.css")%>">
         <link rel="stylesheet" href="<%= F.asset("css/icomoon-social.css")%>">
