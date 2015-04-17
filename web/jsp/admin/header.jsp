@@ -59,13 +59,13 @@
                     <ul>
                         <li class="logo-wrapper"><a href="<%= F.asset("/") %>"><img src="<%= F.asset("img/fine-logo.png") %>"></a></li>
                         <li class="active">
-                            <a href="<%= F.asset("/") %>">Home</a>
+                            <a href="<%= F.asset("/admin") %>">Admin Panel</a>
                         </li>
                         <li>
                             <a href="<%= F.asset("/admin/user") %>">User Management</a>
                         </li>
                         <li>
-                            <a href="<%= F.asset("/admin/product") %>">Product Management</a>
+                            <a href="<%= F.asset("/admin/product") %>">Project Management</a>
                         </li>
                     </ul>
                 </nav>

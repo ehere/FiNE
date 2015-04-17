@@ -188,7 +188,7 @@ public class Route implements Filter {
                 request.getRequestDispatcher("/admin.project").forward(request, response);
             }
             else if (F.isUrlMatch("/admin", url)) {
-                request.getRequestDispatcher("/jsp/admin/header.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/admin/home.jsp").forward(request, response);
             }
         }
         
