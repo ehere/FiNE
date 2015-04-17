@@ -31,7 +31,7 @@
                             <div class="col-md-4 col-sm-6">
                                 <div class="team-member">
                                     <!-- Team Member Photo -->
-                                    <div class="team-member-image"><img src="<%= F.asset("img/team-tj.jpg") %>"  alt="Name Surname"></div>
+                                    <div class="team-member-image"><img src="<%= F.asset("img/team-tj.jpg") %>"  style="max-width: 100%; max-height: 206px;"></div>
                                     <div class="team-member-info">
                                         <ul>
                                             <!-- Team Member Info & Social Links -->
@@ -46,7 +46,7 @@
                             <!-- End Team Member -->
                             <div class="col-md-4 col-sm-6">
                                 <div class="team-member">
-                                    <div class="team-member-image"><img src="<%= F.asset("img/team2.jpg") %>" alt="Name Surname"></div>
+                                    <div class="team-member-image"><img src="<%= F.asset("img/team2.jpg") %>" style="max-width: 100%; max-height: 206px;"></div>
                                     <div class="team-member-info">
                                         <ul>
                                             <li class="team-member-name">
@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-md-4 col-sm-6">
                                 <div class="team-member">
-                                    <div class="team-member-image"><img src="<%= F.asset("img/team-tp.jpg") %>" alt="Name Surname"></div>
+                                    <div class="team-member-image"><img src="<%= F.asset("img/team-tp.jpg") %>" style="max-width: 100%; max-height: 206px;"></div>
                                     <div class="team-member-info">
                                         <ul>
                                             <li class="team-member-name">
@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-4 col-sm-6">
                                 <div class="team-member">
-                                    <div class="team-member-image"><img src="<%= F.asset("img/team4.jpg") %>" alt="Name Surname"></div>
+                                    <div class="team-member-image"><img src="<%= F.asset("img/team4.jpg") %>" style="max-width: 100%; max-height: 206px;"></div>
                                     <div class="team-member-info">
                                         <ul>
                                             <li class="team-member-name">
@@ -85,7 +85,7 @@
                             </div>
                             <div class="col-md-4 col-sm-6">
                                 <div class="team-member">
-                                    <div class="team-member-image"><img src="<%= F.asset("img/team5.jpg") %>" alt="Name Surname"></div>
+                                    <div class="team-member-image"><img src="<%= F.asset("img/team5.jpg") %>" style="max-width: 100%; max-height: 206px;"></div>
                                     <div class="team-member-info">
                                         <ul>
                                             <li class="team-member-name">
