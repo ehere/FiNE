@@ -104,7 +104,6 @@ public class Product extends HttpServlet {
         try (Connection conn = F.getConnection()) {
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("user");
-            int userAge = user.getAge();
             int page = 1;
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
