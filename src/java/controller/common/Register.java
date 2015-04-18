@@ -95,7 +95,8 @@ public class Register extends HttpServlet {
             if (isSuccess == 1) {
                 //login
                 request.setAttribute("action", "login");
-                request.getRequestDispatcher("login.do").forward(request, response);
+                request.setAttribute("do", "authen");
+                request.getRequestDispatcher("/common.login").forward(request, response);
             } else {
                 //err occur
                 response.sendRedirect(F.asset("/register"));
