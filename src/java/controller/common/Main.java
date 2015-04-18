@@ -50,10 +50,9 @@ public class Main extends HttpServlet {
     protected void index (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        Connection conn = F.getConnection();
         String sql = "SELECT project.id, COUNT(purchase.id) FROM `project` LEFT OUTER JOIN purchase ON (project.id = purchase.project_id) GROUP BY project.id ORDER BY COUNT(purchase.id) DESC LIMIT 8;";
         ArrayList<model.Project> projectList = new ArrayList();
-        try {
+        try(Connection conn = F.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet result = pstmt.executeQuery();
             PreparedStatement pPstmt = conn.prepareStatement("SELECT * FROM `project` WHERE id = ?;");
@@ -70,7 +69,7 @@ public class Main extends HttpServlet {
             pstmt.close();
             
             ArrayList<model.Project> randomList = new ArrayList();
-            PreparedStatement ran_query = conn.prepareStatement("SELECT * FROM `project` ORDER BY RAND() LIMIT 8");
+            PreparedStatement ran_query = conn.prepareStatement("SELECT * FROM `project` WHERE visible = 1 ORDER BY RAND() LIMIT 8");
             result = ran_query.executeQuery();
             while(result.next()){
                 model.Project project = new model.Project(result);
