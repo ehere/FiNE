@@ -56,8 +56,7 @@ public class Inventory extends HttpServlet {
             response.sendRedirect(F.asset("/login"));
             return;
         }
-        try {
-            Connection conn = F.getConnection();
+        try(Connection conn = F.getConnection()) {
             int page = 1;
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));

@@ -48,8 +48,7 @@ public class UserManagement extends HttpServlet {
         String method = (String) request.getAttribute("do");
         if (method.equals("index")) {
             index(request, response);
-        }
-        else if (method.equals("changecredit")) {
+        } else if (method.equals("changecredit")) {
             changeCredit(request, response);
         }
     }
@@ -58,10 +57,10 @@ public class UserManagement extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
 
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt;
-        ArrayList<User> userList = new ArrayList();
-        try {
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement pstmt;
+            ArrayList<User> userList = new ArrayList();
+
             pstmt = conn.prepareStatement("SELECT * FROM user;");
             ResultSet result = pstmt.executeQuery();
             while (result.next()) {
@@ -71,11 +70,11 @@ public class UserManagement extends HttpServlet {
             result.close();
             pstmt.close();
             conn.close();
+            request.setAttribute("userList", userList);
         } catch (SQLException ex) {
             Logger.getLogger(UserManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request.setAttribute("userList", userList);
         request.getRequestDispatcher("/jsp/admin/user.jsp").forward(request, response);
 
     }
@@ -83,11 +82,11 @@ public class UserManagement extends HttpServlet {
     protected void changeCredit(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
+        try (Connection conn = F.getConnection()) {
 
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt;
-        HttpSession session = request.getSession();
-        try {
+            PreparedStatement pstmt;
+            HttpSession session = request.getSession();
+
             pstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ?, `updated_at` = NOW() WHERE `id` = ?;");
             pstmt.setString(1, request.getParameter("credits"));
             pstmt.setString(2, request.getParameter("userid"));
@@ -96,8 +95,7 @@ public class UserManagement extends HttpServlet {
                 //success
                 String[] message = {"เปลี่ยนเครดิตเรียบร้อยแล้ว!", "success"};
                 session.setAttribute("message", message);
-            }
-            else{
+            } else {
                 //failed
                 String[] message = {"มีข้อผิดพลาดเกิดขึ้น กรุณาลองอีกครั้ง!", "danger"};
                 session.setAttribute("message", message);

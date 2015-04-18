@@ -58,10 +58,9 @@ public class ProjectManagement extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
 
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt;
-        ArrayList<Project> projectList = new ArrayList();
-        try {
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement pstmt;
+            ArrayList<Project> projectList = new ArrayList();
             pstmt = conn.prepareStatement("SELECT * FROM project;");
             ResultSet result = pstmt.executeQuery();
             while (result.next()) {
@@ -71,11 +70,11 @@ public class ProjectManagement extends HttpServlet {
             result.close();
             pstmt.close();
             conn.close();
+            request.setAttribute("projectList", projectList);
         } catch (SQLException ex) {
             Logger.getLogger(ProjectManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request.setAttribute("projectList", projectList);
         request.getRequestDispatcher("/jsp/admin/product.jsp").forward(request, response);
 
     }
@@ -84,10 +83,9 @@ public class ProjectManagement extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
 
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt;
-        HttpSession session = request.getSession();
-        try {
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement pstmt;
+            HttpSession session = request.getSession();
             pstmt = conn.prepareStatement("UPDATE `project` SET `visible` = ?, `updated_at` = NOW() WHERE `id` = ?;");
             pstmt.setString(1, request.getParameter("publish"));
             pstmt.setString(2, request.getParameter("projectid"));

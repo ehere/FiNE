@@ -59,8 +59,7 @@ public class Save extends HttpServlet {
         User user = (User) session.getAttribute("user");
         JSONObject respond = new JSONObject();
         respond.put("status", false);
-        try (PrintWriter out = response.getWriter()) {
-            Connection conn = F.getConnection();
+        try (PrintWriter out = response.getWriter(); Connection conn = F.getConnection()) {
             if (request.getParameter("action").equals("view")) {
                 PreparedStatement allsave_query = conn.prepareStatement("SELECT * FROM `save`  JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? AND `last_activity_id` IN (SELECT id FROM activity WHERE scenario_id IN (SELECT id FROM scenario WHERE project_id = ? )) ORDER BY `save`.created_at DESC;");
                 allsave_query.setInt(1, user.getId());

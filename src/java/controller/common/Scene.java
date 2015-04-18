@@ -49,8 +49,7 @@ public class Scene extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        try (PrintWriter out = response.getWriter()) {
-            Connection conn = F.getConnection();
+        try (PrintWriter out = response.getWriter(); Connection conn = F.getConnection()) {
             PreparedStatement scene_query = conn.prepareStatement("SELECT * FROM scenario WHERE id = ?;");
             scene_query.setString(1, id);
             ResultSet result = scene_query.executeQuery();
@@ -84,8 +83,7 @@ public class Scene extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        try (PrintWriter out = response.getWriter()) {
-            Connection conn = F.getConnection();
+        try (PrintWriter out = response.getWriter(); Connection conn = F.getConnection()) {
             JSONObject activity = new JSONObject();
 
             PreparedStatement scene_query = conn.prepareStatement("SELECT * FROM scenario WHERE id = ?;");

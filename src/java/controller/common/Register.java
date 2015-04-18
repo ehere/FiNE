@@ -70,8 +70,7 @@ public class Register extends HttpServlet {
 
         //Begin registration here
         String sql = "INSERT INTO `user` (`prefix`, `firstname`, `lastname`, `email`, `password`, `birthday`, `role`, `created_at`) VALUES ( ?, ?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP());";
-        try {
-            Connection conn = F.getConnection();
+        try(Connection conn = F.getConnection()) {
 
             if (session.getAttribute("user") != null) {
                 //logged in > go to index.
@@ -115,8 +114,7 @@ public class Register extends HttpServlet {
         }
         String sql = "SELECT COUNT(id) FROM user WHERE email = ?;";
         ResultSet result = null;
-        try {
-            Connection conn = F.getConnection();
+        try(Connection conn = F.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("email"));
             result = pstmt.executeQuery();

@@ -44,10 +44,9 @@ public class Product extends HttpServlet {
         if (method.equals("view")) {
             view(request, response);
         } else if (method.equals("index")) {
-            if(request.getParameter("search") != null){
+            if (request.getParameter("search") != null) {
                 search(request, response);
-            }
-            else{
+            } else {
                 index(request, response);
             }
         }
@@ -55,9 +54,8 @@ public class Product extends HttpServlet {
 
     protected void view(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+        try (Connection conn = F.getConnection()) {
             HttpSession session = request.getSession();
-            Connection conn = F.getConnection();
             String id = (String) request.getAttribute("id");
             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
             psmt.setString(1, id);
@@ -72,25 +70,22 @@ public class Product extends HttpServlet {
 
             PreparedStatement boughtPstmt = conn.prepareStatement("SELECT * FROM purchase WHERE user_id = ? AND project_id = ?");
             if (F.isLoggedIn(request.getSession())) {
-                try {
-                    boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
-                    boughtPstmt.setInt(2, product.getId());
-                    ResultSet bRes = boughtPstmt.executeQuery();
-                    boolean isnext = bRes.next();
-                    if (isnext) {
-                        product.setIs_bought(true);
-                    }
-                    bRes.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+                boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
+                boughtPstmt.setInt(2, product.getId());
+                ResultSet bRes = boughtPstmt.executeQuery();
+                boolean isnext = bRes.next();
+                if (isnext) {
+                    product.setIs_bought(true);
                 }
+                bRes.close();
             }
             boughtPstmt.close();
-            
-            if(!product.isVisible() && !product.isIs_bought()){
+
+            if (!product.isVisible() && !product.isIs_bought()) {
                 String[] message = {"ขออภัย ไม่พบนิยายดังกล่าว", "danger"};
                 session.setAttribute("message", message);
                 response.sendRedirect(F.asset("/product"));
+                conn.close();
                 return;
             }
             request.setAttribute("product", product);
@@ -105,11 +100,10 @@ public class Product extends HttpServlet {
 
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+        try (Connection conn = F.getConnection()) {
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("user");
             int userAge = user.getAge();
-            Connection conn = F.getConnection();
             int page = 1;
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
@@ -129,18 +123,14 @@ public class Product extends HttpServlet {
             while (result.next()) {
                 Project product = new Project(result);
                 if (F.isLoggedIn(request.getSession())) {
-                    try {
-                        boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
-                        boughtPstmt.setInt(2, product.getId());
-                        ResultSet bRes = boughtPstmt.executeQuery();
-                        boolean isnext = bRes.next();
-                        if (isnext) {
-                            product.setIs_bought(true);
-                        }
-                        bRes.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+                    boughtPstmt.setInt(1, ((User) request.getSession().getAttribute("user")).getId());
+                    boughtPstmt.setInt(2, product.getId());
+                    ResultSet bRes = boughtPstmt.executeQuery();
+                    boolean isnext = bRes.next();
+                    if (isnext) {
+                        product.setIs_bought(true);
                     }
+                    bRes.close();
                 }
                 list.add(product);
             }
@@ -157,13 +147,12 @@ public class Product extends HttpServlet {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     protected void search(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Connection conn = F.getConnection();
+        try (Connection conn = F.getConnection()) {
             String searchKey = request.getParameter("search");
-            String searchSQL = "%"+searchKey+"%";
+            String searchSQL = "%" + searchKey + "%";
             int page = 1;
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
@@ -193,8 +182,8 @@ public class Product extends HttpServlet {
                 Project product = new Project(result);
                 list.add(product);
             }
-            
-            if(totalpage == 0){
+
+            if (totalpage == 0) {
                 request.setAttribute("searchMsg", "ไม่พบผลลัพธ์สำหรับการค้นหานี้");
             }
             request.setAttribute("searchKey", searchKey);
@@ -208,7 +197,7 @@ public class Product extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**

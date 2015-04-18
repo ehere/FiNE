@@ -46,21 +46,17 @@ public class Cart extends HttpServlet {
             response.sendRedirect(F.asset("/login"));
             return;
         }
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt = null;
-        ArrayList<model.Project> projectList = new ArrayList();
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement pstmt = null;
+            ArrayList<model.Project> projectList = new ArrayList();
 
-        try {
             pstmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
-        } catch (SQLException ex) {
-            Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        model.Cart cart = (model.Cart) request.getSession().getAttribute("cart");
-        double price = 0;
-        for (Object i : cart.getItems()) {
-            String id = (String) i;
-            //System.out.println(i);
-            try {
+
+            model.Cart cart = (model.Cart) request.getSession().getAttribute("cart");
+            double price = 0;
+            for (Object i : cart.getItems()) {
+                String id = (String) i;
+                //System.out.println(i);
                 pstmt.setString(1, id);
                 ResultSet res = pstmt.executeQuery();
                 if (res.next()) {
@@ -69,19 +65,16 @@ public class Cart extends HttpServlet {
                     projectList.add(p);
                 }
                 res.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
+
             }
-        }
-        try {
+            request.setAttribute("cart", projectList);
+            request.setAttribute("total", price);
             pstmt.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        request.setAttribute("cart", projectList);
-        request.setAttribute("total", price);
+
         request.getRequestDispatcher("/jsp/common/cart.jsp").forward(request, response);
     }
 

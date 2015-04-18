@@ -62,18 +62,16 @@ public class Profile extends HttpServlet {
     protected void show(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        Connection conn = F.getConnection();
-        HttpSession session = request.getSession();
-        String id = (String) request.getAttribute("id");
-        User user = (User) session.getAttribute("user");
-        if (id == null) {
-            //send user to profile
-            request.setAttribute("profile", user);
-            request.setAttribute("canEdit", true);
-        } else {
-            //search for new user
-
-            try {
+        try(Connection conn = F.getConnection()) {
+            HttpSession session = request.getSession();
+            String id = (String) request.getAttribute("id");
+            User user = (User) session.getAttribute("user");
+            if (id == null) {
+                //send user to profile
+                request.setAttribute("profile", user);
+                request.setAttribute("canEdit", true);
+            } else {
+                //search for new user
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?;");
                 pstmt.setString(1, id);
                 ResultSet result = pstmt.executeQuery();
@@ -91,13 +89,11 @@ public class Profile extends HttpServlet {
                 request.setAttribute("profile", viewUser);
                 result.close();
                 pstmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
+
+                request.setAttribute("canEdit", false);
             }
-            request.setAttribute("canEdit", false);
-        }
-        User profileUser = (User) request.getAttribute("profile");
-        try {
+            User profileUser = (User) request.getAttribute("profile");
+
             PreparedStatement lastplayPsmt = conn.prepareStatement("SELECT * FROM `save` JOIN activity ON (last_activity_id = activity.id) WHERE `user_id` = ? ORDER BY `save`.created_at DESC;");
             lastplayPsmt.setInt(1, profileUser.getId());
             ResultSet result = lastplayPsmt.executeQuery();
@@ -118,10 +114,9 @@ public class Profile extends HttpServlet {
 
     protected void edit(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
         request.setCharacterEncoding("utf-8");
-        Connection conn = F.getConnection();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        try {
+        try(Connection conn = F.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE `user` SET `prefix` = ?, `firstname` = ?, `lastname` = ?, `updated_at` = CURRENT_TIMESTAMP() WHERE `user`.`id` = " + user.getId() + ";");
             pstmt.setString(1, request.getParameter("prefix"));
             pstmt.setString(2, request.getParameter("firstname"));

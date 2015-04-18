@@ -78,8 +78,7 @@ public class Authentication extends HttpServlet {
     }
 
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            Connection conn = F.getConnection();
+        try(Connection conn = F.getConnection()) {
             response.setContentType("text/html;charset=UTF-8");
             HttpSession session = request.getSession();
             if (session.getAttribute("user") != null) {

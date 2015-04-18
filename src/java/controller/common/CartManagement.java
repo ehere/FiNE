@@ -79,30 +79,31 @@ public class CartManagement extends HttpServlet {
     }
 
     protected boolean addCart(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws UnsupportedEncodingException {
-        Connection conn = F.getConnection();
-        //int id = Integer.parseInt(pathInfo.split("/")[0]);
         boolean toReturn = false;
-        String id = pathInfo.split("/")[0];
-        HttpSession session = request.getSession();
-        model.Cart cart;
-        if (session.getAttribute("cart") == null) {
-            cart = new model.Cart();
-        } else {
-            cart = (model.Cart) session.getAttribute("cart");
-        }
+        try (Connection conn = F.getConnection()) {
+            //int id = Integer.parseInt(pathInfo.split("/")[0]);
+            String id = pathInfo.split("/")[0];
+            HttpSession session = request.getSession();
+            model.Cart cart;
+            if (session.getAttribute("cart") == null) {
+                cart = new model.Cart();
+            } else {
+                cart = (model.Cart) session.getAttribute("cart");
+            }
 
-        //Check if this item already exist in the cart
-        if (cart.isExist(id)) {
-            String[] message = {"คุณได้เคยเลือกสินค้านี้ใส่ตะกร้าไปแล้ว!", "warning"};
-            session.setAttribute("message", message);
-            return true;
-        }
+            //Check if this item already exist in the cart
+            if (cart.isExist(id)) {
+                String[] message = {"คุณได้เคยเลือกสินค้านี้ใส่ตะกร้าไปแล้ว!", "warning"};
+                session.setAttribute("message", message);
+                conn.close();
+                return true;
+            }
 
-        model.User user = (User) session.getAttribute("user");
-        int userId = user.getId();
+            model.User user = (User) session.getAttribute("user");
+            int userId = user.getId();
 
-        PreparedStatement psmt, buyPstmt;
-        try {
+            PreparedStatement psmt, buyPstmt;
+
             psmt = conn.prepareStatement("SELECT * FROM project WHERE id = ? AND visible = 1;");
             psmt.setString(1, id);
             ResultSet result = psmt.executeQuery();
@@ -173,21 +174,17 @@ public class CartManagement extends HttpServlet {
             session.setAttribute("message", message);
             return true;
         }
-        Connection conn = F.getConnection();
-        PreparedStatement pstmt = null, purPstmt = null, creditPstmt = null, cutCreditPstmt = null;
-        int userId = ((User) request.getSession().getAttribute("user")).getId();
-        try {
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement pstmt = null, purPstmt = null, creditPstmt = null, cutCreditPstmt = null;
+            int userId = ((User) request.getSession().getAttribute("user")).getId();
             pstmt = conn.prepareStatement("SELECT * FROM project WHERE id = ?;");
-        } catch (SQLException ex) {
-            Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //get all items
-        ArrayList<model.Project> projectList = new ArrayList();
 
-        double price = 0;
-        for (Object i : cart.getItems()) {
-            String id = (String) i;
-            try {
+            //get all items
+            ArrayList<model.Project> projectList = new ArrayList();
+
+            double price = 0;
+            for (Object i : cart.getItems()) {
+                String id = (String) i;
                 pstmt.setString(1, id);
                 ResultSet res = pstmt.executeQuery();
                 if (res.next()) {
@@ -203,11 +200,7 @@ public class CartManagement extends HttpServlet {
                     return false;
                 }
                 res.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        try {
             pstmt.close();
             creditPstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?;");
             creditPstmt.setInt(1, userId);
@@ -233,14 +226,10 @@ public class CartManagement extends HttpServlet {
                 res.close();
                 purPstmt = conn.prepareStatement("INSERT INTO `purchase`(`user_id`, `project_id`, `price`, `created_at`) VALUES (?, ?, ?, CURRENT_TIMESTAMP());");
                 for (model.Project i : projectList) {
-                    try {
-                        purPstmt.setInt(1, userId);
-                        purPstmt.setInt(2, i.getId());
-                        purPstmt.setString(3, i.getPrice());
-                        purPstmt.executeUpdate();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Cart.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    purPstmt.setInt(1, userId);
+                    purPstmt.setInt(2, i.getId());
+                    purPstmt.setString(3, i.getPrice());
+                    purPstmt.executeUpdate();
                 }
                 //close it all
                 cutCreditPstmt.close();
