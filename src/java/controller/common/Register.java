@@ -121,6 +121,7 @@ public class Register extends HttpServlet {
             result.next();
             if (result.getInt(1) != 0) {
                 request.getSession().setAttribute("message", "อีเมลนี้ได้ถูกใช้ไปแล้ว!");
+                conn.close();
                 return false;
             }
             result.close();

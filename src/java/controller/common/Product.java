@@ -64,6 +64,7 @@ public class Product extends HttpServlet {
                 String[] message = {"ขออภัย ไม่พบนิยายดังกล่าว", "danger"};
                 session.setAttribute("message", message);
                 response.sendRedirect(F.asset("/product"));
+                conn.close();
                 return;
             }
             Project product = new Project(result);

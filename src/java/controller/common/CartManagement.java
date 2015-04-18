@@ -213,6 +213,7 @@ public class CartManagement extends HttpServlet {
                     res.close();
                     String[] message = {"คุณมีเครดิตไม่พอที่จะซื้อ!", "danger"};
                     session.setAttribute("message", message);
+                    conn.close();
                     return false;
                 }
                 res.close();

@@ -60,6 +60,7 @@ public class Scene extends HttpServlet {
                 Integer projectID = result.getInt("project_id");
                 if (!F.isLoggedIn(session)
                         || !(user.getPurchaseProjectID().contains(projectID) || user.getOwnProjectID().contains(projectID))) {
+                    conn.close();
                     return;
                 }
                 JSONObject scene_data = new JSONObject();
