@@ -58,7 +58,6 @@
                                     </c:choose>
                                 </c:when>
                                 <c:when test="${user.age != null}">
-                                    <%-- Left this to handle unexpected case --%>
                                     <a href='#' class="btn btn-grey disabled"><i class="glyphicon glyphicon-alert icon-white"></i> You're underage.</a>
                                 </c:when>
                                 <c:otherwise>
