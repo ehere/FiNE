@@ -57,6 +57,10 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
+                                <c:when test="${user.age != null}">
+                                    <%-- Left this to handle unexpected case --%>
+                                    <a href='#' class="btn btn-grey disabled"><i class="glyphicon glyphicon-alert icon-white"></i> You're underage.</a>
+                                </c:when>
                                 <c:otherwise>
                                     <a href='#' class="btn btn-grey disabled"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> Add</a>
                                 </c:otherwise>
@@ -73,22 +77,22 @@
             <ul class="pagination pagination-lg">
                 <c:if test="${requestScope.currentpage > 1}">
                     <li><a href="<%= F.asset("/product?page=")%>${requestScope.currentpage-1}">Previous</a></li>
-                </c:if>
-                <c:forEach begin="1" end="${requestScope.totalpage}" step="1" var="i">
-                    <c:choose>
-                        <c:when test="${requestScope.currentpage == i}">
-                        <li class="active"><a href="#">${i}</a></li>
-                        </c:when>
-                        <c:otherwise>
-                        <li><a href="<%= F.asset("/product?page=")%>${i}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">${i}</a></li>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-                <c:if test="${requestScope.currentpage < requestScope.totalpage}">
-                    <c:if test="${requestScope.totalpage != 0}">
-                    <li><a href="<%= F.asset("/product?page=")%>${requestScope.currentpage+1}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">Next</a></li>
                     </c:if>
-                </c:if>
+                    <c:forEach begin="1" end="${requestScope.totalpage}" step="1" var="i">
+                        <c:choose>
+                            <c:when test="${requestScope.currentpage == i}">
+                            <li class="active"><a href="#">${i}</a></li>
+                            </c:when>
+                            <c:otherwise>
+                            <li><a href="<%= F.asset("/product?page=")%>${i}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">${i}</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <c:if test="${requestScope.currentpage < requestScope.totalpage}">
+                        <c:if test="${requestScope.totalpage != 0}">
+                        <li><a href="<%= F.asset("/product?page=")%>${requestScope.currentpage+1}<c:if test="${searchKey != null}">&search=${searchKey}</c:if>">Next</a></li>
+                        </c:if>
+                    </c:if>
             </ul>
         </div>
     </div>

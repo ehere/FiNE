@@ -106,19 +106,22 @@ public class Product extends HttpServlet {
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            int userAge = user.getAge();
             Connection conn = F.getConnection();
             int page = 1;
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
             }
-            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` WHERE visible = 1;");
+            PreparedStatement csmt = conn.prepareStatement("SELECT CEIL( COUNT(*) / 8 ) AS totalpage FROM `project` WHERE visible = 1 AND (rate = 0 OR rate <= "+userAge+");");
             ResultSet cr = csmt.executeQuery();
             cr.next();
             int totalpage = cr.getInt("totalpage");
             cr.close();
             csmt.close();
 
-            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE visible = 1  LIMIT 8 OFFSET ?;");
+            PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `project` WHERE visible = 1 AND (rate = 0 OR rate <= "+userAge+") LIMIT 8 OFFSET ?;");
             psmt.setInt(1, (page - 1) * 8);
             ResultSet result = psmt.executeQuery();
             ArrayList<Project> list = new ArrayList();
