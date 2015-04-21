@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -168,6 +170,35 @@ public class F implements Serializable {
             if (((User) session.getAttribute("user")).getRole() >= 70) {
                 return true;
             }
+        }
+        return false;
+    }
+    
+    public static boolean logCredit(int owner_id, double newCredit, String details, int changed_by){
+        try (Connection conn = F.getConnection()) {
+            String sql = "SELECT * FROM user WHERE id = ?";
+            PreparedStatement userPstmt = conn.prepareStatement(sql);
+            userPstmt.setInt(1, owner_id);
+            ResultSet result = userPstmt.executeQuery();
+            result.next();
+            User user = new User(result);
+            
+            sql = "INSERT INTO `credit_log` (`owner_id`, `old_credit`, `new_credit`, `detail`, `change_by`, `created_at`) VALUES (?, ?, ?, ?, ?, NOW());";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, user.getId());
+            pstmt.setString(2, user.getCredit());
+            pstmt.setDouble(3, newCredit);
+            pstmt.setString(4, details);
+            pstmt.setInt(5, changed_by);
+            
+            int success = pstmt.executeUpdate();
+            
+            if(success > 0){
+                return true;
+            }
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(F.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

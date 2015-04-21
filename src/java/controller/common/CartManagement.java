@@ -217,21 +217,23 @@ public class CartManagement extends HttpServlet {
                     return false;
                 }
                 res.close();
-                double newCredit = Double.parseDouble(user.getCredit()) - price;
+                double newCredit = Double.parseDouble(user.getCredit());
                 cutCreditPstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ? WHERE `user`.`id` = ?;");
-                cutCreditPstmt.setDouble(1, newCredit);
-                cutCreditPstmt.setInt(2, userId);
-                cutCreditPstmt.executeUpdate();
-                res = creditPstmt.executeQuery();
-                res.next();
-                res.close();
                 purPstmt = conn.prepareStatement("INSERT INTO `purchase`(`user_id`, `project_id`, `price`, `created_at`) VALUES (?, ?, ?, CURRENT_TIMESTAMP());");
                 for (model.Project i : projectList) {
+                    newCredit -= Double.parseDouble(i.getPrice());
                     purPstmt.setInt(1, userId);
                     purPstmt.setInt(2, i.getId());
                     purPstmt.setString(3, i.getPrice());
                     purPstmt.executeUpdate();
+                    
+                    F.logCredit(userId, newCredit, "Purchased projects ID:" + i.getId(), userId);
+                    cutCreditPstmt.setDouble(1, newCredit);
+                    cutCreditPstmt.setInt(2, userId);
+                    cutCreditPstmt.executeUpdate();
+                    creditPstmt.executeQuery();
                 }
+                res.close();
                 //close it all
                 cutCreditPstmt.close();
                 creditPstmt.close();
