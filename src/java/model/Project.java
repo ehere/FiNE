@@ -31,6 +31,7 @@ public class Project implements Serializable {
     private String created_at;
     private String updated_at;
     private boolean is_bought;
+    
 
     public Project(ResultSet result) throws SQLException {
 
@@ -112,6 +113,24 @@ public class Project implements Serializable {
             Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
         }
         return price;
+    }
+    public double getDividend() {
+        double dividend = 50;
+        
+        try (Connection conn = F.getConnection()) {
+            PreparedStatement psmt = conn.prepareStatement("SELECT `dividend` FROM `project` WHERE id = ?");
+            psmt.setInt(1, id);
+            ResultSet result = psmt.executeQuery();
+            if (result.next()) {
+                dividend = result.getDouble("dividend");
+            }
+            result.close();
+            psmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Project.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dividend;
     }
 
     public boolean isVisible() {
