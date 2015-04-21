@@ -61,7 +61,7 @@ public class ProjectManagement extends HttpServlet {
         try (Connection conn = F.getConnection()) {
             PreparedStatement pstmt;
             ArrayList<Project> projectList = new ArrayList();
-            pstmt = conn.prepareStatement("SELECT * FROM project;");
+            pstmt = conn.prepareStatement("SELECT * FROM project ORDER BY visible;");
             ResultSet result = pstmt.executeQuery();
             while (result.next()) {
                 Project project = new Project(result);

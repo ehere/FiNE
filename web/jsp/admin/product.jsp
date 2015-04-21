@@ -17,13 +17,19 @@
 <div class="section">
     <div class="container">
         <div class="row">
-            <table id="productList" class="display" cellspacing="0" width="100%">
+            <div id="loading_table">
+                <div align="center" style="margin-top: 10px;">
+                    <img src="<%= F.asset("img/loading.gif") %>"/>
+                </div>
+            </div>
+            <table id="productList" class="display hidden" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>การเผยแพร่</th>
                         <th>ชื่อ</th>
                         <th>ผู้แต่ง</th>
                         <th>ราคา</th>
+                        <th>ส่วนแบ่งผู้แต่ง</th>
                         <th>วันที่สร้าง</th>
                         <th>Action</th>
                     </tr>
@@ -48,6 +54,7 @@
                             <td id="title-${project.id}"><a href="<%= F.asset("/product")%>/${project.id}/view" target="_blank">${project.title}</a></td>
                             <td id="author-${project.id}"><a href="<%= F.asset("/profile")%>/${project.creator.id}" target="_blank">${project.creator.fullname}</a></td>
                             <td><i class="glyphicon glyphicon-bitcoin" style="font-size: 0.9em;"></i> <span id="price-${project.id}">${project.price}</span></td>
+                            <td id="devidend-${project.id}">${project.dividend}</td>
                             <td id="created-${project.id}">${project.created_at}</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs" onclick="activateModal(${project.id})">
@@ -113,8 +120,13 @@
 <input type="checkbox" name="publish" data-size="mini" data-handle-width="50" data-on-text="Public" data-off-text="Private" checked>
 -->
 <script>
-    $(document).ready(function() {
-        $('#productList').DataTable();
+    $(document).ready(function () {
+        $('#productList').DataTable({
+            "drawCallback": function (settings) {
+                $('#loading_table').addClass("hidden");
+                $('#productList').removeClass("hidden");
+            }
+        });
     });
 </script>
 

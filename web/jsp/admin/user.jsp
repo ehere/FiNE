@@ -17,7 +17,12 @@
 <div class="section">
     <div class="container">
         <div class="row">
-            <table id="userList" class="display" cellspacing="0" width="100%">
+            <div id="loading_table">
+                <div align="center" style="margin-top: 10px;">
+                    <img src="<%= F.asset("img/loading.gif")%>"/>
+                </div>
+            </div>
+            <table id="userList" class="display hidden" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>ชื่อ</th>
@@ -97,7 +102,12 @@
 <!-- End of modal -->
 <script>
     $(document).ready(function () {
-        $('#userList').DataTable();
+        $('#userList').DataTable({
+            "drawCallback": function (settings) {
+                $('#loading_table').addClass("hidden");
+                $('#userList').removeClass("hidden");
+            }
+        });
     });
 </script>
 
