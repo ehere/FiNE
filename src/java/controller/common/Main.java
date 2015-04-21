@@ -50,7 +50,7 @@ public class Main extends HttpServlet {
     protected void index (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        String sql = "SELECT project.id, COUNT(purchase.id) FROM `project` LEFT OUTER JOIN purchase ON (project.id = purchase.project_id) GROUP BY project.id ORDER BY COUNT(purchase.id) DESC LIMIT 8;";
+        String sql = "SELECT project.id, COUNT(purchase.id) FROM `project` LEFT OUTER JOIN purchase ON (project.id = purchase.project_id) WHERE visible = 1 GROUP BY project.id ORDER BY COUNT(purchase.id) DESC LIMIT 8;";
         ArrayList<model.Project> projectList = new ArrayList();
         try(Connection conn = F.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
