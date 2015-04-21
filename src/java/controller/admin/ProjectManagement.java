@@ -86,13 +86,14 @@ public class ProjectManagement extends HttpServlet {
         try (Connection conn = F.getConnection()) {
             PreparedStatement pstmt;
             HttpSession session = request.getSession();
-            pstmt = conn.prepareStatement("UPDATE `project` SET `visible` = ?, `updated_at` = NOW() WHERE `id` = ?;");
+            pstmt = conn.prepareStatement("UPDATE `project` SET `visible` = ?, `dividend` = ?, `updated_at` = NOW() WHERE `id` = ?;");
             pstmt.setString(1, request.getParameter("publish"));
-            pstmt.setString(2, request.getParameter("projectid"));
+            pstmt.setString(2, request.getParameter("dividend"));
+            pstmt.setString(3, request.getParameter("projectid"));
             int result = pstmt.executeUpdate();
             if (result > 0) {
                 //success
-                String[] message = {"เปลี่ยนสิทธิ์การเข้าชมเรียบร้อยแล้ว!", "success"};
+                String[] message = {"อัพเดทเรียบร้อยแล้ว!", "success"};
                 session.setAttribute("message", message);
             } else {
                 //failed
