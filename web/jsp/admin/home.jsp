@@ -38,7 +38,8 @@
                     <h3>จัดการ Visual Novel</h3>
                     <p> 
                         ดูรายชื่อ Visual Novel ทังหมด<br>
-                        จัดการ สิทธ์การเผยแพร่ <br><br>
+                        จัดการ สิทธ์การเผยแพร่ <br>
+                        จัดการ ส่วนแบ่งของผู้แต่ง
                     </p>
                     <a href="<%= F.asset("/admin/product")%>" class="btn">Project Management</a>
                     <br><br>
