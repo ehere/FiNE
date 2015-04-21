@@ -196,6 +196,10 @@ public class Route implements Filter {
                 request.setAttribute("do", "index");
                 request.getRequestDispatcher("/admin.project").forward(request, response);
             }
+            else if (F.isUrlMatch("/admin/sharecredit", url)) {
+                request.setAttribute("do", "dividendshare");
+                request.getRequestDispatcher("/admin.credit").forward(request, response);
+            }
             else if (F.isUrlMatch("/admin", url)) {
                 request.getRequestDispatcher("/jsp/admin/home.jsp").forward(request, response);
             }
