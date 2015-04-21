@@ -9,9 +9,15 @@
                 <h3>การนำทาง</h3>
                 <ul class="no-list-style footer-navigate-section">
                     <li><a href="<%= F.asset("/")%>">Home</a></li>
-                    <li><a href="<%= F.asset("/product")%>">FiNE Store</a></li>
-                    <li><a href="<%= F.asset("/inventory")%>">Your Items</a></li>
-                    <li><a href="<%= F.asset("/about")%>">About Us</a></li>
+                    <li>
+                        <a href="<%= F.asset("/admin")%>">Admin Panel</a>
+                    </li>
+                    <li>
+                        <a href="<%= F.asset("/admin/user")%>">User Management</a>
+                    </li>
+                    <li>
+                        <a href="<%= F.asset("/admin/product")%>">Project Management</a>
+                    </li>
                 </ul>
             </div>
 

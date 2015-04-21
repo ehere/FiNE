@@ -59,7 +59,7 @@
                 <nav id="mainmenu" class="mainmenu">
                     <ul>
                         <li class="logo-wrapper"><a href="<%= F.asset("/") %>"><img src="<%= F.asset("img/fine-logo.png") %>"></a></li>
-                        <li class="active">
+                        <li>
                             <a href="<%= F.asset("/admin") %>">Admin Panel</a>
                         </li>
                         <li>

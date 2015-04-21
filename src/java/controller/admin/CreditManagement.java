@@ -33,17 +33,13 @@ public class CreditManagement extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CreditManagement</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CreditManagement at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        request.setCharacterEncoding("utf-8");
+
+        String method = (String) request.getAttribute("do");
+        if (method.equals("index")) {
+            //index(request, response);
+        } else if (method.equals("changecredit")) {
+            //changeCredit(request, response);
         }
     }
 
