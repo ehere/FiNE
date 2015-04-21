@@ -56,7 +56,7 @@
                         </ul>
                     </div>
                 </div>
-                <nav id="mainmenu" class="mainmenu">
+                <nav class="mainmenu">
                     <ul>
                         <li class="logo-wrapper"><a href="<%= F.asset("/") %>"><img src="<%= F.asset("img/fine-logo.png") %>"></a></li>
                         <li>
