@@ -230,7 +230,7 @@ public class AuthorProject extends HttpServlet {
                 project_query.close();
 
                 if (validateScene(Integer.parseInt(id), project.getFirst_scene_id())) {
-                    PreparedStatement toggleVisible = conn.prepareStatement("UPDATE `project` SET`visible`= ABS(`visible`-1),`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ?;");
+                    PreparedStatement toggleVisible = conn.prepareStatement("UPDATE `project` SET`visible`= ABS(`visible`-1),`updated_at`=NOW() WHERE `user_id` = ? AND `id` = ? AND visible <= 1;");
                     toggleVisible.setInt(1, user.getId());
                     toggleVisible.setString(2, id);
                     int status = toggleVisible.executeUpdate();
@@ -241,8 +241,10 @@ public class AuthorProject extends HttpServlet {
                     result.next();
                     if (result.getInt("visible") == 1) {
                         out.print("visible");
-                    } else {
+                    } else if (result.getInt("visible") == 0) {
                         out.print("hidden");
+                    } else{
+                        out.print("banned");
                     }
                     result.close();
                     visible_query.close();

@@ -426,13 +426,17 @@
         $.get("/fine/author/project/" + projectID + "/togglevisible")
                 .done(function (respond) {
                     $('#loading-project-status').addClass("hidden");
-                    if (respond == "visible") {
+                    if (respond === "visible") {
                         $('#share').removeClass("hidden")
                         $(element).html('<i class="glyphicon glyphicon-ok"></i> Published');
-                    } else if(respond == "hidden") {
+                    } else if(respond === "hidden") {
                         $('#share').addClass("hidden")
                         $(element).html('<i class="glyphicon glyphicon-share"></i> Publish Now');
+                    } else if(respond === 'banned') {
+                        $('#share').addClass("hidden")
+                        $(element).html('<i class="glyphicon glyphicon-ban-circle"></i> Banned');
                     } else {
+                        $('#share').addClass("hidden")
                         alert(respond);
                     }
                 })

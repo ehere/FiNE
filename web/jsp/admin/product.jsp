@@ -33,21 +33,23 @@
                         <tr>
                             <td>
                                 <c:choose>
-                                    <c:when test="${project.visible}">
+                                    <c:when test="${project.getVisible() > 1}">
+                                        <span class="label label-danger"><i class="glyphicon glyphicon glyphicon-ban-circle"></i> Banned</span>
+                                    </c:when>
+                                    <c:when test="${project.isVisible()}">
                                         <span class="label label-success"><i class="glyphicon glyphicon glyphicon-eye-open"></i> Public</span>
                                     </c:when>
                                     <c:otherwise>
                                         <span class="label label-default"><i class="glyphicon glyphicon glyphicon-eye-close"></i> Private</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                <input type="hidden" id="visible-${project.id}" value="${project.visible}" />
+                                    </c:otherwise>
+                                </c:choose>
+                                <input type="hidden" id="visible-${project.id}" value="${project.getVisible()}" />
                             </td>
-                            <td id="title-${project.id}">${project.title}</td>
-                            <td id="author-${project.id}">${project.creator.fullname}</td>
+                            <td id="title-${project.id}"><a href="<%= F.asset("/product")%>/${project.id}/view" target="_blank">${project.title}</a></td>
+                            <td id="author-${project.id}"><a href="<%= F.asset("/profile")%>/${project.creator.id}" target="_blank">${project.creator.fullname}</a></td>
                             <td><i class="glyphicon glyphicon-bitcoin" style="font-size: 0.9em;"></i> <span id="price-${project.id}">${project.price}</span></td>
                             <td id="created-${project.id}">${project.created_at}</td>
                             <td>
-                                <a href="<%= F.asset("/product")%>/${project.id}/view" target="_blank" class="btn btn-xs">View</a>
                                 <button type="button" class="btn btn-primary btn-xs" onclick="activateModal(${project.id})">
                                     Change Permission
                                 </button>
@@ -89,7 +91,8 @@
                         <div class="col-sm-9">
                             <div class="input-group">
                                 <input type="radio" id="publish-1" name="publish" value="1" /> Public<br />
-                                <input type="radio" id="publish-0" name="publish" value="0" /> Private
+                                <input type="radio" id="publish-0" name="publish" value="0" /> Private<br />
+                                <input type="radio" id="publish-70" name="publish" value="70" /> Ban
                             </div>
                         </div>
                     </div>
@@ -110,7 +113,7 @@
 <input type="checkbox" name="publish" data-size="mini" data-handle-width="50" data-on-text="Public" data-off-text="Private" checked>
 -->
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#productList').DataTable();
     });
 </script>
@@ -122,6 +125,8 @@
         $("#author").html($("#author-" + projectid).html());
         if ($("#visible-" + projectid).val() == "1") {
             $("#publish-1").prop("checked", true);
+        } else if ($("#visible-" + projectid).val() == "70") {
+            $("#publish-70").prop("checked", true);
         }
         else {
             $("#publish-0").prop("checked", true);

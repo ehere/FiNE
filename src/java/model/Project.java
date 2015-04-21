@@ -134,12 +134,14 @@ public class Project implements Serializable {
     }
 
     public boolean isVisible() {
-        if(visible > 0){
+        if(visible == 1){
             return true;
         }
         return false;
     }
-
+    public int getVisible() {
+        return visible;
+    }
     public void setVisible(int visible) {
         this.visible = visible;
     }

@@ -57,6 +57,9 @@
                         <img id="loading-project-status" src="<%= F.asset("/img/loading.gif")%>" style="max-height: 30px;" class="hidden"/>
                         <a href="javascript:;" onclick="toggleProjectVisible(this,${requestScope.project.id});">
                             <c:choose>
+                                <c:when test="${project.getVisible() > 1}">  
+                                    <i class="glyphicon glyphicon-ban-circle"></i> Banned
+                                </c:when>
                                 <c:when test="${project.isVisible()}">  
                                     <i class="glyphicon glyphicon-ok"></i> Published
                                 </c:when>
@@ -73,11 +76,11 @@
                         <a href="<%= F.asset("/author/project")%>/${project.id}/viewrelation" target="_blank"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
                     </li>
                     <li class="pull-right <c:if test="${!requestScope.project.isVisible()}">hidden</c:if>" id="share">
-                        <a>
-                            <form action="" class="search-form">
-                                <div class="form-group has-feedback" style="margin-bottom: 0px;">
-                                    <label for="search" class="sr-only">Share</label>
-                                    <input onclick="shareLink(this);" class="form-control" style="cursor: pointer;" name="search"  placeholder="share link" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}<%= F.asset("/product")%>/${project.id}/view">
+                            <a>
+                                <form action="" class="search-form">
+                                    <div class="form-group has-feedback" style="margin-bottom: 0px;">
+                                        <label for="search" class="sr-only">Share</label>
+                                        <input onclick="shareLink(this);" class="form-control" style="cursor: pointer;" name="search"  placeholder="share link" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}<%= F.asset("/product")%>/${project.id}/view">
                                     <span class="glyphicon glyphicon-share form-control-feedback"></span>
                                 </div>
                             </form>
