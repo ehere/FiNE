@@ -79,7 +79,7 @@
                         <div class="col-sm-10">
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="glyphicon glyphicon-bitcoin" style="font-size: 0.9em;"></i></div>
-                                <input type="text" class="form-control" id="credits" name="credits">
+                                <input type="number" min="0" step="0.01" class="form-control" id="credits" name="credits">
                             </div>
                         </div>
                     </div>

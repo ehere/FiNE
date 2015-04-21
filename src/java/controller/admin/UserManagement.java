@@ -86,10 +86,12 @@ public class UserManagement extends HttpServlet {
 
             PreparedStatement pstmt;
             HttpSession session = request.getSession();
-
+            User user = (User) session.getAttribute("user");
+            
             pstmt = conn.prepareStatement("UPDATE `user` SET `credit` = ?, `updated_at` = NOW() WHERE `id` = ?;");
             pstmt.setString(1, request.getParameter("credits"));
             pstmt.setString(2, request.getParameter("userid"));
+            F.logCredit(Integer.parseInt(request.getParameter("userid")), Double.parseDouble(request.getParameter("credits")), "Changed by admin.", user.getId());
             int result = pstmt.executeUpdate();
             if (result > 0) {
                 //success
