@@ -34,7 +34,8 @@
                             <div class="panel-heading">
                                 <span class="pull-right">
                                     <c:if test="${canEdit}">
-                                        <a href="<%= F.asset("/profile/edit")%>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
+                                        <a href="<%= F.asset("/credit")%>" data-original-title="View credit log" data-toggle="tooltip" type="button" class="btn btn-xs btn-blue"><i class="glyphicon glyphicon-bitcoin"></i> ดูความเคลื่อนไหวของเครดิต</a>
+                                        <a href="<%= F.asset("/profile/edit")%>" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-xs btn-blue"><i class="glyphicon glyphicon-edit"></i> แก้ไขข้อมูลส่วนตัว</a>
                                     </c:if>
                                 </span>
                                 <h3 class="panel-title">ข้อมูลส่วนตัว</h3>
