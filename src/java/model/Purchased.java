@@ -30,7 +30,7 @@ public class Purchased implements Serializable {
     private String created_at;
     private Project project;
     private String last_play;
-    private double divident;
+    private double dividend;
     private int shared;
 
     public Purchased(ResultSet result) throws SQLException {
@@ -38,7 +38,7 @@ public class Purchased implements Serializable {
         user_id = result.getInt("user_id");
         project_id = result.getInt("project_id");
         price = result.getDouble("price");
-        divident = result.getDouble("divident");
+        dividend = result.getDouble("dividend");
         shared = result.getInt("shared");
 
         created_at = convertDate(result.getString("created_at"));
@@ -137,12 +137,12 @@ public class Purchased implements Serializable {
         this.last_play = last_play;
     }
 
-    public double getDivident() {
-        return divident;
+    public double getDividend() {
+        return dividend;
     }
 
-    public void setDivident(double divident) {
-        this.divident = divident;
+    public void setDivident(double dividend) {
+        this.dividend = dividend;
     }
 
     public int getShared() {
