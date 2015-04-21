@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="help.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -19,7 +20,7 @@
         <div class="row">
             <div id="loading_table">
                 <div align="center" style="margin-top: 10px;">
-                    <img src="<%= F.asset("img/loading.gif") %>"/>
+                    <img src="<%= F.asset("img/loading.gif")%>"/>
                 </div>
             </div>
             <table id="productList" class="display hidden" cellspacing="0" width="100%">
@@ -51,14 +52,24 @@
                                 </c:choose>
                                 <input type="hidden" id="visible-${project.id}" value="${project.getVisible()}" />
                             </td>
-                            <td id="title-${project.id}"><a href="<%= F.asset("/product")%>/${project.id}/view" target="_blank">${project.title}</a></td>
-                            <td id="author-${project.id}"><a href="<%= F.asset("/profile")%>/${project.creator.id}" target="_blank">${project.creator.fullname}</a></td>
-                            <td><i class="glyphicon glyphicon-bitcoin" style="font-size: 0.9em;"></i> <span id="price-${project.id}">${project.price}</span></td>
-                            <td id="devidend-${project.id}">${project.dividend}</td>
+                            <td id="title-${project.id}">
+                                <a href="<%= F.asset("/product")%>/${project.id}/view" target="_blank">${project.title}</a>
+                            </td>
+                            <td id="author-${project.id}">
+                                <a href="<%= F.asset("/profile")%>/${project.creator.id}" target="_blank">${project.creator.fullname}</a>
+                            </td>
+                            <td>
+                                <i class="glyphicon glyphicon-bitcoin" style="font-size: 0.9em;"></i> 
+                                <span id="price-${project.id}"><fmt:formatNumber type="number" maxFractionDigits="2" value="${project.price}"/></span>
+                            </td>
+                            <td>
+                                <span id="devidend-${project.id}"><fmt:formatNumber type="number" maxFractionDigits="2" value="${project.dividend}"/></span>%
+                            </td>
                             <td id="created-${project.id}">${project.created_at}</td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs" onclick="activateModal(${project.id})">
-                                    Change Permission
+                                    <i class="glyphicon glyphicon-edit" style="font-size: 0.9em;"></i> 
+                                    Change
                                 </button>
                             </td>
                         </tr>
@@ -91,6 +102,15 @@
                         <label for="author" class="col-sm-3 control-label">โดย</label>
                         <div class="col-sm-9 control-label" style="text-align: left;">
                             <p id="author"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dividend" class="col-sm-3 control-label">ส่วนแบ่งผู้แต่ง</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <div class="input-group-addon">%</div>
+                                <input type="number" min="0" step="0.01" class="form-control" id="dividend" name="dividend">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -135,6 +155,7 @@
         $("#projectid").val(projectid);
         $("#title").html($("#title-" + projectid).html());
         $("#author").html($("#author-" + projectid).html());
+        $("#dividend").val($("#devidend-" + projectid).html());
         if ($("#visible-" + projectid).val() == "1") {
             $("#publish-1").prop("checked", true);
         } else if ($("#visible-" + projectid).val() == "70") {
