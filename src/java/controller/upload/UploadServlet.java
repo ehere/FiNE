@@ -66,7 +66,7 @@ public class UploadServlet extends HttpServlet {
             max_size = 1*1024*1024;
         }
         final Part filePart = request.getPart("file");
-        String fileName = getFileName(filePart);
+        String fileName = getFileName(filePart).toLowerCase();
         String relativeWebPath = path;
         String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
 
