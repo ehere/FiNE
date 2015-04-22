@@ -76,7 +76,7 @@
                         <a href="<%= F.asset("/author/project")%>/${project.id}/viewrelation" target="_blank"><i class="glyphicon glyphicon-retweet"></i> Generate Relation</a>
                     </li>
                     <li class="pull-right <c:if test="${!requestScope.project.isVisible()}">hidden</c:if>" id="share">
-                            <a>
+                            <a style="padding-bottom: 0px;">
                                 <form action="" class="search-form">
                                     <div class="form-group has-feedback" style="margin-bottom: 0px;">
                                         <label for="search" class="sr-only">Share</label>
