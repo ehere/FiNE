@@ -166,10 +166,19 @@ public class Scene extends HttpServlet {
                     PreparedStatement goto_query = conn.prepareStatement("SELECT * FROM activity_goto WHERE activity_id = ?;");
                     goto_query.setInt(1, activity_id);
                     ResultSet goto_act = goto_query.executeQuery();
-                    goto_act.next();
                     JSONObject act = new JSONObject();
                     act.put("type", type);
-                    act.put("nextnode", goto_act.getInt("target_id"));
+                    if (goto_act.next()) {
+                        act.put("nextnode", goto_act.getInt("target_id")); 
+                    } else {
+                        //insert whene not have
+                        PreparedStatement insert_goto = conn.prepareStatement("INSERT INTO `activity_goto`(`activity_id`, `target_id`) VALUES (?,?);");
+                        insert_goto.setInt(1, activity_id);
+                        insert_goto.setNull(2, java.sql.Types.INTEGER);
+                        insert_goto.executeUpdate();
+                        insert_goto.close();
+                        act.put("nextnode", null);
+                    }
                     activity_data.put(activity_id + "", act);
                     goto_act.close();
                     goto_query.close();
