@@ -67,7 +67,9 @@
                                 to: nullid
                             });
                             nullid = nullid - 1
-                        } else {
+                        } else if (value.nextnode == false) {
+                            
+                        }else {
                             edges.push({
                                 from: parseInt(value.node),
                                 to: parseInt(value.nextnode)
@@ -83,9 +85,6 @@
                     };
 
                     var options = {
-                        hierarchicalLayout: {
-                            layout: layoutMethod
-                        },
                         edges: {style: "arrow"},
                         smoothCurves: false
                     };

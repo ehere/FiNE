@@ -102,23 +102,40 @@ public class SceneRelation extends HttpServlet {
                 project_rs.close();
                 project_query.close();
 
-                PreparedStatement psmt = conn.prepareStatement("SELECT * FROM `activity` INNER JOIN activity_goto ON activity.id = activity_goto.activity_id JOIN scenario ON activity.scenario_id = scenario.id WHERE  type = 4 AND scenario_id IN (SELECT scenario_id FROM scenario WHERE project_id =?);");
-                psmt.setString(1, projectID);
-                ResultSet result = psmt.executeQuery();
+                PreparedStatement scene_query = conn.prepareStatement("SELECT *  FROM `scenario` WHERE `project_id` = ?;");
+                scene_query.setString(1, projectID);
+                ResultSet scenes = scene_query.executeQuery();
                 JSONArray list = new JSONArray();
-                while (result.next()) {
+                PreparedStatement activity_query = conn.prepareStatement("SELECT * FROM `activity` JOIN activity_goto ON activity.id = activity_goto.activity_id  WHERE `scenario_id` = ? AND `type` = 4;");
+                while (scenes.next()) {
+                    activity_query.setInt(1, scenes.getInt("id"));
+                    ResultSet activities = activity_query.executeQuery();
                     JSONObject data = new JSONObject();
-                    data.put("node", result.getInt("scenario_id"));
-                    data.put("title", result.getString("title"));
-                    data.put("nextnode", result.getString("target_id"));
-                    if(result.getInt("scenario_id") == project.getFirst_scene_id()){
-                        data.put("first", true);
+                    int count = 0;
+                    while (activities.next()) {
+                        count = count + 1;
+                        data.put("node", scenes.getInt("id"));
+                        data.put("title", scenes.getString("title"));
+                        data.put("nextnode", activities.getString("target_id"));
+                        if (scenes.getInt("id") == project.getFirst_scene_id()) {
+                            data.put("first", true);
+                        }
                     }
+                    if (count == 0) {
+                        data.put("node", scenes.getInt("id"));
+                        data.put("title", scenes.getString("title"));
+                        data.put("nextnode", false);
+                        if (scenes.getInt("id") == project.getFirst_scene_id()) {
+                            data.put("first", true);
+                        }
+                    }
+                    activities.close();
                     list.add(data);
                 }
                 out.print(list.toJSONString());
-                result.close();
-                psmt.close();
+                activity_query.close();
+                scenes.close();
+                scene_query.close();
                 conn.close();
             } catch (SQLException ex) {
                 Logger.getLogger(SceneRelation.class.getName()).log(Level.SEVERE, null, ex);
