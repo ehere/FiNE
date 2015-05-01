@@ -54,7 +54,7 @@
                     <p> 
                         จ่ายผลตอบแทนให้กับผู้สร้างสรรค์ผลงาน<br><br><br>
                     </p>
-                    <a href="<%= F.asset("/admin/sharecredit")%>" class="btn">จ่ายผลตอบแทน</a>
+                    <a href="<%= F.asset("/admin/dividend")%>" class="btn">จ่ายผลตอบแทน</a>
                     <br><br>
                 </div>
             </div>

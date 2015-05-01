@@ -68,6 +68,12 @@
                         <li>
                             <a href="<%= F.asset("/admin/product") %>">Project Management</a>
                         </li>
+                        <li>
+                            <a href="<%= F.asset("/admin/dividend") %>">Income Sharing</a>
+                        </li>
+                        <li>
+                            <a href="<%= F.asset("/admin/creditlog") %>">Credit Log</a>
+                        </li>
                     </ul>
                 </nav>
             </div>

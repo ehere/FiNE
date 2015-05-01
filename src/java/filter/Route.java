@@ -196,8 +196,21 @@ public class Route implements Filter {
                 request.setAttribute("do", "index");
                 request.getRequestDispatcher("/admin.project").forward(request, response);
             }
+            else if (F.isUrlMatch("/admin/dividend", url)) {
+                request.setAttribute("do", "index");
+                request.getRequestDispatcher("/admin.credit").forward(request, response);
+            }
+            else if (F.isUrlMatch("/admin/creditlog", url)) {
+                request.setAttribute("do", "creditlog");
+                request.getRequestDispatcher("/admin.credit").forward(request, response);
+            }
             else if (F.isUrlMatch("/admin/sharecredit", url)) {
                 request.setAttribute("do", "dividendshare");
+                request.getRequestDispatcher("/admin.credit").forward(request, response);
+            }
+            else if (F.isUrlMatch("/admin/sharecredit/{id}", url)) {
+                request.setAttribute("do", "share");
+                F.urlMapper("/admin/sharecredit/{id}", url, request);
                 request.getRequestDispatcher("/admin.credit").forward(request, response);
             }
             else if (F.isUrlMatch("/admin", url)) {
