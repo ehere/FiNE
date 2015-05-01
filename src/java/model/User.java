@@ -140,6 +140,9 @@ public class User implements Serializable {
     }
 
     public String getImage() {
+        if(image == null){
+            return F.asset("/img/service-icon/user.png");
+        }
         return image;
     }
 
