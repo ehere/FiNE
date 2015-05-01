@@ -48,7 +48,7 @@
                             <li><a href="<%= F.asset("/login") %>"><i class="glyphicon glyphicon-log-in icon-white"></i> เข้าสู่ระบบ</a></li>
                             <% } else { %>
                             <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart") %>"><b><%= ((model.Cart) session.getAttribute("cart")).getItemsSize() %> รายการ</b></a></li>
-                            <li>สวัสดี! <%= ((User) session.getAttribute("user")).getFullname() %></li>
+                            <li><a href="<%= F.asset("/profile")%>">สวัสดี! <%= ((User) session.getAttribute("user")).getFullname() %></a></li>
                             <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> <%= ((User) session.getAttribute("user")).getCredit()%> เครดิต</li>
                             <li><a href="<%= F.asset("/") %>"><i class="glyphicon glyphicon-cog icon-white"></i> กลับสู่โหมดปกติ</a></li>
                             <li><a href="<%= F.asset("/login.do?action=logout") %>"><i class="glyphicon glyphicon-log-out icon-white"></i> ออกจากกระบบ</a></li>

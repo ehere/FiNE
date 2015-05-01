@@ -58,7 +58,7 @@
                                             data-template='<div class="popover" role="tooltip"><div class="arrow"></div><h1 class="popover-title glyphicon glyphicon-shopping-cart" style="width:100%;"></h1><div class="popover-content"></div></div>'
                                         </c:if>
                                         ><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart")%>"><b>${sessionScope.cart.getItemsSize()} รายการ</b></a></li>
-                                    <li>สวัสดี! ${sessionScope.user.fullname}</li>
+                                    <li><a href="<%= F.asset("/profile")%>">สวัสดี! ${sessionScope.user.fullname}</a></li>
                                     <li><a href="<%= F.asset("/credit") %>"><i class="glyphicon glyphicon-bitcoin icon-white"></i> ${sessionScope.user.credit} เครดิต</a></li>
                                         <c:if test="${sessionScope.user.isAdmin()}">
                                         <li><a href="<%= F.asset("/admin")%>"><i class="glyphicon glyphicon-cog icon-white"></i> เข้าสู่ระบบจัดการ</a></li>

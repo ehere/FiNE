@@ -49,7 +49,7 @@
                                     </c:when>
                                     <c:otherwise>
                                     <li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="<%= F.asset("/cart")%>"><b>${sessionScope.cart.getItemsSize()} รายการ</b></a></li>
-                                    <li>สวัสดี! ${sessionScope.user.fullname}</li>
+                                    <li><a href="<%= F.asset("/profile")%>">สวัสดี! ${sessionScope.user.fullname}</a></li>
                                     <li><i class="glyphicon glyphicon-bitcoin icon-white"></i> ${sessionScope.user.credit} เครดิต</li>
                                         <c:if test="${sessionScope.user.isAdmin()}">
                                         <li><a href="<%= F.asset("/admin")%>"><i class="glyphicon glyphicon-cog icon-white"></i> เข้าสู่ระบบจัดการ</a></li>
