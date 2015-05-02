@@ -51,12 +51,12 @@
                             <input class="form-control" id="email" name='email' type="email" placeholder="" required>
                         </div>
                         <div class="form-group">
-                            <label for="password"><b>รหัสผ่าน</b></label>
-                            <input class="form-control" id="password" name='password' type="password" placeholder="" required>
+                            <label for="password"><b>รหัสผ่าน</b> <small>ความยาวมากกว่าหรือเท่ากับ 5 ตัวอักษร</small></label>
+                            <input class="form-control" id="password" name='password' type="password" placeholder="" pattern=".{5,}" title="รหัสผ่านต้องมีความยาวมากกว่าหรือเท่ากับ 5 ตัวอักษร" required>
                         </div>
                         <div class="form-group">
                             <label for="c-password"><b>ยืนยันรหัสผ่าน</b></label>
-                            <input class="form-control" id="c-password" name='c-password' type="password" placeholder="" required>
+                            <input class="form-control" id="c-password" name='c-password' type="password" placeholder=""  pattern=".{5,}" title="รหัสผ่านต้องมีความยาวมากกว่าหรือเท่ากับ 5 ตัวอักษร" required>
                         </div>
                         <div class="form-group">
                             <label for="birthday"><b>วันเกิด</b></label>
