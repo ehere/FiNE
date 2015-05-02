@@ -75,6 +75,8 @@ public class Register extends HttpServlet {
             if (session.getAttribute("user") != null) {
                 //logged in > go to index.
                 response.sendRedirect(F.asset("/"));
+                conn.close();
+                return;
             }
             if (!validator(request, response)) {
                 try {
@@ -82,6 +84,8 @@ public class Register extends HttpServlet {
                 } catch (IOException ex) {
                     Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                conn.close();
+                return;
             }
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("prefix"));
