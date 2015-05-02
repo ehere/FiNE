@@ -44,6 +44,11 @@ function play() {
         $("#btn_toggle_dialog").hide();
         $("#player_title_text").hide().html(data[actity_id].title.replace("MC_NAME", $('.name').html())).fadeIn('slow');
         var text = data[actity_id].text.replace("MC_NAME", $('.name').html());
+        var mc = $('.name').text();
+        while(text.indexOf("MC_NAME") > -1){
+            text = text.replace("MC_NAME", mc);
+        }
+        
         $("#typed").typed('reset');
         $("#typed").typed({
             strings: [text],

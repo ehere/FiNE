@@ -94,7 +94,7 @@
                 <div style="width:80%;height: 35%;margin-left: auto;margin-right: auto;">
                     <div class="player_dialog_open">
                         <span class="dialog_textbox" id="typed"></span>
-                        <a id="endtext" href="#" class="">.</a>
+                        <a id="endtext" href="javascript:void(0);" class="">.</a>
                     </div>
                 </div>
             </div>
