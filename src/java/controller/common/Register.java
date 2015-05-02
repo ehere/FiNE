@@ -109,7 +109,8 @@ public class Register extends HttpServlet {
 
     protected boolean validator(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         if (!request.getParameter("password").equals(request.getParameter("c-password"))) {
-            request.getSession().setAttribute("message", "กรุณาใส่รหัสผ่าน และยืนยันรหัสผ่านให้ตรงกัน!");
+            String[] message = {"กรุณาใส่รหัสผ่าน และยืนยันรหัสผ่านให้ตรงกัน!", "warning"};
+            request.getSession().setAttribute("message", message);
             return false;
         }
         String sql = "SELECT COUNT(id) FROM user WHERE email = ?;";
@@ -120,7 +121,8 @@ public class Register extends HttpServlet {
             result = pstmt.executeQuery();
             result.next();
             if (result.getInt(1) != 0) {
-                request.getSession().setAttribute("message", "อีเมลนี้ได้ถูกใช้ไปแล้ว!");
+                String[] message = {"อีเมลนี้เคยสมัครสมาชิกแล้ว!", "warning"};
+                request.getSession().setAttribute("message", message);
                 conn.close();
                 return false;
             }
