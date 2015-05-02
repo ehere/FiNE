@@ -60,7 +60,7 @@
                         </div>
                         <div class="form-group">
                             <label for="birthday"><b>วันเกิด</b></label>
-                            <input class="form-control" id="birthday" name='birthday' type="date" placeholder="" required>
+                            <input class="form-control" id="birthday" name='birthday' type="date" placeholder="" max="<%= F.convertDate(new java.util.Date(), "yyyy-MM-dd") %>" required>
                         </div>
                         <div class="form-group text-center">
                             <button type="submit" class="btn">สมัครสมาชิก</button>

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -144,6 +145,16 @@ public class F implements Serializable {
         return null;
     }
 
+    public static String convertDate(Date date, String newFormat) {
+        if (date == null) {
+            return null;
+        }
+
+        SimpleDateFormat df = new SimpleDateFormat(newFormat, Locale.ENGLISH);
+        String formattedDate = df.format(date);
+        return formattedDate;
+    }
+
     public static String getMessage(HttpSession session) {
         if (session.getAttribute("message") != null) {
             String[] message = (String[]) session.getAttribute("message");
@@ -173,8 +184,8 @@ public class F implements Serializable {
         }
         return false;
     }
-    
-    public static boolean logCredit(int owner_id, double newCredit, String details, int changed_by){
+
+    public static boolean logCredit(int owner_id, double newCredit, String details, int changed_by) {
         try (Connection conn = F.getConnection()) {
             String sql = "SELECT * FROM user WHERE id = ?";
             PreparedStatement userPstmt = conn.prepareStatement(sql);
@@ -182,7 +193,7 @@ public class F implements Serializable {
             ResultSet result = userPstmt.executeQuery();
             result.next();
             User user = new User(result);
-            
+
             sql = "INSERT INTO `credit_log` (`owner_id`, `old_credit`, `new_credit`, `detail`, `change_by`, `created_at`) VALUES (?, ?, ?, ?, ?, NOW());";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, user.getId());
@@ -190,10 +201,10 @@ public class F implements Serializable {
             pstmt.setDouble(3, newCredit);
             pstmt.setString(4, details);
             pstmt.setInt(5, changed_by);
-            
+
             int success = pstmt.executeUpdate();
-            
-            if(success > 0){
+
+            if (success > 0) {
                 return true;
             }
             return false;
