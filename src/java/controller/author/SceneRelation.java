@@ -110,9 +110,10 @@ public class SceneRelation extends HttpServlet {
                 while (scenes.next()) {
                     activity_query.setInt(1, scenes.getInt("id"));
                     ResultSet activities = activity_query.executeQuery();
-                    JSONObject data = new JSONObject();
+                    
                     int count = 0;
                     while (activities.next()) {
+                        JSONObject data = new JSONObject();
                         count = count + 1;
                         data.put("node", scenes.getInt("id"));
                         data.put("title", scenes.getString("title"));
@@ -120,17 +121,20 @@ public class SceneRelation extends HttpServlet {
                         if (scenes.getInt("id") == project.getFirst_scene_id()) {
                             data.put("first", true);
                         }
+                        list.add(data);
                     }
                     if (count == 0) {
+                        JSONObject data = new JSONObject();
                         data.put("node", scenes.getInt("id"));
                         data.put("title", scenes.getString("title"));
                         data.put("nextnode", false);
                         if (scenes.getInt("id") == project.getFirst_scene_id()) {
                             data.put("first", true);
                         }
+                        list.add(data);
                     }
                     activities.close();
-                    list.add(data);
+                    
                 }
                 out.print(list.toJSONString());
                 activity_query.close();
