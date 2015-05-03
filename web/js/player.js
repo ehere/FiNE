@@ -44,11 +44,15 @@ function play() {
         $("#btn_toggle_dialog").hide();
         $("#player_title_text").hide().html(data[actity_id].title.replace("MC_NAME", $('.name').html())).fadeIn('slow');
         var text = data[actity_id].text.replace("MC_NAME", $('.name').html());
-        var mc = $('.name').text();
-        while(text.indexOf("MC_NAME") > -1){
-            text = text.replace("MC_NAME", mc);
+        if ($(".mode").html() !== 'edit') {
+            var mc = $('.name').text();
+            while (text.indexOf("MC_NAME") > -1) {
+                text = text.replace("MC_NAME", mc);
+            }
         }
-        
+
+
+
         $("#typed").typed('reset');
         $("#typed").typed({
             strings: [text],
@@ -192,12 +196,12 @@ function getScene(sceneID, index) {
                                 });
                     });
                 }
-                if (data.data.indexOf("{") !== -1 ) {
+                if (data.data.indexOf("{") !== -1) {
                     $('.activity_data').html(data.data);
                     $('.activity_order').html(data.order);
                     $("#typed").typed('reset');
                     $("#player_title_text").html('');
-                    if($.trim(data.data) != '{}'){
+                    if ($.trim(data.data) != '{}') {
                         previewActivity(index);
                     }
                 }
